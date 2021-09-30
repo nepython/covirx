@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Covid19 Drug Repurposing database." />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>CoviRx: Covid19 Drug Repurposing Database</title>
+        <style>
+            p {
+                font-size: 20px;
+            }
+            table {
+                font-family: "sans-serif";
+                border-collapse: collapse;
+                width: 100%;
+            }
+            td, th {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+            th {
+                padding-top: 12px;
+                padding-bottom: 12px;
+                text-align: left;
+                background-color: #772e78;
+                color: white;
+            }
+            .container h1, h2 {
+                font-family: "sans-serif";
+                text-align: center;
+                color: rgba(89, 2, 122, 0.67);
+                white-space: nowrap;
+                letter-spacing: 0px;
+                word-break: normal;
+                font-weight: bold;
+                filter: drop-shadow(rgba(0, 0, 0, 0.65) 0px 6px 6px);
+            }
+            .container h1 {
+                font-size: 6.7vw;
+                margin-bottom: 0;
+            }
+            .container h2 {
+                font-size: 3.3vw;
+                margin-top: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>CoviRx</h1>
+            <h2>Covid19 Drug Repurposing Database</h2>
+            <p>During the latest drug upload on CoviRx, many drugs couldn't get added into the database.
+            A list for the same has been shared with you.</p>
+            <table>
+                <tr>
+                    <th>Drug Name</th>
+                    <th>Reason for rejecting addition to database</th>
+                </tr>
+                {% for name, error in drugs.items %}
+                <tr>
+                    <td>{{ name }}</td>
+                    <td>{{ error }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </body>
+</html>

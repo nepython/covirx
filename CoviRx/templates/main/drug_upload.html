@@ -1,0 +1,106 @@
+{% extends 'main/index.html' %}
+{% block title %}CoviRx: Covid19 Drug Repurposing Database{% endblock %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href={% static "main/css/main.css"%} />
+<link rel="stylesheet" href={% static "main/css/drug-bulk-upload.css"%} />
+<link rel="stylesheet" href={% static "main/css/round-loader.css"%} />
+<link rel="stylesheet" href={% static "main/css/flat-loader.css"%} />
+<link rel="stylesheet" href={% static "main/css/email.multiple.css"%} />
+{% endblock %}
+
+{% block content %}
+<div id="msg" class="alert alert-primary"></div>
+<div class="modal fade show" id="drug-cancel-modal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="drug-cancel-modal-title">Confirm upload cancellation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Many drugs still remain to be uploaded to the database. Are you sure, you want to cancel the upload?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="confirmed-cancel" class="btn btn-danger" data-bs-dismiss="modal">Cancel Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade show" id="share-invalid-drugs-modal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="share-invalid-drugs-modal-title">Share the invalidated drugs</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <p>The invalid drugs will be mailed in the below email addresses after completion or cancellation of upload.</p>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="recipient-name" placeholder="Email">
+                    </div>
+                </form>
+              </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container slide-up">
+    <h1>CoviRx</h1>
+    <h2>Covid19 Drug Repurposing Database</h2>
+    <form class="mt-5 pt-5" id="uploadForm" method="POST" enctype="multipart/form-data" action="">
+        <h3 class="mb-3"> Bulk Drugs upload using a <b>.csv</b> file </h3>
+        {% csrf_token %}
+        <div class="input-group mb-3">
+            <input type="file" class="form-control" id="id_csv_file" name="csv_file" required>
+        </div>
+        <input id="upload-button" type="submit" class="btn btn-success mb-5" value="Upload CSV">
+    </form>
+    <div id="upload" class="mt-5 pt-5">
+        <h3>File Upload progress</h3>
+        <div id="upload-progress" class="row">
+            <div class="file-upload-progress"></div>
+        </div>
+    </div>
+    <div>
+    <div id="updates" class="mt-5 pt-5">
+        <h3 id="head">Drugs are being added in the database after validation</h3>
+        <div class="round-loader"></div>
+        <div id="progress-bar" class="row">
+            <div class="invalid"></div>
+            <div class="valid"></div>
+        </div>
+        <div id="update-numbers" class="row mt-5 mb-5 pb-5">
+            <div class="col-4">
+                <h3> Total Drugs to be processed</h3>
+                <div id="show-total">-NA-</div>
+            </div>
+            <div class="col-4 show-borders">
+                <h3> Drugs Successfully added</h3>
+                <div id="show-valid">-NA-</div>
+            </div>
+            <div class="col-4">
+                <h3> Drugs Invalidated</h3>
+                <div id="show-invalid">-NA-</div>
+            </div>
+        <div>
+    <div>
+    <div  class="mt-5 "><h3>List of invalid drugs<h3>
+        <button class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#share-invalid-drugs-modal">Share Invalid Drugs</button>
+        <ul id="invalidated-drugs"></ul>
+        <div class="flat-loader"></div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block footer_scripts %}
+<script src={% static "main/js/jquery.email.multiple.js"%}></script>
+<script src={% static "main/js/drug-bulk-upload.js"%}></script>
+{% endblock footer_scripts %}

@@ -1,0 +1,145 @@
+import logging
+import json
+from threading import Thread
+
+from django.conf import settings
+from django.core.cache import cache
+from django.core.exceptions import ValidationError
+from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
+from django.forms.models import model_to_dict
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from django.template import Context
+from django.template.loader import render_to_string, get_template
+from django.core.mail import EmailMessage
+from premailer import transform
+
+from accounts.models import User
+from .csv_upload import get_invalid_headers, save_drugs_from_csv
+from .forms import DrugBulkUploadForm
+from .models import Drug, DrugBulkUpload, Contact
+from .utils import invalid_drugs, searchfields
+
+
+def home(request):
+    return render(request, 'main/index.html', {'fields': searchfields})
+
+
+def contact(request):
+    res = {'success': False}
+    if request.method == "POST":
+        contact = Contact()
+        for field in request.POST:
+            if field in contact.__dict__:
+                contact.__dict__.update({field: request.POST.get(field)})
+        try:
+            contact.full_clean()
+        except Exception as e:
+            messages.error(request, f'Could not submit the form, caught an exception. {repr(e)}')
+        finally:
+            res['success'] = True
+            #contact.save()
+            contact.copy = True if request.POST.get('response-copy') else False
+            # async from the process so that the view gets returned post successful save
+            Thread(target = sendmail, args = (contact, )).start()
+    return render(request, 'main/contact.html', res)
+
+
+def sendmail(contact):
+    message = transform(
+        get_template('main/mail_template.html').render({'contact': contact}),
+        allow_insecure_ssl=True,
+        disable_leftover_css=True,
+        strip_important=False,
+        disable_validation=True,
+    )
+    msg = EmailMessage(
+        contact.subject,
+        message,
+        contact.email,
+        list(User.objects.filter(email_notifications=True).values_list('email', flat=True)),
+    )
+    msg.content_subtype = "html"
+    msg.send(fail_silently=False)
+    if contact.copy:
+        msg.to = [contact.email]
+        msg.send(fail_silently=False)
+    logging.getLogger('info_logger').info(f'Mail successfully sent for message received from {contact.name}')
+
+
+def autocomplete(request):
+    if request.method == 'POST':
+        return JsonResponse({})
+    keyword = json.loads(request.GET.get('keyword', '{}'))
+    suggestions = int(request.GET.get('suggestions', 5))
+    if (not keyword):
+        return JsonResponse({})
+    return JsonResponse(search_drug(keyword, suggestions))
+
+
+def search_drug(keyword, suggestions): # suggestions is the count of the number of suggestions to pass
+    drugs = dict()
+    query = {f'{k}__startswith': v for k, v in keyword.items() if v}
+    if not query: return drugs
+    drugmodels = Drug.objects.filter(**query)[:suggestions]
+    for i, drug in enumerate(drugmodels):
+        try:
+            drugmetadata = model_to_dict(drug, fields=searchfields+['label', 'indication_class'])
+            drugs[i] = drugmetadata
+        except Exception as e:
+            logging.getLogger('error_logger').error(f'Error encounter white searching for drug {drug} {repr(e)}')
+    return drugs
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/admin/login/')
+def csv_upload(request):
+    if request.method == 'GET':
+        form = DrugBulkUploadForm()
+        return render(request, 'main/drug_upload.html', {})
+    try:
+        form = DrugBulkUploadForm(data=request.POST, files=request.FILES)
+        if not form.is_valid():
+            raise ValidationError('The submitted form is invalid!')
+        csv_file = form.cleaned_data['csv_file']
+        if not csv_file.name.endswith('.csv'):
+            messages.error(request, 'File is not CSV type')
+            return redirect('drug-bulk-upload')
+        upload = DrugBulkUpload()
+        upload.csv_file = csv_file
+        upload.full_clean()
+        upload.save()
+        invalid_headers = get_invalid_headers(upload)
+        # async from the process so that the view gets returned post successful upload
+        Thread(target = save_drugs_from_csv, args = (upload, )).start()
+        return JsonResponse({'csv-id': str(upload.pk), 'invalid-headers': invalid_headers})
+    except Exception as e:
+        logging.getLogger('error_logger').error(f'Unable to upload file. {repr(e)}')
+        messages.error(request, f'Unable to upload file. {repr(e)}')
+        return JsonResponse({})
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/admin/login/')
+def csv_upload_updates(request):
+    if request.method == 'GET':
+        pk = request.GET.get('cancel-upload')
+        res = dict()
+        if pk:
+            cache.set(pk, 'cancel', 3600)
+            res[pk] = (f"The drug upload was cancelled midway. <b>"
+                f"{cache.get('valid_count', 0)}</b> drugs got successfully added.")
+        return JsonResponse(res)
+    # TODO: How to be really sure which bulk upload it is representing
+    # pk = json.loads(request.body.decode('UTF-8')).get('pk', '-1')
+    email_recepients = json.loads(request.body.decode('UTF-8')).get('email', '')
+    cache.set('email_recepients', email_recepients, None)
+    invalid_count = int(json.loads(request.body.decode('UTF-8')).get('invalid_count', 0))
+    invalidated_drugs = dict()
+    for drug in list(invalid_drugs)[invalid_count:]:
+        invalidated_drugs[drug] = invalid_drugs[drug]
+    return JsonResponse({
+        'total': cache.get('total_count', '-NA-'),
+        'valid': cache.get('valid_count', '-NA-'),
+        'invalid': cache.get('invalid_count', '-NA-'),
+        'invalid_drugs': invalidated_drugs,
+    })

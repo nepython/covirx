@@ -1,0 +1,12 @@
+venv
+*sqlite3*
+.vscode
+.env
+lock
+__pycache__
+logs
+*.csv
+logs
+images
+drugs
+contacts

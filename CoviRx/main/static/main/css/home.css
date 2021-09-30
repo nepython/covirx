@@ -1,0 +1,322 @@
+.container {
+    margin-top: 30vh;
+}
+.identifier-sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 2000;
+    top: 0;
+    left: 0;
+    background-color: #3f0e40;
+    overflow-x: hidden;
+    transition: 0.5s;
+}
+.identifier-sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+.identifier-sidenav a:hover {
+    color: #f1f1f1;
+}
+.identifier-sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+#identifier-sidenav.open {
+    width: 300px;
+    padding: 160px 20px 20px 20px;
+}
+#sidenav-button {
+    transition: margin-left 0.5s;
+    padding: 16px;
+    text-align: center;
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+.open #sidenav-button {
+    margin-left: 250px;
+}
+#sidenav-button p {
+    float: left;
+}
+#sidenav-button h4 {
+	margin-left: 20%;
+	margin-top: 20px;
+}
+#sidenav-button #showIdentifier {
+    font-weight: bold;
+    text-transform: capitalize;
+}
+@media screen and (max-height: 450px) {
+    .identifier-sidenav {
+        padding-top: 15px;
+    }
+    .identifier-sidenav a {
+        font-size: 18px;
+    }
+}
+form#identifiers {
+    padding-left: 10px;
+}
+/* Customize the label (the identifier-container) */
+.identifier-container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    color: white;
+}
+.identifier-sidenav .form-label {
+    color: white;
+}
+.sidenav-modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    /* background-color: rgb(0, 0, 0); */
+    background-color: rgba(0, 0, 0, 0.4);
+}
+/* Hide the browser's default radio button */
+.identifier-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+/* Create a custom radio button */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+    border-radius: 50%;
+}
+/* On mouse-over, add a grey background color */
+.identifier-container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+.identifier-container:hover input:disabled ~ .checkmark {
+    background-color: #eee;
+}
+/* When the radio button is checked, add a blue background */
+.identifier-container input:checked ~ .checkmark,
+.identifier-container:hover input:disabled:checked ~ .checkmark {
+    background-color: #2196f3;
+}
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+    content: '';
+    position: absolute;
+    display: none;
+}
+/* Show the indicator (dot/circle) when checked */
+.identifier-container input:checked ~ .checkmark:after {
+    display: block;
+}
+/* Style the indicator (dot/circle) */
+.identifier-container .checkmark:after {
+    top: 9px;
+    left: 9px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+}
+
+#keyword {
+    border-radius: 20px 0 0 20px;
+}
+#search {
+    border-radius: 0 20px 20px 0;
+}
+#suggestions {
+    border-radius: 0 0 40px 40px;
+    box-shadow: 0px 8px 10px lightgray, -10px 8px 15px lightgray,
+        10px 8px 15px lightgray;
+    max-height: 45vh;
+    overflow: auto;
+}
+#suggestions .suggestion.row {
+    border-top: 4px dotted blue;
+    margin: unset;
+}
+#suggestions .suggestion-field {
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+    text-overflow: ellipsis;
+    padding: 8px 0px 0px 30px;
+}
+#suggestions .suggestion-field:hover {
+    overflow: unset;
+    z-index: 100;
+    background-color: white;
+    position: relative;
+    width: max-content;
+    border: solid thin;
+    border-radius: 17px;
+    box-shadow: 0px 8px 10px lightgray, -10px 8px 15px lightgray,
+        10px 8px 15px lightgray;
+    padding-right: 16px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+#suggestions .suggestion-field:before {
+    font-weight: bolder;
+    color: purple;
+}
+#suggestions .suggestion-field-name:before, .adv-search-field-col-name label:before {
+    content: 'Drug Name:  ';
+}
+#suggestions .suggestion-field-smiles:before, .adv-search-field-col-smiles label:before {
+    content: 'SMILES:  ';
+}
+#suggestions .suggestion-field-inchi:before, .adv-search-field-col-inchi label:before {
+    content: 'InChI Key:  ';
+}
+#suggestions .suggestion-field-synonyms:before, .adv-search-field-col-synonyms label:before {
+    content: 'Synonyms:  ';
+}
+#suggestions .suggestion-field-cas:before, .adv-search-field-col-cas label:before {
+    content: 'CAS:  ';
+}
+#suggestions .suggestion-field-chebl:before, .adv-search-field-col-chebl label:before {
+    content: 'ChEBI ID:  ';
+}
+#suggestions .suggestion-field-pubchem:before, .adv-search-field-col-pubchem label:before {
+    content: 'PubChem ID:  ';
+}
+#suggestions .suggestion-field-indication_class:before {
+    content: 'Indication class / Category:  ';
+}
+#suggestions .suggestion-field-label:before {
+    content: 'Label:  ';
+}
+#suggestions .suggestion-field-canvas {
+    display: block;
+}
+.suggestion.row .zero {
+    width: 24px;
+    border: 1px black dotted;
+    padding: unset;
+    margin: 2px;
+    position: inherit;
+    border-radius: 80px;
+}
+.suggestion.row .one {
+    margin-left: -30px;
+}
+.no-match {
+    font-size: 40px;
+}
+#no-match.no-match.suggestion.row i.bi.bi-emoji-frown {
+    text-align: center !important;
+    font-size: 40px !important;
+}
+#advanced-search,
+.advanced-mode #main-search,
+.advanced-mode #sidenav-button h4 {
+    display: none;
+}
+.advanced-mode .identifier-container {
+    opacity: 0.5;
+}
+.advanced-mode #advanced-search {
+    display: flex;
+    flex-flow: row wrap;
+    align-content: space-between;
+    justify-content: center;
+    background-color: darkgray;
+    border-radius: 80px;
+    padding-top: 10px;
+    background-image: linear-gradient(300deg, #ec008c, #fc6767);
+    margin: unset;
+}
+.advanced-mode .slide-up #advanced-search {
+    border-radius: 80px 80px 0 0;
+}
+.advanced-mode #adv_search {
+    width: 97%;
+    margin-left: -10px;
+    display: block;
+}
+.advanced-mode input.form-control {
+    min-width: 200px;
+    text-align: center;
+    margin: 10px;
+    border-radius: 20px;
+}
+.advanced-mode input.form-control:nth-child(4n) {
+    page-break-after: always; /* CSS 2.1 syntax */
+    break-after: always; /* New syntax */
+}
+/* Input Placeholder in italics */
+::-webkit-input-placeholder {
+    font-style: italic;
+}
+:-moz-placeholder {
+    font-style: italic;
+}
+::-moz-placeholder {
+    font-style: italic;
+}
+:-ms-input-placeholder {
+    font-style: italic;
+}
+.suggestions-slider {
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+}
+.adv-search-field-col label::before {
+    line-height: 54px;
+    font-weight: 800;
+    color: white;
+}
+.adv-search-field-col label {
+    padding: unset;
+}
+#advanced-search .col-5 {
+    padding-left: 50px;
+    padding-right: 10px;
+}
+@media (max-width: 1000px) {
+    /* CSS that should be displayed if width is equal to or less than 800px goes here */
+    #advanced-search .col-3, .col-4, .col-5 {
+        width: 95%;
+        padding: 0 20px 0 20px;
+    }
+    #advanced-search {
+        padding-bottom: 30px;
+    }
+    .suggestions-slider {
+        display: none;
+    }
+}
+.slide-up #sidenav-button {
+    display: none;
+}

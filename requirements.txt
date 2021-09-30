@@ -1,0 +1,6 @@
+django==3.2.6
+django-flat-json==0.1.3
+django-admin-interface==0.16.3
+django-sendgrid-v5==1.1.1
+premailer==3.10.0
+python-dotenv==0.19.0

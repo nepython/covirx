@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Covid19 Drug Repurposing database." />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>CoviRx: Covid19 Drug Repurposing Database</title>
+        <style>
+           #message {
+                white-space: pre-wrap;
+                margin-top: 0;
+                min-height: 1rem;
+            }
+            .container h1, h2 {
+                font-family: "Sans Serif";
+                text-align: center;
+                color: rgba(89, 2, 122, 0.67);
+                white-space: nowrap;
+                letter-spacing: 0px;
+                word-break: normal;
+                font-weight: bold;
+                filter: drop-shadow(rgba(0, 0, 0, 0.65) 0px 6px 6px);
+            }
+            .container h1 {
+                font-size: 6.7vw;
+                margin-bottom: 0;
+            }
+            .container h2 {
+                font-size: 3.3vw;
+                margin-top: 0;
+            }
+            form {
+                border-radius: 40px;
+                padding: 40px;
+                width: 80%;
+                margin: auto;
+                border-style: solid;
+            }
+            .form-heading {
+                text-align: center;
+                font-size: 50px;
+                font-weight: bold;
+                padding: 10px;
+                font-family: Arial, Helvetica, sans-serif;
+                color: #6d3283;
+                margin-top: 0;
+    	        margin-bottom: .5rem;
+	            line-height: 1.2;
+            }
+            .col-form-label {
+                font-size: 1.5rem;
+                font-weight: bold;
+            }
+            .my-5 {
+                margin-top: 3rem !important;
+                margin-bottom: 3rem !important;
+            }
+            .align-items-center {
+                align-items: center !important;
+            }
+            .my-3 {
+                margin-top: 1rem !important;
+                margin-bottom: 1rem !important;
+            }
+            .col-form-label {
+                padding-top: calc(.375rem + 1px);
+                padding-bottom: calc(.375rem + 1px);
+                margin-bottom: 0;
+                line-height: 1.5;
+            }
+            label {
+                display: inline-block;
+            }
+            .form-control {
+                display: block;
+                width: 100%;
+                padding: .375rem .75rem;
+                font-size: 1rem;
+                font-weight: 400;
+                line-height: 1.5;
+                color: #212529;
+                background-color: #fff;
+                background-clip: padding-box;
+                border: 1px solid #ced4da;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                border-radius: .25rem;
+                transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+            }
+            input {
+                margin: 0;
+                font-family: inherit;
+                font-size: inherit;
+                line-height: inherit;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container slide-up">
+            <h1>CoviRx</h1>
+            <h2>Covid19 Drug Repurposing Database</h2>
+            <form class="my-5">
+                <h3 class="form-heading">Contact Form</h3>
+                <div class="row my-3 align-items-center">
+                    <div class="col-4">
+                        <label for="name" class="col-form-label">Name*</label>
+                    </div>
+                    <div class="col-7">
+                        <input name="name" type="text" id="name" class="form-control" value="{{contact.name}}" disabled>
+                    </div>
+                </div>
+                <div class="row my-3 align-items-center">
+                    <div class="col-4">
+                        <label for="email" class="col-form-label">Email*</label>
+                    </div>
+                    <div class="col-7">
+                        <input name="email" type="email" id="email" class="form-control" value="{{contact.email}}" disabled>
+                    </div>
+                </div>
+                <div class="row my-3 align-items-center">
+                    <div class="col-4">
+                        <label for="phone" class="col-form-label">Phone Number</label>
+                    </div>
+                    <div class="col-7">
+                        <input name="phone" type="text" id="phone" class="form-control" value="{{contact.phone}}" disabled>
+                    </div>
+                </div>
+                <div class="row my-3 align-items-center">
+                    <div class="col-4">
+                        <label for="organisation" class="col-form-label">Organisation</label>
+                    </div>
+                    <div class="col-7">
+                        <input name="organisation" type="text" id="organisation" class="form-control" value="{{contact.organisation}}" disabled>
+                    </div>
+                </div>
+                <div class="row my-3 align-items-center">
+                    <div class="col-4">
+                        <label for="subject" class="col-form-label">Subject*</label>
+                    </div>
+                    <div class="col-7">
+                        <input name="subject" type="text" id="subject" class="form-control" value="{{contact.subject}}" disabled>
+                    </div>
+                </div>
+                <div class="row my-3 align-items-center">
+                    <div class="col-4">
+                        <label for="message" class="col-form-label">Message</label>
+                    </div>
+                    <div class="col-7">
+                        <p name="message" class="form-control" id="message" rows="3">{{contact.message}}</p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

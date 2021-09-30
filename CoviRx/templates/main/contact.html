@@ -1,0 +1,120 @@
+{% extends 'main/index.html' %}
+{% block title %}CoviRx: Reach out to us!{% endblock %}
+{% load static %}
+{% block extra_head %}
+    <link rel="stylesheet" href={% static "main/css/contact.css"%}/>
+{% endblock %}
+
+{% block content %}
+<div class="container slide-up">
+    <h1>CoviRx</h1>
+    <h2>Covid19 Drug Repurposing Database</h2>
+    <form class="my-5" method="POST" enctype="multipart/form-data">
+        <h3 class="form-heading">Contact Form</h3>
+        {% if success %}
+        <div class="success-msg">
+            <i class="bi bi-check2-circle"></i>
+            Your message was sent successfully!
+        </div>
+        <h3><div class="my-3 text-center">Thanks for reaching out to us. We will get back to you in a week's time.</div></h3>
+        <h3 class="text-center"><a href="{% url 'contact' %}">Send another message</a></h3>
+        {% else %}
+        {% csrf_token %}
+        <div class="row my-3 align-items-center">
+            <div class="col-3">
+                <label for="name" class="col-form-label">Name*</label>
+            </div>
+            <div class="col-5">
+                <input name="name" type="text" id="name" class="form-control" placeholder="Your name..." aria-describedby="nameHelpInline" autocomplete="on" required>
+            </div>
+            <div class="col-4">
+                <span id="nameHelpInline" class="form-text">
+                    Please enter your full name.
+                </span>
+            </div>
+        </div>
+        <div class="row my-3 align-items-center">
+            <div class="col-3">
+                <label for="email" class="col-form-label">Email*</label>
+            </div>
+            <div class="col-5">
+                <input name="email" type="email" id="email" class="form-control" placeholder="Your email..." aria-describedby="emailHelpInline" autocomplete="on" required>
+            </div>
+            <div class="col-4">
+                <span id="emailHelpInline" class="form-text">
+                    We will never share your email with anyone else.
+                </span>
+            </div>
+        </div>
+        <div class="row my-3 align-items-center">
+            <div class="col-3">
+                <label for="phone" class="col-form-label">Phone Number</label>
+            </div>
+            <div class="col-5">
+                <input name="phone" type="text" id="phone" class="form-control" placeholder="Your phone number..." aria-describedby="phoneHelpInline" autocomplete="on">
+            </div>
+            <div class="col-4">
+                <span id="phoneHelpInline" class="form-text">
+                    We will never share your phone number with anyone else.
+                </span>
+            </div>
+        </div>
+        <div class="row my-3 align-items-center">
+            <div class="col-3">
+                <label for="organisation" class="col-form-label">Organisation</label>
+            </div>
+            <div class="col-5">
+                <input name="organisation" type="text" id="organisation" class="form-control" placeholder="Your organisation..." aria-describedby="orgHelpInline" autocomplete="on">
+            </div>
+            <div class="col-4">
+                <span id="orgHelpInline" class="form-text">
+                    You can leave this blank if you do not wish to share your organisation name.
+                </span>
+            </div>
+        </div>
+        <div class="row my-3 align-items-center">
+            <div class="col-3">
+                <label for="subject" class="col-form-label">Subject*</label>
+            </div>
+            <div class="col-5">
+                <input name="subject" type="text" id="subject" class="form-control" placeholder="Purpose for contacting us..." aria-describedby="subjectHelpInline" required>
+            </div>
+            <div class="col-4">
+                <span id="subjectHelpInline" class="form-text">
+                    Please enter the subject for contacting us and kindly keep the subject short. Use Message section for more details.
+                </span>
+            </div>
+        </div>
+        <div class="row my-3 align-items-center">
+            <div class="col-3">
+                <label for="message" class="col-form-label">Message</label>
+            </div>
+            <div class="col-5">
+                <textarea name="message" class="form-control" id="message" rows="3" placeholder="What's on your mind..." aria-describedby="messageHelpInline"></textarea>
+            </div>
+            <div class="col-4">
+                <span id="messageHelpInline" class="form-text">
+                    Please type in your query, criticism, proposal, suggestion, etc.
+                </span>
+            </div>
+        </div>
+        <p class="form-text mb-3">
+            Fields marked with * are cumpulsory.
+        </p>
+        <div class="form-check mb-3">
+            <input name="response-copy" class="form-check-input" type="checkbox" value="1" id="flexCheckChecked" checked>
+            <label class="form-check-label" for="flexCheckChecked">
+                Send me a copy of my responses.
+            </label>
+        </div>
+        <button type="submit" class="btn btn-dark">Send Message</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock content %}
+
+{% block footer_scripts %}
+<script>
+    $('.nav-link')[3].classList.add('active'); // highlights the Contact nav item
+</script>
+{% endblock footer_scripts %}
