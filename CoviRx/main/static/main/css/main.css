@@ -31,6 +31,13 @@ nav .container-fluid {
 	font-size: 30px;
 	padding: 0 20%;
 }
+nav .navbar-brand {
+    max-width: 50%;
+}
+nav .covirx-nav-logo {
+    width: 100%;
+    max-width: 140px;
+}
 .header-login {
     color: rgba(255,255,255,.5);
     font-size: 30px;

@@ -35,21 +35,16 @@
     padding: 160px 20px 20px 20px;
 }
 #sidenav-button {
-    transition: margin-left 0.5s;
-    padding: 16px;
-    text-align: center;
-    position: fixed;
-    left: 50%;
-    transform: translate(-50%, 0);
+	transition: margin-left 0.5s;
+	padding-top: 16px;
+	padding-bottom: 16px;
+	text-align: center;
 }
 .open #sidenav-button {
     margin-left: 250px;
 }
-#sidenav-button p {
-    float: left;
-}
-#sidenav-button h4 {
-	margin-left: 20%;
+#sidenav-button #current-identifier {
+	text-align: center;
 	margin-top: 20px;
 }
 #sidenav-button #showIdentifier {

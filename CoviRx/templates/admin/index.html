@@ -12,27 +12,36 @@
             left: 60%;
         }
     }
+    @media (max-width: 690px) {
+    /* CSS that should be displayed if width is equal to or less than 690px goes here */
+        #categories-chart #labelOverlay {
+            display: none !important;
+        }
+        #categories-chart, #visitor-chart {
+            margin: 4vw !important;
+        }
+    }
     .charts-visualisation {
         display: table-cell;
     }
     #visitor-chart {
-        width: 100vw;
-        height: 55vw;
+        width: 88vw;
+        height: 88vw;
         max-width: 600px;
         max-height: 333px;
         margin: 10px;
     }
-    #categories-chart {
+    #categories-chart, #visitor-chart {
         margin: 10px;
     }
     #categories-chart,
     #drug-categories-chart {
-        width: 100vw;
-        height: 100vw;
+        width: 88vw;
+        height: 88vw;
         max-width: 600px;
         max-height: 300px;
     }
-    #labelOverlay {
+    #categories-chart #labelOverlay {
         width: 90px;
         height: 45px;
         position: relative;
@@ -40,20 +49,21 @@
         left: 178px;
         text-align: center;
         cursor: default;
+        display: none
     }
-    #labelOverlay p {
+    #categories-chart #labelOverlay p {
         line-height: 0.3;
         padding: 0;
         margin: 0.6em;
     }
-    #labelOverlay p.donut-center-figure {
+    #categories-chart #labelOverlay p.donut-center-figure {
         line-height: 0.5;
         font-size: 1.2em;
         color: black;
     }
-    #labelOverlay p.donut-center-text {
+    #categories-chart #labelOverlay p.donut-center-text {
         line-height: 0.5;
-        font-size: 9pt;
+        font-size: 0.6em;
         color: #8e8e8e;
     }
 </style>
@@ -108,6 +118,7 @@
             document.getElementById('drug-categories-chart')
         );
         chart.draw(data, options);
+        $('#categories-chart #labelOverlay').css('display', 'block');
     }
 </script>
 {% endblock %}

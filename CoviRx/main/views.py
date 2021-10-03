@@ -171,7 +171,7 @@ def charts_json(request):
         charts['visitors'] = [list(column_order.keys())]
         days = defaultdict(lambda:OrderedDict({k.lower(): 0 for k in column_order.keys() if k not in ['Day', 'Website']}))
         for visit in page_visitors:
-            days[visit['day']][visit['page_visited']] = visit['visits']
+            days[visit['day']][visit['page_visited']] += visit['visits']
         for item in site_visitors:
             d = item['day']
             charts['visitors'] += [[d]+[v for v in days[d].values()]+[item['visits']]]
