@@ -1,6 +1,7 @@
 import logging
 import json
 from threading import Thread
+from collections import defaultdict, OrderedDict
 
 from django.conf import settings
 from django.core.cache import cache
@@ -15,18 +16,44 @@ from django.template.loader import render_to_string, get_template
 from django.core.mail import EmailMessage
 from premailer import transform
 
-from accounts.models import User
+from accounts.models import User, Visitor
 from .csv_upload import get_invalid_headers, save_drugs_from_csv
 from .forms import DrugBulkUploadForm
 from .models import Drug, DrugBulkUpload, Contact
-from .utils import invalid_drugs, searchfields
+from .utils import invalid_drugs, search_fields, store_fields, verbose_names
 
 
 def home(request):
-    return render(request, 'main/index.html', {'fields': searchfields})
+    Visitor.record(request)
+    return render(request, 'main/index.html', {'fields': search_fields})
+
+
+def autocomplete(request):
+    if request.method == 'POST':
+        return JsonResponse({})
+    keyword = json.loads(request.GET.get('keyword', '{}'))
+    suggestions = int(request.GET.get('suggestions', 5))
+    if (not keyword):
+        return JsonResponse({})
+    return JsonResponse(search_drug(keyword, suggestions))
+
+
+def search_drug(keyword, suggestions): # suggestions is the count of the number of suggestions to pass
+    drugs = dict()
+    query = {f'{k}__startswith': v for k, v in keyword.items() if v}
+    if not query: return drugs
+    drugmodels = Drug.objects.filter(**query)[:suggestions]
+    for i, drug in enumerate(drugmodels):
+        try:
+            drugmetadata = model_to_dict(drug, fields=store_fields+list(verbose_names.values()))
+            drugs[i] = drugmetadata
+        except Exception as e:
+            logging.getLogger('error_logger').error(f'Error encounter white searching for drug {drug} {repr(e)}')
+    return drugs
 
 
 def contact(request):
+    Visitor.record(request)
     res = {'success': False}
     if request.method == "POST":
         contact = Contact()
@@ -39,11 +66,17 @@ def contact(request):
             messages.error(request, f'Could not submit the form, caught an exception. {repr(e)}')
         finally:
             res['success'] = True
-            #contact.save()
+            contact.save()
             contact.copy = True if request.POST.get('response-copy') else False
             # async from the process so that the view gets returned post successful save
             Thread(target = sendmail, args = (contact, )).start()
     return render(request, 'main/contact.html', res)
+
+
+def references(request):
+    Visitor.record(request)
+    refs = [r[0] for r in Drug.objects.values_list('references').distinct() if r[0]!=None and r[0]!='']
+    return render(request, 'main/citations.html', {'citations': refs})
 
 
 def sendmail(contact):
@@ -66,30 +99,6 @@ def sendmail(contact):
         msg.to = [contact.email]
         msg.send(fail_silently=False)
     logging.getLogger('info_logger').info(f'Mail successfully sent for message received from {contact.name}')
-
-
-def autocomplete(request):
-    if request.method == 'POST':
-        return JsonResponse({})
-    keyword = json.loads(request.GET.get('keyword', '{}'))
-    suggestions = int(request.GET.get('suggestions', 5))
-    if (not keyword):
-        return JsonResponse({})
-    return JsonResponse(search_drug(keyword, suggestions))
-
-
-def search_drug(keyword, suggestions): # suggestions is the count of the number of suggestions to pass
-    drugs = dict()
-    query = {f'{k}__startswith': v for k, v in keyword.items() if v}
-    if not query: return drugs
-    drugmodels = Drug.objects.filter(**query)[:suggestions]
-    for i, drug in enumerate(drugmodels):
-        try:
-            drugmetadata = model_to_dict(drug, fields=searchfields+['label', 'indication_class'])
-            drugs[i] = drugmetadata
-        except Exception as e:
-            logging.getLogger('error_logger').error(f'Error encounter white searching for drug {drug} {repr(e)}')
-    return drugs
 
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/admin/login/')
@@ -143,3 +152,27 @@ def csv_upload_updates(request):
         'invalid': cache.get('invalid_count', '-NA-'),
         'invalid_drugs': invalidated_drugs,
     })
+
+
+column_order = OrderedDict({
+    'Day': 0,
+    'Home': 1,
+    'Citations': 2,
+    'Contact': 3,
+    'Website': 4,
+})
+
+def charts_json(request):
+    charts = dict()
+    charts_requested = request.GET.get('charts[]', list())
+    if 'visitors' in charts_requested:
+        site_visitors = Visitor.site_visitors()
+        page_visitors = Visitor.page_visitors()
+        charts['visitors'] = [list(column_order.keys())]
+        days = defaultdict(lambda:OrderedDict({k.lower(): 0 for k in column_order.keys() if k not in ['Day', 'Website']}))
+        for visit in page_visitors:
+            days[visit['day']][visit['page_visited']] = visit['visits']
+        for item in site_visitors:
+            d = item['day']
+            charts['visitors'] += [[d]+[v for v in days[d].values()]+[item['visits']]]
+    return JsonResponse(charts)

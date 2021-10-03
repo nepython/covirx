@@ -46,6 +46,7 @@ class Drug(models.Model):
     chembank = models.TextField(blank=True, null=True)
     drugbank = models.TextField(blank=True, null=True)
     indication_class = models.TextField(blank=True, null=True, verbose_name='indication_class/category')
+    references = models.TextField(blank=True, null=True)
     LABEL_CHOICES = [
         ('1', _('White')),
         ('2', _('Green')),
@@ -66,6 +67,16 @@ class Drug(models.Model):
         drug.full_clean()
         drug.save()
         return drug
+
+    def clean(self):
+        if not self.smiles:
+            self.smiles = None
+        if not self.cas:
+            self.cas = None
+        if not self.chebl:
+            self.chebl = None
+        if not self.pubchem:
+            self.pubchem = None
 
     def __str__(self):
         return f"{self.name}"

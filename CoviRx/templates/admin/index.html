@@ -1,0 +1,128 @@
+{% extends "admin/index.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{block.super}}
+<style>
+    @media (min-width: 1540px) {
+    /* CSS that should be displayed if width is equal to or greater than 1540px goes here */
+        .charts-visualisation {
+            float: right;
+            position: absolute;
+            left: 60%;
+        }
+    }
+    .charts-visualisation {
+        display: table-cell;
+    }
+    #visitor-chart {
+        width: 100vw;
+        height: 55vw;
+        max-width: 600px;
+        max-height: 333px;
+        margin: 10px;
+    }
+    #categories-chart {
+        margin: 10px;
+    }
+    #categories-chart,
+    #drug-categories-chart {
+        width: 100vw;
+        height: 100vw;
+        max-width: 600px;
+        max-height: 300px;
+    }
+    #labelOverlay {
+        width: 90px;
+        height: 45px;
+        position: relative;
+        top: -170px;
+        left: 178px;
+        text-align: center;
+        cursor: default;
+    }
+    #labelOverlay p {
+        line-height: 0.3;
+        padding: 0;
+        margin: 0.6em;
+    }
+    #labelOverlay p.donut-center-figure {
+        line-height: 0.5;
+        font-size: 1.2em;
+        color: black;
+    }
+    #labelOverlay p.donut-center-text {
+        line-height: 0.5;
+        font-size: 9pt;
+        color: #8e8e8e;
+    }
+</style>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src={% static "main/js/jquery-3.6.0.min.js"%} type="text/javascript"></script>
+<script type="text/javascript">
+    var charts_data;
+    $.ajax({
+        url: '/api/charts-json',
+        headers: { "X-CSRFToken": $('input[name=csrfmiddlewaretoken]').val()},
+        type: 'GET',
+        data: {'charts': ['pk', 'visitors']},
+        success: function(data) {
+            charts_data = data;
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(VisitorsChart);
+            google.charts.setOnLoadCallback(DrugCategories);
+        }
+    });
+    function VisitorsChart() {
+        // Some raw data (not necessarily accurate)
+        var data = google.visualization.arrayToDataTable(charts_data['visitors']);
+        var options = {
+            title : 'Daily Visitors across the website',
+            vAxis: {title: 'Unique Visitors'},
+            hAxis: {title: 'Days'},
+            seriesType: 'bars',
+            series: {3: {type: 'line'}},
+            titleTextStyle: {italic: true},
+            backgroundColor: '#e7f8ff',
+        };
+
+        var chart = new google.visualization.ComboChart(document.getElementById('visitor-chart'));
+        chart.draw(data, options);
+    }
+    function DrugCategories() {
+        var data = google.visualization.arrayToDataTable([
+            ['Drug Categories', 'Number of drugs'],
+            ['Anti-bacterial', 76],
+            ['Anti-fungal', 42],
+            ['Anti-histamine', 32],
+            ['Unknown', 32],
+            ['Anti-viral', 47],
+        ]); //TODO: Get data from backend
+        var options = {
+            title: 'Categories of Drugs in database',
+            pieHole: 0.4,
+            titleTextStyle: {italic: true},
+            backgroundColor: '#e7f8ff',
+        };
+        var chart = new google.visualization.PieChart(
+            document.getElementById('drug-categories-chart')
+        );
+        chart.draw(data, options);
+    }
+</script>
+{% endblock %}
+
+{% block sidebar %}
+    {{block.super}}
+    <div class="charts-visualisation">
+        <h1>Chart Visualisations</h1>
+        <div id="visitor-chart"></div>
+        <div id="categories-chart">
+            <div id="drug-categories-chart"></div>
+            <div id="labelOverlay">
+                <p class="donut-center-figure"><span>229</span></p>
+                <p class="donut-center-text">Total Drugs</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

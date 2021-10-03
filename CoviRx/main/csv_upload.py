@@ -8,7 +8,7 @@ from django.core.mail import EmailMessage
 from premailer import transform
 
 from .models import Drug
-from .utils import searchfields, verbose_names, invalid_drugs
+from .utils import store_fields, verbose_names, invalid_drugs
 from CoviRx.settings import EMAIL_HOST_USER
 
 
@@ -19,7 +19,7 @@ def get_invalid_headers(obj):
         headers = [drug.lower().replace(' ', '_') for drug in drugs[1]]
         invalid_headers = list()
         for field in headers:
-            if field not in searchfields+['label']:
+            if field not in store_fields:
                 invalid_headers.append(field)
     return invalid_headers
 
@@ -40,11 +40,12 @@ def save_drugs_from_csv(obj): #TODO: Make the code less redundant
         for drug in drugs[2:]:
             if cache.get(obj.pk, None):
                 break # Cancel Upload feature
-            # create a dictionary of drug details
-            drug_details = dict()
+            drug_details = dict() # create a dictionary of drug details
             custom = {f: '' for f in cache.get('custom_fields')}
             for i, field in enumerate(headers):
-                if field in searchfields or field=='label':
+                if not drug[i]:
+                    continue
+                if field in store_fields:
                     drug_details[field] = drug[i]
                 elif field in verbose_names:
                     drug_details[verbose_names[field]] = drug[i]

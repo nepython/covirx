@@ -305,7 +305,7 @@ form#identifiers {
     padding-right: 10px;
 }
 @media (max-width: 1000px) {
-    /* CSS that should be displayed if width is equal to or less than 800px goes here */
+    /* CSS that should be displayed if width is equal to or less than 1000px goes here */
     #advanced-search .col-3, .col-4, .col-5 {
         width: 95%;
         padding: 0 20px 0 20px;

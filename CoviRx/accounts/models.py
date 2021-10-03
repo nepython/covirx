@@ -1,9 +1,15 @@
+import uuid
+
 from django.contrib.auth.models import (
     AbstractBaseUser, BaseUserManager, PermissionsMixin
 )
 from django.db import models
+from django.urls import resolve
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.utils.timezone import now
+
+from .utils import tzinfo
 
 
 class UserManager(BaseUserManager):
@@ -113,3 +119,69 @@ class User(AbstractBaseUser, PermissionsMixin):
         "Does the user have permissions to view the app `app_label`?"
         # Simplest possible answer: Yes, always
         return True
+
+
+class Visitor(models.Model):
+    """
+    Record of a user visiting the site on a given day.
+    This is used for tracking and reporting - knowing the volume of visitors
+    to the site, and being able to report on someone's interaction with the site.
+    We record minimal info required to identify user sessions, plus changes in
+    IP and device. This is useful in identifying suspicious activity (multiple
+    logins from different locations).
+    Also helpful in identifying support issues (as getting useful browser data
+    out of users can be very difficult over live chat).
+    """
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    timestamp = models.DateTimeField(
+        help_text="The time at which the first visit of the day was recorded",
+        default=timezone.now,
+    )
+    session_key = models.CharField(help_text="Django session identifier", max_length=40)
+    page_visited = models.CharField(help_text="URL", max_length=40)
+
+    class Meta:
+        unique_together = ('session_key', 'page_visited', 'timestamp')
+
+    def __str__(self):
+        return self.session_key
+
+    @classmethod
+    def record(cls, request):
+        """ Record the visitor if he hasn't visited the page previously """
+        if not request.session.exists(request.session.session_key):
+            request.session.create() 
+        sk = request.session.session_key
+        page = resolve(request.path_info).url_name
+        try:
+            visitor = cls.objects.get(session_key=sk, page_visited=page)
+            if visitor.timestamp.strftime("%d %m %y") != now().strftime("%d %m %y"):
+                raise Exception("The user is visiting the page on a different day so create a new record.")
+        except:
+            visitor = cls(session_key=sk, page_visited=page)
+            visitor.save()
+        return request
+
+    @classmethod
+    def page_visitors(cls):
+        """ Returns a dictionary with day as key and visitor count as value page wise """
+        pages = cls.objects.values_list('page_visited').distinct()
+        visits = dict()
+        visits = list(Visitor.objects.filter()
+            .extra(select={'day': 'date( timestamp )'})
+            .values('day', 'page_visited')
+            .order_by('timestamp')
+            .annotate(visits=models.Count('timestamp'))
+        )
+        return visits
+
+    @classmethod
+    def site_visitors(cls):
+        """ Returns a dictionary with day as key and visitor count as value """
+        visits = list(cls.objects.filter()
+            .extra(select={'day': 'date( timestamp )'}) #TODO: Take care of time zone
+            #.annotate(day=models.functions.TruncDate('timestamp', tzinfo=tzinfo))
+            .values('day')
+            .annotate(visits=models.Count('session_key', distinct=True))
+        )
+        return visits

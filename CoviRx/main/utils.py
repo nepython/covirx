@@ -1,11 +1,19 @@
 from collections import OrderedDict
 
-searchfields = ['name', 'smiles', 'inchi', 'synonyms', 'cas', 'chebl', 'pubchem']
+from .models import Drug
 
-# It should be in lowecase with spaces replaced by underscore
+# Fields to be used to search on home page
+search_fields = ['name', 'smiles', 'inchi', 'synonyms', 'cas', 'chebl', 'pubchem']
+
+# Fields which have been name differently in excel sheet and in our Drug model
+# It should be in lowercase with spaces replaced by underscore
 verbose_names = {
-    'indication_class/category': 'indication_class'
+    'indication': 'indication_class'
 }
+
+# Fields that need to be stored during a bulk drug upload
+ignore_fields = ['id'] + list(verbose_names.values())
+store_fields = [f.name for f in Drug._meta.get_fields() if f.name not in ignore_fields]
 
 # Dictionary contains the list of all invalidated drugs during drug upload
 invalid_drugs = OrderedDict()

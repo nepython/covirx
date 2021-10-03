@@ -1,0 +1,24 @@
+#references td,
+#references th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#references tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#references tr:hover {
+    background-color: #ddd;
+}
+
+#references th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #772e78;
+    color: white;
+}
+#references-title {
+    color: #772e78;
+}

@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from .models import User
+from .models import User, Visitor
 
 
 class AddUserForm(forms.ModelForm):
@@ -97,3 +97,14 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('email', 'first_name', 'last_name')
     filter_horizontal = ()
+
+@admin.register(Visitor)
+class VisitorAdmin(admin.ModelAdmin):
+    def get_list_display(self, *args, **kwargs):
+        return super().get_list_display(*args, **kwargs)+('page_visited','timestamp',)
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return True#False
