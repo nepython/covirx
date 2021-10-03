@@ -38,3 +38,14 @@ We have adopted a modular approach so that components need to not be coded again
 A template has been created which can be found at [template.html](CoviRx/templates/main/template.html).
 
 Read the detailed [documentation](https://docs.google.com/document/d/1YSk7G0xJwP1g9P9pa-1Xs1nfogqQutzJA6QbUUDnSsA/edit).
+
+## Deployment
+1) For heroku, refer to their [offical blog](https://devcenter.heroku.com/articles/getting-started-with-python#deploy-the-app) on deployment.
+2) Additionally from your CLI, execute the below command to create tables in database.
+```python
+heroku run python CoviRx/manage.py migrate
+```
+3) And also execute the below command to create superuser for admin.
+```python
+heroku run python CoviRx/manage.py createsuperuser
+```

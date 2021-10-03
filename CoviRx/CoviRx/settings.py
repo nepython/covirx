@@ -29,7 +29,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-nyjf++o-0m8d&!q3qln!8yj3@cvgx$1iqz)1)0**_uqps%sxlq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', True)
+if type(DEBUG)==str: # since environment variable would be a string
+    if DEBUG.lower()=='false':
+        DEBUG=False
+    else:
+        DEBUG=True
 
 ALLOWED_HOSTS = []
 
@@ -138,7 +143,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = f'{BASE_DIR}/main/static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -156,3 +161,12 @@ if not EMAIL_HOST_USER:
     logging.getLogger('error_logger').error('\033[22;33mYou have not specified the variable "EMAIL_HOST_USER" in your .env file. Email functionality will not work.\033[0;0m')
 if not EMAIL_HOST_PASSWORD:
     logging.getLogger('error_logger').error('\033[22;33mYou have not specified the variable "EMAIL_HOST_PASSWORD" in your .env file. Email functionality will not work.\033[0;0m')
+
+# PRODUCTION SETTINGS
+if not DEBUG:
+    import django_heroku
+    django_heroku.settings(locals())
+    MIDDLEWARE += ('whitenoise.middleware.WhiteNoiseMiddleware',) # django-heroku changes type from list to tuple
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    ALLOWED_HOSTS += ['covirx.herokuapp.com']
+    SECRET_KEY = os.getenv('SECRET_KEY')

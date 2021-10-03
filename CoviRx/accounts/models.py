@@ -150,7 +150,7 @@ class Visitor(models.Model):
     def record(cls, request):
         """ Record the visitor if he hasn't visited the page previously """
         if not request.session.exists(request.session.session_key):
-            request.session.create() 
+            request.session.create()
         sk = request.session.session_key
         page = resolve(request.path_info).url_name
         try:
