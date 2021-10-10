@@ -39,12 +39,12 @@ nav .covirx-nav-logo {
     max-width: 140px;
 }
 .header-login {
-    color: rgba(255,255,255,.5);
+    color: rgba(255,255,255,1);
     font-size: 30px;
     text-decoration: unset;
 }
 .header-login:hover {
-    color: rgba(255,255,255,.75)
+    color: rgba(255,255,255,1)
 }
 nav {
     z-index: 1000;
@@ -52,4 +52,30 @@ nav {
     width: 100%;
     background-color: #772e78;
     top: 0;
+}
+.alert {
+    padding: unset;
+    display: none;
+    top: 4.5rem;
+    width: 100%;
+    text-align: center;
+}
+#msg {
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+    text-overflow: ellipsis;
+    padding: 8px 0px 0px 30px;
+    line-height: 1;
+}
+@media (min-width: 576px){
+    #admin-login-modal .modal-dialog {
+      max-width: 400px;
+    }
+    #admin-login-modal .modal-content {
+        padding: 1rem;
+    }
+}
+#admin-login-modal input {
+    margin-bottom: 20px;
 }

@@ -12,6 +12,11 @@ from django.utils.timezone import now
 from .utils import tzinfo
 
 
+def storage_path(instance, filename):
+    """ file will be uploaded to MEDIA_ROOT/profile-pic/<datetime>-<filename> """
+    return f'profile-pic/{datetime.now()}-{filename}'
+
+
 class UserManager(BaseUserManager):
     def create_user(
             self, email, first_name, last_name, password=None,
@@ -58,7 +63,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
-        verbose_name=_('email address'), max_length=255, unique=True
+        verbose_name=_('email address'), max_length=255, unique=True, primary_key=True,
     )
     # password field supplied by AbstractBaseUser
     # last_login field supplied by AbstractBaseUser
@@ -95,6 +100,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         _('date joined'), default=timezone.now
     )
 
+    google_oauth_id = models.TextField(_('Google Token ID'), help_text=_('Used for social oauth'), default=None, blank=True, null=True)
+    pic = models.TextField(default='https://randomuser.me/api/portraits/lego/2.jpg')
+
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
@@ -120,6 +128,31 @@ class User(AbstractBaseUser, PermissionsMixin):
         # Simplest possible answer: Yes, always
         return True
 
+    def should_change_password(self):
+        return self.check_password(self.google_oauth_id[-20:])
+
+
+class Invitee(models.Model):
+    """
+    Used to store the list of individuals who have been invited to the project but are still to accept the invite,
+    """
+    email = models.EmailField(
+        verbose_name=_('email address'), max_length=255, unique=True, blank=False, null=False
+    )
+    sent_on = models.DateField(_('Invite was sent out on'), null=False, auto_now=True)
+
+    def __str__(self):
+        return self.email
+
+    def expired(self):
+        return (now().date()-self.sent_on).days>7
+
+    expired.boolean = True
+
+    class Meta:
+        verbose_name = "Invite"
+        verbose_name_plural = "Invite Members"
+
 
 class Visitor(models.Model):
     """
@@ -132,8 +165,8 @@ class Visitor(models.Model):
     Also helpful in identifying support issues (as getting useful browser data
     out of users can be very difficult over live chat).
     """
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    timestamp = models.DateTimeField(
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
+    timestamp = models.DateField(
         help_text="The time at which the first visit of the day was recorded",
         default=timezone.now,
     )
@@ -153,13 +186,12 @@ class Visitor(models.Model):
             request.session.create()
         sk = request.session.session_key
         page = resolve(request.path_info).url_name
+        ts = now().date()
         try:
-            visitor = cls.objects.get(session_key=sk, page_visited=page)
-            if visitor.timestamp.strftime("%d %m %y") != now().strftime("%d %m %y"):
-                raise Exception("The user is visiting the page on a different day so create a new record.")
-        except:
-            visitor = cls(session_key=sk, page_visited=page)
+            visitor = cls(session_key=sk, page_visited=page, timestamp=ts)
             visitor.save()
+        except:
+            pass
         return request
 
     @classmethod

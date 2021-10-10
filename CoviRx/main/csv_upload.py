@@ -4,12 +4,9 @@ from copy import deepcopy
 
 from django.core.cache import cache
 from django.template.loader import get_template
-from django.core.mail import EmailMessage
-from premailer import transform
 
 from .models import Drug
-from .utils import store_fields, verbose_names, invalid_drugs
-from CoviRx.settings import EMAIL_HOST_USER
+from .utils import store_fields, verbose_names, invalid_drugs, sendmail
 
 
 def get_invalid_headers(obj):
@@ -19,12 +16,12 @@ def get_invalid_headers(obj):
         headers = [drug.lower().replace(' ', '_') for drug in drugs[1]]
         invalid_headers = list()
         for field in headers:
-            if field not in store_fields:
+            if field not in (store_fields+list(verbose_names.keys())):
                 invalid_headers.append(field)
     return invalid_headers
 
 
-def save_drugs_from_csv(obj): #TODO: Make the code less redundant
+def save_drugs_from_csv(obj, invalid_headers): #TODO: Make the code less redundant
     cache.set('valid_count', 0, None)
     cache.set('invalid_count', 0, None)
     cache.set('email_recepients', '', None)
@@ -37,13 +34,14 @@ def save_drugs_from_csv(obj): #TODO: Make the code less redundant
         cache.set('total_count', len(drugs)-2, None)
         obj.save()
         headers = [drug.lower().replace(' ', '_') for drug in drugs[1]] # would need to be changed for target models
+        valid_headers = set(headers)-set(invalid_headers)
         for drug in drugs[2:]:
             if cache.get(obj.pk, None):
                 break # Cancel Upload feature
             drug_details = dict() # create a dictionary of drug details
             custom = {f: '' for f in cache.get('custom_fields')}
             for i, field in enumerate(headers):
-                if not drug[i]:
+                if field not in valid_headers or not drug[i]:
                     continue
                 if field in store_fields:
                     drug_details[field] = drug[i]
@@ -61,7 +59,7 @@ def save_drugs_from_csv(obj): #TODO: Make the code less redundant
                 obj.invalid_drug()
                 invalid_drugs[drug_details['name']] = repr(e.error_dict) if hasattr(e, 'error_dict') else repr(e)
     if cache.get('email_recepients'):
-        mail_invalid_drugs(cache.get('email_recepients').split(';'), deepcopy(invalid_drugs))
+        mail_invalid_drugs(cache.get('email_recepients').split(';'), deepcopy(invalid_drugs), obj.uploaded_by, obj.timestamp)
     cache.delete('total_count')
     cache.delete('valid_count')
     cache.delete('invalid_count')
@@ -72,19 +70,7 @@ def save_drugs_from_csv(obj): #TODO: Make the code less redundant
     invalid_drugs.clear()
 
 
-def mail_invalid_drugs(recepients, invalid_drugs):
-    message = transform(
-        get_template('main/invalid-drugs-mail_template.html').render({'drugs': invalid_drugs}),
-        allow_insecure_ssl=True,
-        disable_leftover_css=True,
-        strip_important=False,
-        disable_validation=True,
-    )
-    msg = EmailMessage(
-        "List of invalid drugs in latest drug upload on CoviRx",
-        message,
-        EMAIL_HOST_USER,
-        recepients,
-    )
-    msg.content_subtype = "html"
-    msg.send(fail_silently=False)
+def mail_invalid_drugs(recepients, invalid_drugs, username, timestamp):
+    html = get_template('mail_templates/invalid-drugs.html').render({'drugs': invalid_drugs, 'uploaded_by': username, 'timestamp': timestamp})
+    subject = "List of invalid drugs in latest drug upload on CoviRx"
+    sendmail(html, subject, recepients)

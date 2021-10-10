@@ -150,6 +150,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGIN_REDIRECT_URL = '/admin/'
+
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST = 'smtp.gmail.com'
@@ -161,6 +163,10 @@ if not EMAIL_HOST_USER:
     logging.getLogger('error_logger').error('\033[22;33mYou have not specified the variable "EMAIL_HOST_USER" in your .env file. Email functionality will not work.\033[0;0m')
 if not EMAIL_HOST_PASSWORD:
     logging.getLogger('error_logger').error('\033[22;33mYou have not specified the variable "EMAIL_HOST_PASSWORD" in your .env file. Email functionality will not work.\033[0;0m')
+
+
+# For OAuth2
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
 
 # PRODUCTION SETTINGS
 if not DEBUG:

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Covid19 Drug Repurposing database." />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>CoviRx: Covid19 Drug Repurposing Database</title>
+        <style>
+            body {
+                background-image: linear-gradient(315deg, rgba(0, 8, 255, 0.7), rgba(226, 21, 49, 0.5), rgba(255, 0, 13, 0.596));
+                height: 100%;
+                background-attachment: fixed;
+            }
+            .container {
+                width: 80%;
+                padding: 4.5vw;
+                background-color: white;
+                border-radius: 1rem;
+                margin: 6vw;
+            }
+            p {
+                font-size: 20px;
+                opacity: 0.7;
+            }
+            .btn-primary {
+                color: #fff;
+                background-color: #6200ff;
+            }
+            .btn {
+                cursor: pointer !important;
+                border: 0px solid transparent;
+                padding: .375rem .75rem;
+                font-size: 1rem;
+                border-radius: .25rem;
+            }
+            .container h1, h2 {
+                font-family: "sans-serif";
+                text-align: center;
+                color: rgba(89, 2, 122, 0.67);
+                white-space: nowrap;
+                letter-spacing: 0px;
+                word-break: normal;
+                font-weight: bold;
+                filter: drop-shadow(rgba(0, 0, 0, 0.65) 0px 6px 6px);
+            }
+            .container h1 {
+                font-size: 6.7vw;
+                margin-bottom: 0;
+            }
+            .container h2 {
+                font-size: 3.3vw;
+                margin-top: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <br>
+        <div class="container">
+            <h1>CoviRx</h1>
+            <h2>Covid19 Drug Repurposing Database</h2>
+            <p>You have been invited to the CoviRx admin panel by <i>{{ invited_by }}</i>.</p>
+            <p>To become an admin member, visit our website <a href="{{ home_link }}"><button class="btn btn-primary" >Home Page</button></a> and click on the Google button in the header pane to login.</p>
+            <p>Please login within 7 days to accept the invite. This invite will expire in 7 days from the time of receiving this email.</p>
+        </div>
+        <br>
+    </body>
+</html>

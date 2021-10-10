@@ -20,9 +20,12 @@ from django.urls import path, include
 
 
 urlpatterns = [
+    path('', include('main.urls')),
+    path('', include('accounts.urls')),
     path('admin/', admin.site.urls),
-    path('', include('main.urls'))
 ]
 # Needed for django-admin-interface
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+admin.site.index_title  =  "Welcome to the Admin Panel"

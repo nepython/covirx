@@ -6,8 +6,21 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>CoviRx: Covid19 Drug Repurposing Database</title>
         <style>
+            body {
+                background-image: linear-gradient(315deg, rgba(0, 8, 255, 0.7), rgba(226, 21, 49, 0.5), rgba(255, 0, 13, 0.596));
+                height: 100%;
+                background-attachment: fixed;
+            }
+            .container {
+                width: 80%;
+                padding: 4.5vw;
+                background-color: white;
+                border-radius: 1rem;
+                margin: 6vw;
+            }
             p {
                 font-size: 20px;
+                opacity: 0.7;
             }
             table {
                 font-family: "sans-serif";
@@ -49,8 +62,8 @@
         <div class="container">
             <h1>CoviRx</h1>
             <h2>Covid19 Drug Repurposing Database</h2>
-            <p>During the latest drug upload on CoviRx, many drugs couldn't get added into the database.
-            A list for the same has been shared with you.</p>
+            <p>During the latest drug bulk upload on CoviRx by {{ uploaded_by }} done at {{ timestamp }}, many drugs couldn't get added into the database.</p>
+            <p>A list for the same has been shared with you by user {{uploaded_by}}.</p>
             <table>
                 <tr>
                     <th>Drug Name</th>

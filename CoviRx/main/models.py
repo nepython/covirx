@@ -95,7 +95,7 @@ class Drug(models.Model):
 
 
 def storage_path(instance, filename):
-    """ file will be uploaded to MEDIA_ROOT/drugs/<filename>/<datetime> """
+    """ file will be uploaded to MEDIA_ROOT/drugs/<datetime>-<filename> """
     return f'drugs/{datetime.now()}-{filename}'
 
 
@@ -107,6 +107,7 @@ class DrugBulkUpload(models.Model):
     valid_count = models.IntegerField(default=0)
     invalid_count = models.IntegerField(default=0)
     total_count = models.IntegerField(default=0)
+    uploaded_by = models.CharField(max_length=40, blank=False, null=False)
 
     def invalid_drug(self):
         """ Increments the counter for invalid drugs, is useful to display while uploading """

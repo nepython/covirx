@@ -63,22 +63,6 @@
     background-color: #6347eaa1 !important;
     border-radius: 7px !important;
 }
-.alert {
-    padding: unset;
-    display: none;
-    top: 4.5rem;
-    width: 100%;
-    text-align: center;
-}
-#msg {
-    white-space: nowrap;
-    overflow: hidden;
-    display: block;
-    text-overflow: ellipsis;
-    padding: 8px 0px 0px 30px;
-    display: none;
-    line-height: 1;
-}
 #invalidated-drugs {
     background: #d3d3d363;
 }

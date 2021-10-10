@@ -3,24 +3,22 @@ import json
 from threading import Thread
 from collections import defaultdict, OrderedDict
 
-from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
+from django.db.models import Count
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.template import Context
-from django.template.loader import render_to_string, get_template
-from django.core.mail import EmailMessage
-from premailer import transform
+from django.template.loader import get_template
 
 from accounts.models import User, Visitor
 from .csv_upload import get_invalid_headers, save_drugs_from_csv
 from .forms import DrugBulkUploadForm
 from .models import Drug, DrugBulkUpload, Contact
-from .utils import invalid_drugs, search_fields, store_fields, verbose_names
+from .utils import invalid_drugs, search_fields, store_fields, verbose_names, sendmail
 
 
 def home(request):
@@ -68,37 +66,18 @@ def contact(request):
             res['success'] = True
             contact.save()
             contact.copy = True if request.POST.get('response-copy') else False
-            # async from the process so that the view gets returned post successful save
-            Thread(target = sendmail, args = (contact, )).start()
+            html = get_template('mail_templates/contact.html').render({'contact': contact})
+            recepients = list(User.objects.filter(email_notifications=True).values_list('email', flat=True))
+            bcc = [contact.email] if contact.copy else list()
+            log = f'Mail successfully sent for message received from {contact.name}'
+            Thread(target = sendmail, args = (html, contact.subject, recepients, bcc, log)).start() # async from the process so that the view gets returned post successful save
     return render(request, 'main/contact.html', res)
 
 
 def references(request):
     Visitor.record(request)
     refs = [r[0] for r in Drug.objects.values_list('references').distinct() if r[0]!=None and r[0]!='']
-    return render(request, 'main/citations.html', {'citations': refs})
-
-
-def sendmail(contact):
-    message = transform(
-        get_template('main/mail_template.html').render({'contact': contact}),
-        allow_insecure_ssl=True,
-        disable_leftover_css=True,
-        strip_important=False,
-        disable_validation=True,
-    )
-    msg = EmailMessage(
-        contact.subject,
-        message,
-        contact.email,
-        list(User.objects.filter(email_notifications=True).values_list('email', flat=True)),
-    )
-    msg.content_subtype = "html"
-    msg.send(fail_silently=False)
-    if contact.copy:
-        msg.to = [contact.email]
-        msg.send(fail_silently=False)
-    logging.getLogger('info_logger').info(f'Mail successfully sent for message received from {contact.name}')
+    return render(request, 'main/references.html', {'references': refs})
 
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/admin/login/')
@@ -114,13 +93,13 @@ def csv_upload(request):
         if not csv_file.name.endswith('.csv'):
             messages.error(request, 'File is not CSV type')
             return redirect('drug-bulk-upload')
-        upload = DrugBulkUpload()
-        upload.csv_file = csv_file
+        user = '{} <{}>'.format(request.user.get_full_name(), request.user.email)
+        upload = DrugBulkUpload(csv_file=csv_file, uploaded_by=user)
         upload.full_clean()
         upload.save()
         invalid_headers = get_invalid_headers(upload)
         # async from the process so that the view gets returned post successful upload
-        Thread(target = save_drugs_from_csv, args = (upload, )).start()
+        Thread(target = save_drugs_from_csv, args = (upload, invalid_headers)).start()
         return JsonResponse({'csv-id': str(upload.pk), 'invalid-headers': invalid_headers})
     except Exception as e:
         logging.getLogger('error_logger').error(f'Unable to upload file. {repr(e)}')
@@ -157,14 +136,14 @@ def csv_upload_updates(request):
 column_order = OrderedDict({
     'Day': 0,
     'Home': 1,
-    'Citations': 2,
+    'References': 2,
     'Contact': 3,
     'Website': 4,
 })
 
 def charts_json(request):
     charts = dict()
-    charts_requested = request.GET.get('charts[]', list())
+    charts_requested = dict(request.GET).get('charts[]', list())
     if 'visitors' in charts_requested:
         site_visitors = Visitor.site_visitors()
         page_visitors = Visitor.page_visitors()
@@ -175,4 +154,17 @@ def charts_json(request):
         for item in site_visitors:
             d = item['day']
             charts['visitors'] += [[d]+[v for v in days[d].values()]+[item['visits']]]
+    if 'categories' in charts_requested:
+        qs = (Drug.objects.filter()
+            .exclude(indication_class__isnull=True)
+            .exclude(indication_class__exact='')
+            .values('indication_class')
+            .annotate(count=Count('indication_class')))
+        others_count = qs.filter(count=1).count() # we club all categories which occur only once in others
+        na_count = Drug.objects.filter(indication_class__isnull=True).count() # category not available
+        categories = list(qs.filter(count__gt=1))
+        charts['categories'] = [['Drug Categories', 'Number of drugs']]
+        charts['categories'] += [[category['indication_class'], category['count']] for category in categories]
+        charts['categories'] += [['Others', others_count], ['NA', na_count]]
+        charts['total_drugs'] = Drug.objects.all().count()
     return JsonResponse(charts)

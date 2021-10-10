@@ -26,10 +26,8 @@ $('form').submit(function(e) {
         success: function(data) {
             $("#updates").css("display", "block");
             pk = data['csv-id'];
-            $('#msg').html("Started Drug Upload.").fadeIn('slow')
-            $('#msg').delay(5000).fadeOut('slow');
             var fields = data['invalid-headers'].join(", ");
-            $('#msg').html(`The following fields were ignored, kindly add them as custom fields in the admin if they need to be stored in the database. <b>${fields}<b>`).fadeIn('slow');
+            $('#msg').html(`Started databse update. The following fields were ignored, kindly add them as custom fields in the admin if they need to be stored in the database. <b>${fields}<b>`).fadeIn('slow');
             showUpdate(0, 0, -1);
         }
     });

@@ -16,11 +16,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='User',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('password', models.CharField(max_length=128, verbose_name='password')),
                 ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
                 ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),
-                ('email', models.EmailField(max_length=255, unique=True, verbose_name='email address')),
+                ('email', models.EmailField(max_length=255, primary_key=True, serialize=False, unique=True, verbose_name='email address')),
                 ('first_name', models.CharField(blank=True, max_length=30, verbose_name='first name')),
                 ('last_name', models.CharField(blank=True, max_length=150, verbose_name='last name')),
                 ('email_notifications', models.BooleanField(default=True, help_text='Allows you to enable or disable email notifications that shall be sent out on every new contact form submission.', verbose_name='Email Notifications')),

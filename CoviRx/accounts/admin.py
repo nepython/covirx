@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from .models import User, Visitor
+from .models import User, Visitor, Invitee
 
 
 class AddUserForm(forms.ModelForm):
@@ -107,4 +107,18 @@ class VisitorAdmin(admin.ModelAdmin):
         return False
 
     def has_change_permission(self, request, obj=None):
-        return True#False
+        return False
+
+@admin.register(Invitee)
+class InviteeAdmin(admin.ModelAdmin):
+    def get_readonly_fields(self, *args, **kwargs):
+        return super().get_readonly_fields(*args, **kwargs)+('expired', 'sent_on')
+
+    def get_list_display(self, *args, **kwargs):
+        return super().get_list_display(*args, **kwargs)+('email', 'sent_on', 'expired',)
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False

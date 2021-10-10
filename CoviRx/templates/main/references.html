@@ -1,9 +1,9 @@
 {% extends 'main/index.html' %}
-{% block title %}CoviRx: Citations{% endblock %}
+{% block title %}CoviRx: References{% endblock %}
 {% load static %}
 
 {% block extra_head %}
-<link rel="stylesheet" href={% static "main/css/citations.css"%}/>
+<link rel="stylesheet" href={% static "main/css/references.css"%}/>
 {% endblock %}
 
 {% block content %}
@@ -12,10 +12,10 @@
     <h2>Covid19 Drug Repurposing Database</h2>
     <h3 id="references-title">List of References:</h3>
     <table id="references">
-        {% for citation in citations %}
+        {% for reference in references %}
         <tr>
             <td>{{ forloop.counter }}</td>
-            <td>{{ citation }}</td>
+            <td>{{ reference }}</td>
         </tr>
         {% endfor %}
     </table>
