@@ -1,0 +1,62 @@
+@media (min-width: 1540px) {
+/* CSS that should be displayed if width is equal to or greater than 1540px goes here */
+    .charts-visualisation {
+        float: right;
+        position: absolute;
+        left: 60%;
+    }
+}
+@media (max-width: 690px) {
+/* CSS that should be displayed if width is equal to or less than 690px goes here */
+    #categories-chart #labelOverlay {
+        display: none !important;
+    }
+    #categories-chart, .covirx-g-chart {
+        margin: 4vw !important;
+    }
+}
+.charts-visualisation {
+    display: table-cell;
+}
+.covirx-g-chart {
+    width: 88vw;
+    height: 88vw;
+    max-width: 600px;
+    max-height: 333px;
+    margin: 10px;
+}
+#categories-chart {
+    margin: 10px;
+}
+#categories-chart,
+#drug-categories-chart {
+    width: 88vw;
+    height: 88vw;
+    max-width: 600px;
+    max-height: 300px;
+}
+#categories-chart #labelOverlay {
+    width: 90px;
+    height: 45px;
+    position: relative;
+    top: -170px;
+    left: 178px;
+    text-align: center;
+    cursor: default;
+    display: none
+}
+#categories-chart #labelOverlay p {
+    line-height: 0.3;
+    padding: 0;
+    margin: 0.6em;
+}
+#categories-chart #labelOverlay p.donut-center-figure {
+    line-height: 0.5;
+    font-size: 1.2em;
+    color: black;
+}
+#categories-chart #labelOverlay p.donut-center-text {
+    line-height: 0.5;
+    font-size: 0.6em;
+    color: #8e8e8e;
+}

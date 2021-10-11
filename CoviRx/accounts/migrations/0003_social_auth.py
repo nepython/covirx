@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('email', models.EmailField(max_length=255, unique=True, verbose_name='email address')),
                 ('sent_on', models.DateField(auto_now=True, verbose_name='Invite was sent out on')),
             ],
-            options={'verbose_name': 'Invite Members', 'verbose_name_plural': 'Invite'},
+            options={'verbose_name': 'Invite', 'verbose_name_plural': 'Invite Members'},
         ),
         migrations.AddField(
             model_name='user',

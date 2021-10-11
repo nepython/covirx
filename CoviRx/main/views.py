@@ -140,6 +140,13 @@ column_order = OrderedDict({
     'Contact': 3,
     'Website': 4,
 })
+drug_label = {
+    '1': 'White',
+    '2': 'Green',
+    '3': 'Red',
+    '4': 'Amber',
+}
+
 
 def charts_json(request):
     charts = dict()
@@ -167,4 +174,20 @@ def charts_json(request):
         charts['categories'] += [[category['indication_class'], category['count']] for category in categories]
         charts['categories'] += [['Others', others_count], ['NA', na_count]]
         charts['total_drugs'] = Drug.objects.all().count()
+    if 'labels' in charts_requested:
+        labels = list(Drug.objects.filter()
+            .values('label')
+            .order_by('label')
+            .annotate(count=Count('label')))
+        charts['labels'] = [['Drug Labels', 'Number of drugs']]
+        charts['labels'] += [[drug_label[label['label']], label['count']] for label in labels]
+    if 'phase' in charts_requested:
+        phase = list(Drug.objects.filter()
+            .exclude(phase__isnull=True)
+            .exclude(phase__exact='')
+            .values('phase')
+            .order_by('phase')
+            .annotate(count=Count('phase')))
+        charts['phase'] = [['Clinical Trial Phase', 'Number of drugs']]
+        charts['phase'] += [[p['phase'], p['count']] for p in phase]
     return JsonResponse(charts)

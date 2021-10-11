@@ -46,6 +46,7 @@ class Drug(models.Model):
     chembank = models.TextField(blank=True, null=True)
     drugbank = models.TextField(blank=True, null=True)
     indication_class = models.TextField(blank=True, null=True, verbose_name='indication_class/category')
+    phase = models.TextField(blank=True, null=True)
     references = models.TextField(blank=True, null=True)
     LABEL_CHOICES = [
         ('1', _('White')),
