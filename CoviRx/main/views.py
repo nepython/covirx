@@ -80,7 +80,7 @@ def references(request):
     return render(request, 'main/references.html', {'references': refs})
 
 
-@user_passes_test(lambda u: u.is_superuser, login_url='/admin/login/')
+@user_passes_test(lambda u: u.is_staff, login_url='/admin/login/')
 def csv_upload(request):
     if request.method == 'GET':
         form = DrugBulkUploadForm()
@@ -107,7 +107,7 @@ def csv_upload(request):
         return JsonResponse({})
 
 
-@user_passes_test(lambda u: u.is_superuser, login_url='/admin/login/')
+@user_passes_test(lambda u: u.is_staff, login_url='/admin/login/')
 def csv_upload_updates(request):
     if request.method == 'GET':
         pk = request.GET.get('cancel-upload')
