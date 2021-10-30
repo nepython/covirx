@@ -8,15 +8,16 @@
 ```python
 pip install -r requirements.txt
 ```
-4) Run Migrations (this creates the database with the required tables)
+4) Change directory to CoviRx.
+5) Run Migrations (this creates the database with the required tables)
 ```python
 python manage.py migrate
 ```
-5) Create a superuser to access admin page, later on
+6) Create a superuser to access admin page, later on
 ```python
 python manage.py createsuperuser
 ```
-6) Run server locally
+7) Run server locally
 ```python
 python manage.py runserver
 ```
