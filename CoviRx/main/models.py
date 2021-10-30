@@ -9,6 +9,19 @@ from django.db import models
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
+class AddDrug(models.Model):
+    personName = models.CharField('Name of Person',blank=True,max_length=50)
+    email = models.EmailField('Email',max_length=50,blank=True)
+    organisation = models.CharField('Organization',max_length=158, blank=True)
+    drugName = models.TextField('Drug Name',blank=True)
+    vitvio = models.CharField('VitVio',blank=True,max_length=50)
+    isInvitro = models.BooleanField('Is Invitro?',default = False)
+    isInvivo = models.BooleanField('Is Invivo?',default = False)
+    results = models.CharField('Activity Results',blank=True,max_length=50)
+   
+
+    def __str__(self):
+        return self.drugName
 
 class CustomFields(models.Model):
     name = models.TextField(unique=True, null=False, blank=False, help_text="Enter the name of this field exactly as in the Excel sheet.")

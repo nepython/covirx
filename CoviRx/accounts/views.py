@@ -14,7 +14,6 @@ from google.auth.transport import requests
 from .models import User, Invitee
 from main.utils import sendmail
 
-
 def auth(request):
     token = request.GET.get('id_token')
     idinfo = id_token.verify_oauth2_token(token, requests.Request(), settings.GOOGLE_CLIENT_ID)

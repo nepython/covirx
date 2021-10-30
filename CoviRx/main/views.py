@@ -10,15 +10,62 @@ from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Count
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
+from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template import Context
 from django.template.loader import get_template
 
 from accounts.models import User, Visitor
 from .csv_upload import get_invalid_headers, save_drugs_from_csv
-from .forms import DrugBulkUploadForm
-from .models import Drug, DrugBulkUpload, Contact
+from .forms import DrugBulkUploadForm, DrugForm
+from .models import Drug, DrugBulkUpload, Contact, AddDrug
 from .utils import invalid_drugs, search_fields, store_fields, verbose_names, sendmail
+import csv
+
+def drug_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=drugs.csv'
+    
+    # Create a csv writer
+    writer = csv.writer(response)
+    drugs = AddDrug.objects.all()
+
+    # Add column headings to the csv file
+    writer.writerow(['Name of Person','Email id','Organization','Drug name','Invitro; Invivo; Ex vivo assay','Activity Results(IC50/EC50)'])
+
+    # Loop Thu and output
+    for drug in drugs:
+        writer.writerow([drug.personName, drug.email, drug.organisation, drug.drugName, drug.vitvio, drug.results])
+
+    return response
+
+
+def show_drug(request, drug_id):
+    drug = AddDrug.objects.get(pk=drug_id)
+    return render(request , 'main/show_drug.html', 
+        {'drug':drug})
+
+
+def list_drugs(request):
+    drugs_list = AddDrug.objects.all()
+    return render(request , 'main/drug.html', 
+        {'drugs_list':drugs_list})
+
+
+def addDrug(request):
+    submitted = False
+    if request.method == "POST":
+        form = DrugForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/addDrug?submitted=True')
+    else:
+        form = DrugForm
+        if 'submitted' in request.GET:
+            submitted = True
+    return render(request , 'main/addDrug.html', 
+        {'form':form,'submitted':submitted})
 
 
 def home(request):

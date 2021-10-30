@@ -5,7 +5,6 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from .models import User, Visitor, Invitee
 
-
 class AddUserForm(forms.ModelForm):
     """
     New User Form. Requires password confirmation.
@@ -122,3 +121,6 @@ class InviteeAdmin(admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         return False
+
+
+

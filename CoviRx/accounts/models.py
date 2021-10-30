@@ -217,3 +217,12 @@ class Visitor(models.Model):
             .annotate(visits=models.Count('session_key', distinct=True))
         )
         return visits
+
+
+
+
+
+
+
+
+

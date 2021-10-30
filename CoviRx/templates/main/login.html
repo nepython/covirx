@@ -1,0 +1,93 @@
+{% extends 'main/index.html' %}
+{% block title %}CoviRx: Covid19 Drug Repurposing Database{% endblock %}
+{% load static %}
+
+{% block extra_head %}
+	<link rel="stylesheet" href={% static "main/css/contact.css"%}/>
+{% endblock %}
+    {% block header %}
+    <nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">CoviRx</a>
+
+    <!-- <img class="covirx-nav-logo" src="admin-interface/logo/covirx_light.png" alt="logo"> -->
+
+     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#header" aria-controls="header" aria-expanded="false" aria-label="Toggle navigation">
+
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="header">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Purpose</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Team</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'references' %}">References</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'addDrug' %}">Add Drug</a>
+                    </li>
+                    
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'list-drugs' %}">Drugs</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'drug_csv' %}">CSV</a>
+                    </li>
+
+
+                </ul>
+                <button class="btn btn-primary header-login" data-bs-toggle="modal" data-bs-target="#admin-login-modal">Login<i class="bi bi-person-circle"></i></button>
+    </div>
+  </div>
+</nav>
+    <div id="msg" class="alert alert-primary"></div>
+    <div class="modal fade show" id="admin-login-modal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="admin-login-modal-title">Log In to CoviRx Admin Panel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex flex-column text-center">
+                        <form action="{% url 'admin:login' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input name="username" type="email" class="form-control" id="email1"placeholder="Your email address...">
+                            </div>
+                            <div class="form-group">
+                                <input name="password" type="password" class="form-control" id="password1" placeholder="Your password...">
+                            </div>
+                            <button type="submit" class="btn btn-info btn-block btn-round">Login</button>
+                        </form>
+                        <div class="text-center text-muted delimiter">or use a social network</div>
+                        <div id="googleBtn" align="center" class="g-signin2" data-width="240" data-height="50" data-longtitle="true" data-theme="dark"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+{% block content %}
+	<div class="container slide-up">
+		<h1>CoviRx</h1>
+		<h2>Covid19 Drug Repurposing Database</h2>
+	</div>
+{% endblock content %}
+
+{% block footer_scripts %}
+{% endblock footer_scripts %}

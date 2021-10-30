@@ -1,0 +1,31 @@
+{% extends 'main/index.html' %}
+{% block title %}CoviRx: Covid19 Drug Repurposing Database{% endblock %}
+{% load static %}
+
+{% block extra_head %}
+	<link rel="stylesheet" href={% static "main/css/references.css"%}/>
+{% endblock %}
+
+{% block content %}
+	<div class="container slide-up">
+    <h1>CoviRx</h1>
+    <h2>Covid19 Drug Repurposing Database</h2>
+    <h3 id="references-title">Recently Added Drugs</h3>
+    <br>
+    <table class="table table-striped table-hover table-bordered">
+		{% for drug in drugs_list %}
+			<tr>
+				<td>
+					<h4><a href="{% url 'show-drug' drug.id %}">{{ drug }}</a><br></h4>
+				</td>
+			</tr>
+			
+		{% endfor %}
+	</table>
+
+</div>
+
+{% endblock content %}
+
+{% block footer_scripts %}
+{% endblock footer_scripts %}

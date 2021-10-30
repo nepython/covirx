@@ -5,9 +5,12 @@ from django.forms import Textarea
 from django.urls import reverse
 from django.utils.html import format_html
 
-from .models import Contact, CustomFields, Drug, DrugBulkUpload
+from .models import Contact, CustomFields, Drug, DrugBulkUpload, AddDrug
 
 from flat_json_widget.widgets import FlatJsonWidget
+
+
+admin.site.register(AddDrug)
 
 
 class JsonDocumentForm(forms.ModelForm):

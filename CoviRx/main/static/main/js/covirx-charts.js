@@ -39,7 +39,7 @@ function DrugCategories(data, total_categories) {
     var data = google.visualization.arrayToDataTable(data);
     var options = {
         title: 'Categories of Drugs in database',
-        pieHole: 0.4,
+        pieHole: 0.9,
         titleTextStyle: {italic: true},
         backgroundColor: '#e7f8ff',
     };

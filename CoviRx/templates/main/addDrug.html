@@ -1,0 +1,63 @@
+{% extends 'main/index.html' %}
+{% block title %}CoviRx: Covid19 Drug Repurposing Database{% endblock %}
+{% load static %}
+
+{% block extra_head %}
+	<link rel="stylesheet" href={% static "main/css/contact.css"%}/>
+{% endblock %}
+
+{% block content %}
+	<div class="container slide-up">
+		<h1>CoviRx</h1>
+		<h2>Covid19 Drug Repurposing Database</h2>
+		{% if submitted %}
+			Your Venue was submitted successfully!!!
+		{% else %}
+		<form action="" method="POST">
+				{% csrf_token %}
+			<h3 class="form-heading">Drug Form</h3>
+			<div class="col-sm-7">
+				<label>Name of Person:</label>{{ form.personName }}
+			</div>
+			<br>
+			<div class="col-sm-7">
+				<label>Email id:</label>{{ form.email }}
+			</div>
+			<br>
+			
+			<div class="col-sm">
+				<label>Organization:</label>{{ form.organisation }}
+			</div>
+			<br>
+			<div class="col-sm">
+				<label>Drug Name:</label>{{ form.drugName }}
+			</div>
+	
+			<br>
+			
+			<div class="col-sm">
+				<label>Invitro:</label>{{ form.isInvitro }}
+			</div>
+			<br>
+			<div class="col-sm">
+				<label>Invivo:</label>{{ form.isInvivo }}
+			</div>
+			<br>
+			<div class="col-sm">
+				<label>Invitro; Invivo; Ex vivo assay:</label>{{ form.vitvio }}
+			</div>
+			<br>
+			<div class="col-sm">
+					<label>Activity Results(IC50/EC50):</label>{{ form.results }}
+				</div>
+			<br>
+				<input type="submit" value="Submit" class="btn btn-secondary">
+			</div>
+		</form>
+		{% endif %}
+	</div>
+
+{% endblock content %}
+
+{% block footer_scripts %}
+{% endblock footer_scripts %}

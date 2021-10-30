@@ -20,14 +20,16 @@
 <body>
     {% block header %}
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">
-                <img class="covirx-nav-logo" src="admin-interface/logo/covirx_light.png" alt="logo">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#header" aria-controls="header" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="header">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">CoviRx</a>
+
+    <!-- <img class="covirx-nav-logo" src="admin-interface/logo/covirx_light.png" alt="logo"> -->
+
+     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#header" aria-controls="header" aria-expanded="false" aria-label="Toggle navigation">
+
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="header">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link" href="/">Home</a>
@@ -45,10 +47,32 @@
                         <a class="nav-link" href="{% url 'references' %}">References</a>
                     </li>
                 </ul>
-                <button class="btn btn-primary header-login" data-bs-toggle="modal" data-bs-target="#admin-login-modal">Login<i class="bi bi-person-circle"></i></button>
-            </div>
-        </div>
-    </nav>
+
+                {% if user.is_authenticated %}
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'addDrug' %}">Add Drug</a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'list-drugs' %}">Drugs</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'drug_csv' %}">CSV</a>
+                        </li>
+
+                        <li>
+                            <button type="button" class="btn btn-primary"><a class="nav-link" href="{% url 'logout' %}">Logout</a></button>
+                        </li>
+                    </ul>
+                {% else %}
+                    <button class="btn btn-primary header-login" data-bs-toggle="modal" data-bs-target="#admin-login-modal">Login<i class="bi bi-person-circle"></i></button>                 
+                {% endif %}
+                
+    </div>
+  </div>
+</nav>
     <div id="msg" class="alert alert-primary"></div>
     <div class="modal fade show" id="admin-login-modal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
         <div class="modal-dialog modal-dialog-centered">
@@ -136,6 +160,8 @@
         <div id="sidenav-button">
             <button id="change-identifier-btn" class="btn btn-success mx-1 my-1" onclick="openNav()">Change Identifier</button>
             <button id="advanced-search-btn" class="btn btn-primary mx-1 my-1" onclick="toggleAdvancedSearch()">Enable Advanced Search</button>
+
+
             <div id="current-identifier"><span>Current Identifier:&nbsp;</span><span id="showIdentifier"></span></div>
         </div>
         <div class="charts-visualisation">

@@ -1,0 +1,43 @@
+{% extends 'main/index.html' %}
+{% block title %}CoviRx: Covid19 Drug Repurposing Database{% endblock %}
+{% load static %}
+
+{% block extra_head %}
+	<link rel="stylesheet" href={% static "main/css/contact.css"%}/>
+{% endblock %}
+
+{% block content %}
+	<div class="container slide-up">
+		<h1>CoviRx</h1>
+		<h2>Covid19 Drug Repurposing Database</h2>
+
+		<form action="" method="POST">
+			<h3 class="form-heading">{{ drug }}</h3>
+			<br>
+			<div class="card">
+				<div class="card-header">
+					Drug Details
+				</div>
+				<div class="card-body">
+					<h5 class="card-title"><strong>Person worked/working on this Drug:</strong> {{ drug.personName }}</h5>
+					<p class="card-text">
+					<ul>
+						
+						<li><strong>Email id</strong>: {{ drug.email }}</li>
+						<li><strong>Organisation</strong>: {{ drug.organisation }}</li>
+						<li><strong>Drug Name</strong>: {{ drug.drugName }}</li>
+						<li><strong>Invitro/Invivo/Exvivo</strong>: {{ drug.vitvio }}</li>
+						<li><strong>Activity Results</strong>: {{ drug.results }}</li>
+						
+					</ul>
+					</p>					
+				</div>
+			</div>
+
+		</form>
+
+	</div>
+{% endblock content %}
+
+{% block footer_scripts %}
+{% endblock footer_scripts %}

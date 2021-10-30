@@ -207,3 +207,8 @@ function closeNav() {
     $("#identifier-sidenav").removeClass("open");
     $(".sidenav-modal").css("display", "none");
 }
+
+
+
+
+
