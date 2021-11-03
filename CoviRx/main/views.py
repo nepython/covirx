@@ -20,8 +20,11 @@ from accounts.models import User, Visitor
 from .csv_upload import get_invalid_headers, save_drugs_from_csv
 from .forms import DrugBulkUploadForm, DrugForm
 from .models import Drug, DrugBulkUpload, Contact, AddDrug
+from rest_framework import viewsets
+from rest_framework import permissions
 from .utils import invalid_drugs, search_fields, store_fields, verbose_names, sendmail
 import csv
+
 
 def drug_csv(request):
     response = HttpResponse(content_type='text/csv')
@@ -32,11 +35,11 @@ def drug_csv(request):
     drugs = AddDrug.objects.all()
 
     # Add column headings to the csv file
-    writer.writerow(['Name of Person','Email id','Organization','Drug name','Invitro; Invivo; Ex vivo assay','Activity Results(IC50/EC50)'])
+    writer.writerow(['Name of Person','Email id','Organization','Drug name','Invitro','Invivo','Exvivo','Activity Results(IC50/EC50)','Inference'])
 
     # Loop Thu and output
     for drug in drugs:
-        writer.writerow([drug.personName, drug.email, drug.organisation, drug.drugName, drug.vitvio, drug.results])
+        writer.writerow([drug.personName, drug.email, drug.organisation, drug.drugName, drug.invitro, drug.invivo, drug.exvivo, drug.results, drug.inference])
 
     return response
 

@@ -3,15 +3,25 @@
 {% load static %}
 
 {% block extra_head %}
+	<link rel="stylesheet" href={% static "main/css/contact.css"%}/>
 {% endblock %}
 
 {% block content %}
 	<div class="container slide-up">
 		<h1>CoviRx</h1>
 		<h2>Covid19 Drug Repurposing Database</h2>
-		<h3>You have been logged out</h3>
-		<br/>
-	</div>
+
+
+		<form action="" method="POST">
+
+			<div class="success-msg">
+	            <i class="bi bi-check2-circle"></i>
+	            You have successfully logged out!
+	            <br>
+	             <h3 class="text-center">Please login again</h3>
+			</div>
+
+		</form>
 
 	
 {% endblock content %}

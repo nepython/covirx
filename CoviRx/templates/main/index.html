@@ -50,24 +50,33 @@
 
                 {% if user.is_authenticated %}
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'addDrug' %}">Add Drug</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Contribute Drugs
+                        </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a font-weight="normal" class="dropdown-item" href="{% url 'addDrug' %}">Add Drug</a></li>
+                                <li><a class="dropdown-item" href="{% url 'list-drugs' %}">View Drugs</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'drug_csv' %}">Download</a></li>
+                            </ul>
                         </li>
-                        
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'list-drugs' %}">Drugs</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'drug_csv' %}">CSV</a>
-                        </li>
-
+                      
                         <li>
                             <button type="button" class="btn btn-primary"><a class="nav-link" href="{% url 'logout' %}">Logout</a></button>
                         </li>
                     </ul>
+
                 {% else %}
                     <button class="btn btn-primary header-login" data-bs-toggle="modal" data-bs-target="#admin-login-modal">Login<i class="bi bi-person-circle"></i></button>                 
+                {% endif %}
+
+                {% if user.is_staff %}
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/">Admin</a>
+                        </li>
+                    </ul>
                 {% endif %}
                 
     </div>
@@ -107,6 +116,7 @@
     <div class="container">
         <h1>CoviRx</h1>
         <h2>Covid19 Drug Repurposing Database</h2>
+
         <div class="input-group" id="main-search">
             <input type="text" class="form-control" id="keyword">
             <button class="input-group-text" id="search">

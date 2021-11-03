@@ -1,5 +1,5 @@
 {% extends 'main/index.html' %}
-{% block title %}CoviRx: Covid19 Drug Repurposing Database{% endblock %}
+{% block title %}CoviRx: Contribute to Database{% endblock %}
 {% load static %}
 
 {% block extra_head %}
@@ -10,49 +10,146 @@
 	<div class="container slide-up">
 		<h1>CoviRx</h1>
 		<h2>Covid19 Drug Repurposing Database</h2>
-		{% if submitted %}
-			Your Venue was submitted successfully!!!
-		{% else %}
+		
 		<form action="" method="POST">
-				{% csrf_token %}
 			<h3 class="form-heading">Drug Form</h3>
-			<div class="col-sm-7">
-				<label>Name of Person:</label>{{ form.personName }}
-			</div>
-			<br>
-			<div class="col-sm-7">
-				<label>Email id:</label>{{ form.email }}
-			</div>
-			<br>
-			
-			<div class="col-sm">
-				<label>Organization:</label>{{ form.organisation }}
-			</div>
-			<br>
-			<div class="col-sm">
-				<label>Drug Name:</label>{{ form.drugName }}
-			</div>
-	
-			<br>
-			
-			<div class="col-sm">
-				<label>Invitro:</label>{{ form.isInvitro }}
-			</div>
-			<br>
-			<div class="col-sm">
-				<label>Invivo:</label>{{ form.isInvivo }}
-			</div>
-			<br>
-			<div class="col-sm">
-				<label>Invitro; Invivo; Ex vivo assay:</label>{{ form.vitvio }}
-			</div>
-			<br>
-			<div class="col-sm">
-					<label>Activity Results(IC50/EC50):</label>{{ form.results }}
+			{% if submitted %}
+			<div class="success-msg">
+            <i class="bi bi-check2-circle"></i>
+            Your drug was added successfully!
+            <h3><div class="my-3 text-center">Thanks for contributing. We will get back to you in a week's time.</div></h3>
+        	<h3 class="text-center"><a href="{% url 'addDrug' %}">Add another drug</a></h3>
+        	</div>
+			{% else %}
+			{% csrf_token %}
+
+			<div class="row my-3 align-items-center">
+
+				<div class="col-3">
+					<label for="name" class="col-form-label">Name*</label>
 				</div>
-			<br>
-				<input type="submit" value="Submit" class="btn btn-secondary">
+				<div class="col-5">
+					{{ form.personName }}
+					
+				</div>
+				<div class="col-4">
+					<span id="nameHelpInline" class="form-text">
+					Please enter your full name.
+				</span>
+				</div>
 			</div>
+
+
+			<div class="row my-3 align-items-center">
+				<div class="col-3">
+					<label for="email" class="col-form-label">Email*</label>
+				</div>
+				<div class="col-5">
+					{{ form.email }}
+				</div>
+				<div class="col-4">
+					<span id="emailHelpInline" class="form-text">
+					We will never share your email with anyone else.
+					</span>
+				</div>
+			</div>
+
+
+			<div class="row my-3 align-items-center">
+				<div class="col-3">
+					<label for="organisation" class="col-form-label">Organisation*</label>
+				</div>
+				<div class="col-5">
+					{{ form.organisation }}
+				</div>
+				<div class="col-4">
+					<span id="orgHelpInline" class="form-text">
+					Please share your organisation name.
+				</span>
+				</div>
+			</div>
+			
+			<div class="row my-3 align-items-center">
+				<div class="col-3">
+					<label for="drugName" class="col-form-label">Drug Name*</label>
+				</div>
+				<div class="col-5">
+				{{ form.drugName }}
+				</div>
+				<div class="col-4">
+				<span id="orgHelpInline" class="form-text">
+					Please share your organisation name.
+				</span>
+				</div>
+			</div>
+
+
+			<div class="row my-3 align-items-center">
+				<div class="col-3">
+					<label for="invitro" class="col-form-label">Invitro</label>
+				</div>
+				<div class="col-5">
+					{{ form.invitro }}
+				</div>
+			</div>
+
+			<div class="row my-3 align-items-center">
+				<div class="col-3">
+					<label for="invivo" class="col-form-label">Invivo</label>
+				</div>
+				<div class="col-5">
+					{{ form.invivo }}
+				</div>
+			</div>
+
+			<div class="row my-3 align-items-center">
+				<div class="col-3">
+					<label for="exvivo" class="col-form-label">Exvivo</label>
+				</div>
+				<div class="col-5">
+					{{ form.exvivo }}
+				</div>
+			</div>
+
+			<div class="row my-3 align-items-center">
+				<div class="col-3">
+					<label for="results" class="col-form-label">Activity Results*</label>
+				</div>
+				<div class="col-5">
+					{{ form.results }}
+				</div>
+				<div class="col-4">
+				<span id="orgHelpInline" class="form-text">
+					Please share the results
+				</span>
+				</div>
+			</div>
+
+			<div class="row my-3 align-items-center">
+				<div class="col-3">
+					<label for="inference" class="col-form-label">Inference</label>
+				</div>
+				<div class="col-5">
+					{{ form.inference }}
+				</div>
+				<div class="col-4">
+				<span id="orgHelpInline" class="form-text">
+					Please add the inference
+				</span>
+				</div>
+			</div>
+
+
+			<p class="form-text mb-3">
+            	Fields marked with * are compulsory.
+        	</p>
+        	<div class="form-check mb-3">
+            	<input name="response-copy" class="form-check-input" type="checkbox" value="1" id="flexCheckChecked" checked>
+            	<label class="form-check-label" for="flexCheckChecked">
+                Send me a copy of my responses.
+            	</label>
+        	</div>
+        <button type="submit" class="btn btn-dark">Add Drug</button>
 		</form>
 		{% endif %}
 	</div>
@@ -60,4 +157,7 @@
 {% endblock content %}
 
 {% block footer_scripts %}
+<script>
+    $('.nav-link')[3].classList.add('active'); // highlights the Contact nav item
+</script>
 {% endblock footer_scripts %}

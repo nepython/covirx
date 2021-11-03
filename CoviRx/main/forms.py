@@ -20,9 +20,12 @@ class DrugForm(ModelForm):
       'organisation': forms.TextInput(attrs={'class':'form-control','placeholder':'Organization where the work was carried out'}),
       
       'drugName':forms.TextInput(attrs={'class':'form-control','placeholder':'Tolterodine (tartrate)'}),
-      'vitvio':forms.TextInput(attrs={'class':'form-control','placeholder':'Invitro; Invivo; Ex vivo assay'}),
+      'invitro':forms.TextInput(attrs={'class':'form-control','placeholder':'Procedure'}),
+      'invivo':forms.TextInput(attrs={'class':'form-control','placeholder':'Procedure'}),
+      'exvivo':forms.TextInput(attrs={'class':'form-control','placeholder':'Procedure'}),
 
-      'results': forms.TextInput(attrs={'class':'form-control','placeholder':'Activity Results(IC50/EC50)'}),
+      'results': forms.TextInput(attrs={'class':'form-control','placeholder':'Test/IC50/EC50/KI Values'}),
+      'inference':forms.TextInput(attrs={'class':'form-control','placeholder':'With reference to Covid'}),
     }
 
 

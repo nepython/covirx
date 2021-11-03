@@ -2,22 +2,24 @@ import os
 import uuid
 from datetime import datetime
 from copy import deepcopy
-
 from django.conf import settings
 from django.core.cache import cache
 from django.db import models
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
+
+
 class AddDrug(models.Model):
-    personName = models.CharField('Name of Person',blank=True,max_length=50)
-    email = models.EmailField('Email',max_length=50,blank=True)
-    organisation = models.CharField('Organization',max_length=158, blank=True)
-    drugName = models.TextField('Drug Name',blank=True)
-    vitvio = models.CharField('VitVio',blank=True,max_length=50)
-    isInvitro = models.BooleanField('Is Invitro?',default = False)
-    isInvivo = models.BooleanField('Is Invivo?',default = False)
-    results = models.CharField('Activity Results',blank=True,max_length=50)
+    personName = models.CharField('Name of Person',blank=False,unique=True,max_length=50)
+    email = models.EmailField('Email',max_length=50,blank=False)
+    organisation = models.CharField('Organization',max_length=100, blank=False)
+    drugName = models.CharField('Drug Name',blank=False,max_length=100)
+    invitro = models.CharField('Invitro',blank = True,max_length=100)
+    invivo = models.CharField('Invivo',blank = True,max_length=100)
+    exvivo = models.CharField('Exvivo',blank=True,max_length=50)
+    results = models.CharField('Activity Results',blank=False,max_length=100)
+    inference = models.CharField('Inference',blank=True,max_length=100)
    
 
     def __str__(self):

@@ -1,6 +1,7 @@
-from django.urls import path
-
+from django.urls import path, include
+from . import views
 from .views import *
+
 
 urlpatterns = [
     path('', home, name='home'),
@@ -13,5 +14,7 @@ urlpatterns = [
     path('addDrug', addDrug, name='addDrug'),
     path('list_drugs', list_drugs, name='list-drugs'),
     path('show_drug/<drug_id>', show_drug, name='show-drug'),
-    path('drug_csv',drug_csv,name='drug_csv')
+    path('drug_csv',drug_csv,name='drug_csv'),
+    
+
 ]
