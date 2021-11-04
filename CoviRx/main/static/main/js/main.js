@@ -1,3 +1,8 @@
+// Wait for window load
+$(window).on('load', function(){
+    $(".se-pre-con").fadeOut(1000);
+});
+
 function googleInit() {
     gapi.load('auth2', function() {
         auth2 = gapi.auth2.init({});

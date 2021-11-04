@@ -20,8 +20,6 @@ from accounts.models import User, Visitor
 from .csv_upload import get_invalid_headers, save_drugs_from_csv
 from .forms import DrugBulkUploadForm, DrugForm
 from .models import Drug, DrugBulkUpload, Contact, AddDrug
-from rest_framework import viewsets
-from rest_framework import permissions
 from .utils import invalid_drugs, search_fields, store_fields, verbose_names, sendmail
 import csv
 
@@ -29,7 +27,7 @@ import csv
 def drug_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=drugs.csv'
-    
+
     # Create a csv writer
     writer = csv.writer(response)
     drugs = AddDrug.objects.all()

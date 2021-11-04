@@ -19,13 +19,14 @@
 					<h4><a href="{% url 'show-drug' drug.id %}">{{ drug }}</a><br></h4>
 				</td>
 			</tr>
-			
 		{% endfor %}
 	</table>
-
 </div>
 
 {% endblock content %}
 
 {% block footer_scripts %}
+<script>
+	$('.nav-link')[5].classList.add('active'); // highlights the Contribute Drugs nav item
+</script>
 {% endblock footer_scripts %}

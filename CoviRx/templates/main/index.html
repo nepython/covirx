@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="no-js">
 <head>
     {% load static %}
     <meta charset="utf-8" />
@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
     <link rel="stylesheet" href={% static "main/css/main.css"%} />
+    <style>.se-pre-con {background: url({% static "main/images/Preloader.gif" %}) center no-repeat #fff;}</style>
     {% block extra_head %}
     <link rel="stylesheet" href={% static "main/css/home.css"%} />
     <link rel="stylesheet" href="https://simeydotme.github.io/jQuery-ui-Slider-Pips/dist/css/jqueryui.min.css" />
@@ -18,18 +19,17 @@
     {% endblock %}
 </head>
 <body>
+    <div class="se-pre-con"></div>
     {% block header %}
     <nav class="navbar navbar-expand-lg navbar-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/">CoviRx</a>
-
-    <!-- <img class="covirx-nav-logo" src="admin-interface/logo/covirx_light.png" alt="logo"> -->
-
-     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#header" aria-controls="header" aria-expanded="false" aria-label="Toggle navigation">
-
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="header">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img class="covirx-nav-logo" src="admin-interface/logo/covirx_light.png" alt="CoviRx">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#header" aria-controls="header" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="header">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link" href="/">Home</a>
@@ -46,27 +46,22 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'references' %}">References</a>
                     </li>
-                </ul>
-
-                {% if user.is_authenticated %}
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Contribute Drugs
-                        </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                Contribute Drugs
+                            </a>
+                            <ul class="dropdown-menu w-100" aria-labelledby="navbarDropdown">
                                 <li><a font-weight="normal" class="dropdown-item" href="{% url 'addDrug' %}">Add Drug</a></li>
                                 <li><a class="dropdown-item" href="{% url 'list-drugs' %}">View Drugs</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{% url 'drug_csv' %}">Download</a></li>
                             </ul>
                         </li>
-                      
-                        <li>
-                            <button type="button" class="btn btn-primary"><a class="nav-link" href="{% url 'logout' %}">Logout</a></button>
-                        </li>
                     </ul>
-
+                </ul>
+                {% if user.is_authenticated %}
+                    <button type="button" class="btn btn-primary header-logout"><a class="nav-link" href="{% url 'logout' %}">Logout</a></button>
                 {% else %}
                     <button class="btn btn-primary header-login" data-bs-toggle="modal" data-bs-target="#admin-login-modal">Login<i class="bi bi-person-circle"></i></button>                 
                 {% endif %}
@@ -78,10 +73,9 @@
                         </li>
                     </ul>
                 {% endif %}
-                
-    </div>
-  </div>
-</nav>
+            </div>
+        </div>
+    </nav>
     <div id="msg" class="alert alert-primary"></div>
     <div class="modal fade show" id="admin-login-modal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
         <div class="modal-dialog modal-dialog-centered">

@@ -10,7 +10,7 @@
 	<div class="container slide-up">
 		<h1>CoviRx</h1>
 		<h2>Covid19 Drug Repurposing Database</h2>
-		
+
 		<form action="" method="POST">
 			<h3 class="form-heading">Drug Form</h3>
 			{% if submitted %}
@@ -30,7 +30,6 @@
 				</div>
 				<div class="col-5">
 					{{ form.personName }}
-					
 				</div>
 				<div class="col-4">
 					<span id="nameHelpInline" class="form-text">
@@ -68,7 +67,7 @@
 				</span>
 				</div>
 			</div>
-			
+
 			<div class="row my-3 align-items-center">
 				<div class="col-3">
 					<label for="drugName" class="col-form-label">Drug Name*</label>
@@ -139,7 +138,6 @@
 				</div>
 			</div>
 
-
 			<p class="form-text mb-3">
             	Fields marked with * are compulsory.
         	</p>
@@ -158,6 +156,6 @@
 
 {% block footer_scripts %}
 <script>
-    $('.nav-link')[3].classList.add('active'); // highlights the Contact nav item
+    $('.nav-link')[5].classList.add('active'); // highlights the Contribute Drugs nav item
 </script>
 {% endblock footer_scripts %}

@@ -11,19 +11,21 @@
     <h1>CoviRx</h1>
     <h2>Covid19 Drug Repurposing Database</h2>
     <h3 id="references-title">List of References:</h3>
-    <table id="references">
-        {% for reference in references %}
-        <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ reference }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div class="table-responsive">
+        <table id="references">
+            {% for reference in references %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ reference }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </div>
 {% endblock content %}
 
 {% block footer_scripts %}
 <script>
-    $('.nav-link')[4].classList.add('active'); // highlights the Contact nav item
+    $('.nav-link')[4].classList.add('active'); // highlights the References nav item
 </script>
 {% endblock footer_scripts %}
