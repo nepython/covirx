@@ -1,0 +1,45 @@
+{% extends 'main/index.html' %}
+{% block title %}CoviRx: Meet the Team{% endblock %}
+{% load static %}
+
+{% block extra_head %}
+<style>
+    #team-title {
+        color: #772e78;
+        text-align: center;
+    }
+    .card {
+        width: 18rem;
+        margin: 1rem;
+        border-radius: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container slide-up">
+    <h1>CoviRx</h1>
+    <h2>Covid19 Drug Repurposing Database</h2>
+    <h3 id="team-title" class="text-center fs-3">Meet the Team <i class="bi bi-emoji-laughing"></i></h3>
+    <div id="team-members" class="row justify-content-center">
+    {% for user in users %}
+        <div class="card shadow p-3 mb-5 bg-body">
+            <img class="card-img-top" src="{{user.pic}}" alt="Profile picture">
+            <div class="card-body">
+                <p class="text-uppercase fs-5 fw-bold text-center">{{user.get_full_name}}</p>
+                <p class="card-text fs-6">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <div class="row justify-content-center">
+                    <div><a href="mailto:{{user.email}}"><i class="bi bi-envelope fs-3"></i></a></div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+{% endblock content %}
+
+{% block footer_scripts %}
+<script>
+    $('.nav-link')[2].classList.add('active'); // highlights the Team nav item
+</script>
+{% endblock footer_scripts %}

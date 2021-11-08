@@ -2,6 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.db import models
 
 from .models import User, Visitor, Invitee
 
@@ -73,12 +74,19 @@ def enable_email(modeladmin, request, queryset):
 class UserAdmin(BaseUserAdmin):
     form = UpdateUserForm
     add_form = AddUserForm
+    formfield_overrides = {
+        models.TextField: {
+            'widget': forms.Textarea(
+                attrs={'rows': 1, 'cols': 80, 'style': 'height: 1.5em;'}
+            )
+        }
+    }
     actions = [disable_email, enable_email]
     list_display = ('email', 'first_name', 'last_name', 'is_staff', 'email_notifications')
     list_filter = ('is_staff', )
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'description', 'pic')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'email_notifications')}),
     )
     add_fieldsets = (

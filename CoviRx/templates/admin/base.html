@@ -1,7 +1,7 @@
 {% extends "admin/base.html" %}
 {% load i18n static %}
 {% block blockbots %}
-<link rel="stylesheet" href={% static "admin/css/covirx-nav.css"%} />
+<link rel="stylesheet" href={% static "admin/css/covirx-admin-base.css"%} />
 <style>.se-pre-con {background: url({% static "main/images/Preloader.gif"%}) center no-repeat #fff;}</style>
 <script src={% static "main/js/jquery-3.6.0.min.js"%} type="text/javascript"></script>
 <script src={% static "admin/js/pre-loader.js"%} type="text/javascript"></script>
@@ -37,7 +37,7 @@
                                 <a class="nav-link" href="#">Purpose</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Team</a>
+                                <a class="nav-link" href="{% url 'team' %}">Team</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'contact' %}">Contact</a>

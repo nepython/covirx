@@ -60,12 +60,22 @@ def addDrug(request):
         form = DrugForm(request.POST)
         if form.is_valid():
             form.save()
+            try:
+                added_drug = AddDrug.objects.get(personName=request.POST.get('personName'), drugName=request.POST.get('drugName'))
+                email = request.POST.get('email')
+                html = get_template('mail_templates/addDrug.html').render({'added_drug': added_drug})
+                recepients = list(User.objects.filter(email_notifications=True).values_list('email', flat=True))
+                bcc = [email] if request.POST.get('response-copy') else list()
+                log = f'Copy of mail successfully sent for new drug received from {added_drug.personName}'
+                Thread(target = sendmail, args = (html, 'New drug submitted to CoviRx', recepients, bcc, log)).start() # async from the process so that the view gets returned post successful save
+            except:
+                pass
             return HttpResponseRedirect('/addDrug?submitted=True')
     else:
         form = DrugForm
         if 'submitted' in request.GET:
             submitted = True
-    return render(request , 'main/addDrug.html', 
+    return render(request , 'main/addDrug.html',
         {'form':form,'submitted':submitted})
 
 
@@ -120,6 +130,11 @@ def contact(request):
             log = f'Mail successfully sent for message received from {contact.name}'
             Thread(target = sendmail, args = (html, contact.subject, recepients, bcc, log)).start() # async from the process so that the view gets returned post successful save
     return render(request, 'main/contact.html', res)
+
+
+def team(request):
+    users = User.objects.all()
+    return render(request, 'main/team.html', {'users': users})
 
 
 def references(request):
@@ -184,9 +199,11 @@ def csv_upload_updates(request):
 column_order = OrderedDict({
     'Day': 0,
     'Home': 1,
-    'References': 2,
-    'Contact': 3,
-    'Website': 4,
+    'Purpose': 2,
+    'Team': 3,
+    'References': 4,
+    'Contact': 5,
+    'Website': 6,
 })
 drug_label = {
     '1': 'White',

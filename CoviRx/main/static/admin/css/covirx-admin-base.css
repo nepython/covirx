@@ -119,3 +119,8 @@ color: #fff;
     text-decoration: none;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
 }
+@media (max-width: 1370px) {
+    #branding {
+        opacity: 0;
+    }
+}

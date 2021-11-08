@@ -21,6 +21,7 @@ function load_charts(requested_charts) {
     });
 }
 function VisitorsChart(data) {
+    console.log(data);
     // Some raw data (not necessarily accurate)
     var data = google.visualization.arrayToDataTable(data);
     var options = {
@@ -28,7 +29,7 @@ function VisitorsChart(data) {
         vAxis: {title: 'Unique Visitors'},
         hAxis: {title: 'Days'},
         seriesType: 'bars',
-        series: {3: {type: 'line'}},
+        series: {5: {type: 'line'}},
         titleTextStyle: {italic: true},
         backgroundColor: '#e7f8ff',
     };

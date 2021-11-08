@@ -2,10 +2,10 @@
     margin-top: 75px;
 }
 .container h1 {
-	font-size: 6.7vw;
+	font-size: calc(1.375rem + 5.5vw)
 }
 .container h2 {
-    font-size: 3.3vw;
+    font-size: calc(.325rem + 2.5vw);
     margin-bottom: 30px;
 }
 .container h1, h2 {

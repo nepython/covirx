@@ -69,6 +69,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     # last_login field supplied by AbstractBaseUser
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=150, blank=True)
+    description = models.CharField(_('Short Description'), max_length=150, blank=True)
     email_notifications = models.BooleanField(
         _('Email Notifications'),
         default=True,
@@ -101,7 +102,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
 
     google_oauth_id = models.TextField(_('Google Token ID'), help_text=_('Used for social oauth'), default=None, blank=True, null=True)
-    pic = models.TextField(default='https://randomuser.me/api/portraits/lego/2.jpg')
+    pic = models.TextField(_('Profile picture link'), default='https://randomuser.me/api/portraits/lego/2.jpg')
 
     objects = UserManager()
 

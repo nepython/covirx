@@ -1,7 +1,20 @@
+/* hide scrollbar but allow scrolling */
+body {
+    -ms-overflow-style: none; /* for Internet Explorer, Edge */
+    scrollbar-width: none; /* for Firefox */
+    overflow-y: scroll; 
+}
+body::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
+}
+
 #references td,
 #references th {
     border: 1px solid #ddd;
     padding: 8px;
+}
+#references td.reference-content {
+    word-break: break-word;
 }
 
 #references tr:nth-child(even) {

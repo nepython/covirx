@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Covid19 Drug Repurposing database." />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>CoviRx: Covid19 Drug Repurposing Database</title>
+        <style>
+            body {
+                background-image: linear-gradient(315deg, rgba(0, 8, 255, 0.7), rgba(226, 21, 49, 0.5), rgba(255, 0, 13, 0.596));
+                background-attachment: fixed;
+            }
+            .container {
+                width: 75%;
+                padding: 1.5vw;
+                background-color: white;
+                border-radius: 1rem;
+                margin: 6vw;
+            }
+            #message {
+                white-space: pre-wrap;
+                margin-top: 0;
+                min-height: 1rem;
+            }
+            .container h1, h2 {
+                font-family: "Sans Serif";
+                text-align: center;
+                color: rgba(89, 2, 122, 0.67);
+                white-space: nowrap;
+                letter-spacing: 0px;
+                word-break: normal;
+                font-weight: bold;
+                filter: drop-shadow(rgba(0, 0, 0, 0.65) 0px 6px 6px);
+            }
+            .container h1 {
+                font-size: 6.7vw;
+                margin-bottom: 0;
+                margin-top: 0;
+            }
+            .container h2 {
+                font-size: 2.1vw;
+                margin-top: 0;
+            }
+            form {
+                border-radius: 40px;
+                padding: 6%;
+                width: 80%;
+                margin: auto;
+                border-style: solid;
+            }
+            .form-heading {
+                text-align: center;
+                font-size: 50px;
+                font-weight: bold;
+                padding: 10px;
+                font-family: Arial, Helvetica, sans-serif;
+                color: #6d3283;
+                margin-top: 0;
+    	        margin-bottom: .5rem;
+	            line-height: 1.2;
+            }
+            .col-form-label {
+                font-size: 1.5rem;
+                font-weight: bold;
+            }
+            .my-5 {
+                margin-top: 3rem !important;
+                margin-bottom: 3rem !important;
+            }
+            .align-items-center {
+                align-items: center !important;
+            }
+            .my-3 {
+                margin-top: 1rem !important;
+                margin-bottom: 1rem !important;
+            }
+            .col-form-label {
+                padding-top: calc(.375rem + 1px);
+                padding-bottom: calc(.375rem + 1px);
+                margin-bottom: 0;
+                line-height: 1.5;
+            }
+            label {
+                display: inline-block;
+            }
+            .form-control {
+                display: block;
+                width: 95%;
+                padding: .375rem .75rem;
+                font-size: 1rem;
+                font-weight: 400;
+                line-height: 1.5;
+                color: #212529;
+                background-color: #fff;
+                background-clip: padding-box;
+                border: 1px solid #ced4da;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                border-radius: .25rem;
+                transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+            }
+            input {
+                margin: 0;
+                font-family: inherit;
+                font-size: inherit;
+                line-height: inherit;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container slide-up">
+            <h1>CoviRx</h1>
+            <h2>Covid19 Drug Repurposing Database</h2>
+            <form class="my-5">
+                <h3 class="form-heading">Drug Form</h3>
+                <div class="row my-3 align-items-center">
+                    <div class="col-4">
+                        <label for="name" class="col-form-label">Name*</label>
+                    </div>
+                    <div class="col-7">
+                        <input name="name" type="text" id="name" class="form-control" value="{{added_drug.personName}}" disabled>
+                    </div>
+                </div>
+                <div class="row my-3 align-items-center">
+                    <div class="col-4">
+                        <label for="email" class="col-form-label">Email*</label>
+                    </div>
+                    <div class="col-7">
+                        <input name="email" type="email" id="email" class="form-control" value="{{added_drug.email}}" disabled>
+                    </div>
+                </div>
+                <div class="row my-3 align-items-center">
+                    <div class="col-4">
+                        <label for="organisation" class="col-form-label">Organisation*</label>
+                    </div>
+                    <div class="col-7">
+                        <input name="organisation" type="text" id="organisation" class="form-control" value="{{added_drug.organisation}}" disabled>
+                    </div>
+                </div>
+                <div class="row my-3 align-items-center">
+                    <div class="col-4">
+                        <label for="drug_name" class="col-form-label">Drug Name*</label>
+                    </div>
+                    <div class="col-7">
+                        <input name="drug_name" type="text" id="drug_name" class="form-control" value="{{added_drug.drugName}}" disabled>
+                    </div>
+				</div>
+				<div class="row my-3 align-items-center">
+                    <div class="col-4">
+                        <label for="invitro" class="col-form-label">Invitro</label>
+                    </div>
+                    <div class="col-7">
+                        <input name="invitro" type="text" id="invitro" class="form-control" value="{{added_drug.invitro}}" disabled>
+                    </div>
+				</div>
+				<div class="row my-3 align-items-center">
+                    <div class="col-4">
+                        <label for="invivo" class="col-form-label">Invivo*</label>
+                    </div>
+                    <div class="col-7">
+                        <input name="invivo" type="text" id="invivo" class="form-control" value="{{added_drug.invivo}}" disabled>
+                    </div>
+				</div>
+				<div class="row my-3 align-items-center">
+                    <div class="col-4">
+                        <label for="exvivo" class="col-form-label">Exvivo*</label>
+                    </div>
+                    <div class="col-7">
+                        <input name="exvivo" type="text" id="exvivo" class="form-control" value="{{added_drug.exvivo}}" disabled>
+                    </div>
+				</div>
+				<div class="row my-3 align-items-center">
+                    <div class="col-4">
+                        <label for="activity_results" class="col-form-label">Activity Results*</label>
+                    </div>
+                    <div class="col-7">
+                        <input name="activity_results" type="text" id="activity_results" class="form-control" value="{{added_drug.results}}" disabled>
+                    </div>
+				</div>
+				<div class="row my-3 align-items-center">
+                    <div class="col-4">
+                        <label for="inference" class="col-form-label">Inference*</label>
+                    </div>
+                    <div class="col-7">
+                        <input name="inference" type="text" id="inference" class="form-control" value="{{added_drug.inference}}" disabled>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>
