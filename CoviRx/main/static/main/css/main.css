@@ -2,10 +2,10 @@
     margin-top: 75px;
 }
 .container h1 {
-	font-size: calc(1.375rem + 5.5vw)
+	font-size: calc(.75rem + 3.5vw);
 }
 .container h2 {
-    font-size: calc(.325rem + 2.5vw);
+    font-size: calc(.5rem + 1.5vw);
     margin-bottom: 30px;
 }
 .container h1, h2 {
@@ -28,7 +28,7 @@
     }
 }
 nav .container-fluid {
-	font-size: 30px;
+	font-size: 20px;
 	padding: 0 10%;
 }
 nav .navbar-brand {
@@ -39,32 +39,29 @@ nav .covirx-nav-logo {
 }
 .header-login, .header-logout a, .header-login:hover, .header-logout a:hover {
     color: white;
-    font-size: 30px;
+    font-size: 20px;
     text-decoration: unset;
 }
 .header-logout a, .header-logout a:hover {
     padding: unset;
 }
-nav {
+.site-header {
     z-index: 1000;
     position: fixed !important;
     width: 100%;
-    background-color: #772e78;
     top: 0;
 }
-.alert {
-    padding: unset;
-    display: none;
-    top: 4.5rem;
-    width: 100%;
-    text-align: center;
+nav {
+    background-color: #772e78;
 }
 #msg {
+    width: 100%;
+    text-align: center;
     white-space: nowrap;
     overflow: hidden;
     display: block;
     text-overflow: ellipsis;
-    padding: 8px 0px 0px 30px;
+    padding: unset;
     line-height: 1;
 }
 @media (min-width: 576px){

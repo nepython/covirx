@@ -53,8 +53,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
-    
-    
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -170,6 +168,8 @@ if not EMAIL_HOST_PASSWORD:
 
 # For OAuth2
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+# For ReCaptcha
+GOOGLE_INVISIBLE_RECAPTCHA_SECRET_KEY = os.getenv('GOOGLE_INVISIBLE_RECAPTCHA_SECRET_KEY')
 
 # PRODUCTION SETTINGS
 if not DEBUG:
@@ -179,5 +179,3 @@ if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     ALLOWED_HOSTS += ['covirx.herokuapp.com']
     SECRET_KEY = os.getenv('SECRET_KEY')
-
-

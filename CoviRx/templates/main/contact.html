@@ -101,6 +101,7 @@
         <p class="form-text mb-3">
             Fields marked with * are compulsory.
         </p>
+        <div class="g-recaptcha" data-sitekey="6LeSGWQdAAAAAKUGfRnrGQ3w2S5P15995XDeXpx6"></div>
         <div class="form-check mb-3">
             <input name="response-copy" class="form-check-input" type="checkbox" value="1" id="flexCheckChecked" checked>
             <label class="form-check-label" for="flexCheckChecked">
@@ -114,7 +115,9 @@
 {% endblock content %}
 
 {% block footer_scripts %}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script>
     $('.nav-link')[3].classList.add('active'); // highlights the Contact nav item
+    $('#msg').html("{{ msg }}").fadeIn('slow');
 </script>
 {% endblock footer_scripts %}

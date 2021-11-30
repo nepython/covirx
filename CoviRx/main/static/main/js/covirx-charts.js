@@ -1,3 +1,7 @@
+// visitors charts weekly or monthly view switch
+var isChanged = false;
+var visitor_data;
+
 function load_charts(requested_charts) {
     $.ajax({
         url: '/api/charts-json',
@@ -8,10 +12,12 @@ function load_charts(requested_charts) {
         success: function(data) {
             google.charts.load('current', {'packages':['corechart']});
             timeout = setInterval(function () {
-                if (google.visualization != undefined && google.visualization.arrayToDataTable!= undefined) {
+                if (google.visualization != undefined && google.visualization.arrayToDataTable!= undefined && google.visualization.PieChart!= undefined) {
                     clearInterval(timeout);
-                    if (data['visitors'] != undefined)
+                    if (data['visitors'] != undefined) {
                         google.charts.setOnLoadCallback(VisitorsChart(data['visitors']));
+                        visitor_data = data['visitors'];
+                    }
                     google.charts.setOnLoadCallback(DrugCategories(data['categories'], data['total_drugs']));
                     google.charts.setOnLoadCallback(DrugLabels(data['labels']));
                     google.charts.setOnLoadCallback(DrugPhase(data['phase']));
@@ -20,9 +26,10 @@ function load_charts(requested_charts) {
         }
     });
 }
+
 function VisitorsChart(data) {
-    console.log(data);
-    // Some raw data (not necessarily accurate)
+    for (i=1; i<data.length; i++)
+        data[i][0] = new Date(data[i][0]); // converting to javascript date
     var data = google.visualization.arrayToDataTable(data);
     var options = {
         title : 'Daily Visitors across the website',
@@ -32,7 +39,20 @@ function VisitorsChart(data) {
         series: {5: {type: 'line'}},
         titleTextStyle: {italic: true},
         backgroundColor: '#e7f8ff',
+        hAxis: {
+            viewWindow: {
+                min: new Date(Date.now() - 7*24*60*60*1000),
+                max: new Date()
+            },
+            gridlines: {
+                color: 'transparent'
+            }
+        },
     };
+    if (isChanged) days = 30;
+    else days = 7;
+    options.hAxis.viewWindow.min = new Date(Date.now() - days * 24*60*60*1000);
+    options.hAxis.viewWindow.max = new Date();
     var chart = new google.visualization.ComboChart(document.getElementById('visitor-chart'));
     chart.draw(data, options);
 }
@@ -74,3 +94,17 @@ function DrugPhase(data) {
     var chart = new google.visualization.BarChart(document.getElementById('drug-phase-chart'));
     chart.draw(data, options);
 };
+
+$(window).on('load', function() {
+    var button = document.getElementById('visitors-view');
+    if (button!= undefined) {
+        button.onclick = function () {
+            isChanged = !isChanged;
+            VisitorsChart(visitor_data);
+            if (isChanged)
+                {button.innerHTML= 'Change to Weekly View';}
+            else
+                {button.innerHTML = 'Change to Monthy View';}
+        };
+    }
+});

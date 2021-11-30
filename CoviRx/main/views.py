@@ -1,5 +1,6 @@
 import logging
 import json
+import requests
 from threading import Thread
 from collections import defaultdict, OrderedDict
 
@@ -7,6 +8,7 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
+from django.conf import settings
 from django.db.models import Count
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
@@ -57,15 +59,26 @@ def list_drugs(request):
 def addDrug(request):
     submitted = False
     if request.method == "POST":
-        form = DrugForm(request.POST)
+        post_data = request.POST.copy()
+        # Google recaptcha verification
+        recaptcha_response = post_data.pop('g-recaptcha-response')
+        data = {
+            'secret': settings.GOOGLE_INVISIBLE_RECAPTCHA_SECRET_KEY,
+            'response': recaptcha_response,
+        }
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        result = r.json()
+        if not result['success']:
+            return render(request, 'main/addDrug.html', {'msg': 'Invalid reCAPTCHA. Please try again.'})
+        form = DrugForm(post_data)
         if form.is_valid():
             form.save()
             try:
-                added_drug = AddDrug.objects.get(personName=request.POST.get('personName'), drugName=request.POST.get('drugName'))
-                email = request.POST.get('email')
+                added_drug = AddDrug.objects.get(personName=post_data.get('personName'), drugName=post_data.get('drugName'))
+                email = post_data.get('email')
                 html = get_template('mail_templates/addDrug.html').render({'added_drug': added_drug})
                 recepients = list(User.objects.filter(email_notifications=True).values_list('email', flat=True))
-                bcc = [email] if request.POST.get('response-copy') else list()
+                bcc = [email] if post_data.get('response-copy') else list()
                 log = f'Copy of mail successfully sent for new drug received from {added_drug.personName}'
                 Thread(target = sendmail, args = (html, 'New drug submitted to CoviRx', recepients, bcc, log)).start() # async from the process so that the view gets returned post successful save
             except:
@@ -113,9 +126,21 @@ def contact(request):
     res = {'success': False}
     if request.method == "POST":
         contact = Contact()
-        for field in request.POST:
+        post_data = request.POST.copy()
+         # Google recaptcha verification
+        recaptcha_response = post_data.pop('g-recaptcha-response')
+        data = {
+            'secret': settings.GOOGLE_INVISIBLE_RECAPTCHA_SECRET_KEY,
+            'response': recaptcha_response,
+        }
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        result = r.json()
+        if not result['success']:
+            res['msg'] = 'Invalid reCAPTCHA. Please try again.'
+            return render(request, 'main/contact.html', res)
+        for field in post_data:
             if field in contact.__dict__:
-                contact.__dict__.update({field: request.POST.get(field)})
+                contact.__dict__.update({field: post_data.get(field)})
         try:
             contact.full_clean()
         except Exception as e:
@@ -123,7 +148,7 @@ def contact(request):
         finally:
             res['success'] = True
             contact.save()
-            contact.copy = True if request.POST.get('response-copy') else False
+            contact.copy = True if post_data.get('response-copy') else False
             html = get_template('mail_templates/contact.html').render({'contact': contact})
             recepients = list(User.objects.filter(email_notifications=True).values_list('email', flat=True))
             bcc = [contact.email] if contact.copy else list()
@@ -132,9 +157,8 @@ def contact(request):
     return render(request, 'main/contact.html', res)
 
 
-def team(request):
-    users = User.objects.all()
-    return render(request, 'main/team.html', {'users': users})
+def organisations(request):
+    return render(request, 'main/organisations.html')
 
 
 def references(request):
@@ -143,7 +167,7 @@ def references(request):
     return render(request, 'main/references.html', {'references': refs})
 
 
-@user_passes_test(lambda u: u.is_staff, login_url='/admin/login/')
+@user_passes_test(lambda u: u.is_staff, login_url='/login/')
 def csv_upload(request):
     if request.method == 'GET':
         form = DrugBulkUploadForm()
@@ -170,7 +194,7 @@ def csv_upload(request):
         return JsonResponse({})
 
 
-@user_passes_test(lambda u: u.is_staff, login_url='/admin/login/')
+@user_passes_test(lambda u: u.is_staff, login_url='/login/')
 def csv_upload_updates(request):
     if request.method == 'GET':
         pk = request.GET.get('cancel-upload')
@@ -200,7 +224,7 @@ column_order = OrderedDict({
     'Day': 0,
     'Home': 1,
     'Purpose': 2,
-    'Team': 3,
+    'Organisations': 3,
     'References': 4,
     'Contact': 5,
     'Website': 6,

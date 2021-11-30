@@ -1,3 +1,6 @@
+html {
+    overflow-y: scroll; /* Prevents page from repositioning itself when overflowed */
+}
 .container {
     margin-top: 20vh;
 }
@@ -156,7 +159,7 @@ form#identifiers {
     overflow: auto;
 }
 #suggestions .suggestion.row {
-    border-top: 4px dotted blue;
+    border-top: 2px solid blue;
     margin: unset;
 }
 #suggestions .suggestion-field {

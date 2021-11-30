@@ -1,0 +1,122 @@
+{% extends 'main/index.html' %}
+{% block title %}CoviRx: Participating Organisations{% endblock %}
+{% load static %}
+
+{% block extra_head %}
+<style>
+    #organisations-title {
+        color: #772e78;
+        text-align: center;
+    }
+    .card {
+        width: 16rem;
+        height: 16rem;
+        margin: 0.7rem;
+        position: relative;
+    }
+    .card-img-top {
+        max-height: 80%;
+        max-width: 80%;
+        width: auto;
+        height: auto;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        transition: 0.5s;
+    }
+    .card-img-top:hover {
+        max-height: 90%;
+        max-width: 90%;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container slide-up">
+    <h1>CoviRx</h1>
+    <h2>Covid19 Drug Repurposing Database</h2>
+    <h3 id="organisations-title" class="text-center fs-3">Participating Organisations</h3>
+    <div id="organisations-list" class="row justify-content-center">
+        <div class="card mb-4 bg-body">
+            <a href="https://www.csiro.au/">
+                <img class="card-img-top" src='{% static "main/images/csiro.jpg" %}' alt="CSIRO">
+            </a>
+        </div>
+        <div class="card mb-4 bg-body">
+            <a href="https://www.health.gov.au/campaigns/mrff">
+                <img class="card-img-top" src='{% static "main/images/mrff.jpg" %}' alt="MRFF">
+            </a>
+        </div>
+        <div class="card mb-4 bg-body">
+            <a href="https://www.barwonhealth.org.au/">
+                <img class="card-img-top" src='{% static "main/images/barwon_health.png" %}' alt="Barwon Health">
+            </a>
+        </div>
+        <div class="card mb-4 bg-body">
+            <a href="https://www.bits-pilani.ac.in/">
+                <img class="card-img-top" src='{% static "main/images/bits_pilani.png" %}' alt="BITS Pilani">
+            </a>
+        </div>
+        <div class="card mb-4 bg-body">
+            <a href="https://www.griffith.edu.au/griffith-sciences/compounds-australia">
+                <img class="card-img-top" src='{% static "main/images/compunds_aus.jpeg" %}' alt="Compounds Australia">
+            </a>
+        </div>
+        <div class="card mb-4 bg-body">
+            <a href="https://www.deakin.edu.au/">
+                <img class="card-img-top" src='{% static "main/images/deakin_university.jpg" %}' alt="Deakin University">
+            </a>
+        </div>
+        <div class="card mb-4 bg-body">
+            <a href="https://www.doherty.edu.au/">
+                <img class="card-img-top" src='{% static "main/images/doherty.png" %}' alt="Doherty Institute">
+            </a>
+        </div>
+        <div class="card mb-4 bg-body">
+            <a href="https://www.griffith.edu.au/">
+                <img class="card-img-top" src='{% static "main/images/griffith.png" %}' alt="Griffith University">
+            </a>
+        </div>
+        <div class="card mb-4 bg-body">
+            <a href="https://www.monash.edu/">
+                <img class="card-img-top" src='{% static "main/images/monash_uni.png" %}' alt="Monash University">
+            </a>
+        </div>
+        <div class="card mb-4 bg-body">
+            <a href="https://www.qimrberghofer.edu.au/">
+                <img class="card-img-top" src='{% static "main/images/qimr.png" %}' alt="QIMR Berghofer Medical  Research Institute">
+            </a>
+        </div>
+        <div class="card mb-4 bg-body">
+            <a href="https://www.swinburne.edu.au/">
+                <img class="card-img-top" src='{% static "main/images/swinburne.png" %}' alt="Swinburne university of Technology">
+            </a>
+        </div>
+        <div class="card mb-4 bg-body">
+            <a href="https://www.unimelb.edu.au/">
+                <img class="card-img-top" src='{% static "main/images/melbourne.jpg" %}' alt="University of Melbourne">
+            </a>
+        </div>
+        <div class="card mb-4 bg-body">
+            <a href="https://www.unsw.edu.au/">
+                <img class="card-img-top" src='{% static "main/images/unsw.jpg" %}' alt="University of New South Wales">
+            </a>
+        </div>
+        <div class="card mb-4 bg-body">
+            <a href="https://www.usq.edu.au/">
+                <img class="card-img-top" src='{% static "main/images/queensland.png" %}' alt="University of Queensland">
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block footer_scripts %}
+<script>
+    $('.nav-link')[2].classList.add('active'); // highlights the Organisations nav item
+</script>
+{% endblock footer_scripts %}
