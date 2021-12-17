@@ -1,6 +1,8 @@
 import logging
 import json
 import requests
+from io import StringIO
+from wsgiref.util import FileWrapper
 from threading import Thread
 from collections import defaultdict, OrderedDict
 
@@ -23,24 +25,21 @@ from .csv_upload import get_invalid_headers, save_drugs_from_csv
 from .forms import DrugBulkUploadForm, DrugForm
 from .models import Drug, DrugBulkUpload, Contact, AddDrug
 from .utils import invalid_drugs, search_fields, store_fields, verbose_names, sendmail
+from .tanimoto import similar_drugs
 import csv
 
 
 def drug_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=drugs.csv'
-
     # Create a csv writer
     writer = csv.writer(response)
     drugs = AddDrug.objects.all()
-
     # Add column headings to the csv file
     writer.writerow(['Name of Person','Email id','Organization','Drug name','Invitro','Invivo','Exvivo','Activity Results(IC50/EC50)','Inference'])
-
     # Loop Thu and output
     for drug in drugs:
         writer.writerow([drug.personName, drug.email, drug.organisation, drug.drugName, drug.invitro, drug.invivo, drug.exvivo, drug.results, drug.inference])
-
     return response
 
 
@@ -56,7 +55,7 @@ def list_drugs(request):
         {'drugs_list':drugs_list})
 
 
-def addDrug(request):
+def add_drug(request):
     submitted = False
     if request.method == "POST":
         post_data = request.POST.copy()
@@ -69,26 +68,26 @@ def addDrug(request):
         r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
         result = r.json()
         if not result['success']:
-            return render(request, 'main/addDrug.html', {'msg': 'Invalid reCAPTCHA. Please try again.'})
+            return render(request, 'main/add_drug.html', {'msg': 'Invalid reCAPTCHA. Please try again.'})
         form = DrugForm(post_data)
         if form.is_valid():
             form.save()
             try:
                 added_drug = AddDrug.objects.get(personName=post_data.get('personName'), drugName=post_data.get('drugName'))
                 email = post_data.get('email')
-                html = get_template('mail_templates/addDrug.html').render({'added_drug': added_drug})
+                html = get_template('mail_templates/add_drug.html').render({'added_drug': added_drug})
                 recepients = list(User.objects.filter(email_notifications=True).values_list('email', flat=True))
                 bcc = [email] if post_data.get('response-copy') else list()
                 log = f'Copy of mail successfully sent for new drug received from {added_drug.personName}'
                 Thread(target = sendmail, args = (html, 'New drug submitted to CoviRx', recepients, bcc, log)).start() # async from the process so that the view gets returned post successful save
             except:
                 pass
-            return HttpResponseRedirect('/addDrug?submitted=True')
+            return HttpResponseRedirect('/add_drug?submitted=True')
     else:
         form = DrugForm
         if 'submitted' in request.GET:
             submitted = True
-    return render(request , 'main/addDrug.html',
+    return render(request , 'main/add_drug.html',
         {'form':form,'submitted':submitted})
 
 
@@ -114,11 +113,55 @@ def search_drug(keyword, suggestions): # suggestions is the count of the number 
     drugmodels = Drug.objects.filter(**query)[:suggestions]
     for i, drug in enumerate(drugmodels):
         try:
-            drugmetadata = model_to_dict(drug, fields=store_fields+list(verbose_names.values()))
+            drugmetadata = model_to_dict(drug, fields=['label']+search_fields+list(verbose_names.values()))
             drugs[i] = drugmetadata
+            drugs[i]['id'] = str(drug.id)
         except Exception as e:
             logging.getLogger('error_logger').error(f'Error encounter white searching for drug {drug} {repr(e)}')
     return drugs
+
+
+def individual_drug(request, drug_id):
+    # Visitor.record(request)
+    drug = Drug.objects.get(pk=drug_id)
+    kwargs = {
+        'name': drug.name,
+        'chembl': drug.chembl,
+        'smiles': drug.smiles,
+        'inchi': drug.inchi,
+        'drug_likeness': {
+            'Molecular Weight': drug.mw,
+            'No. of Chiral Centres': drug.nochiralcentres,
+            'logP': drug.logp,
+            'HBA': drug.hba,
+            'HBD': drug.hbd,
+            'PSA': drug.psa,
+            'Rotation bonds': drug.rotbonds,
+            'Administration route': drug.administration_route,
+            'Indication class/ category': drug.indication_class
+        },
+        'target_models': {},
+        'other_details': {
+            'CAS Number': drug.cas_number,
+            'Formula': drug.formula,
+            'Synonyms': drug.synonyms,
+            'ChEBL': drug.chebl,
+            'PubChem ID': drug.pubchemcid,
+            'ChemBank': drug.chembank,
+            'Drug Bank': drug.drugbank,
+            'Clinical Phase': drug.phase,
+        },
+        'similar_drugs': {},
+    }
+    if 'download' in request.GET:
+        json_file = StringIO()
+        json_file.write(json.dumps(kwargs))
+        json_file.seek(0)
+        wrapper = FileWrapper(json_file)
+        response = HttpResponse(wrapper, content_type='application/json')
+        response['Content-Disposition'] = f'attachment; filename={drug.name}.json'
+        return response
+    return render(request, 'main/individual_drug.html', kwargs)
 
 
 def contact(request):
@@ -280,3 +323,18 @@ def charts_json(request):
         charts['phase'] = [['Clinical Trial Phase', 'Number of drugs']]
         charts['phase'] += [[p['phase'], p['count']] for p in phase]
     return JsonResponse(charts)
+
+
+def similar_drugs_json(request, drug_id):
+    drug = Drug.objects.get(pk=drug_id)
+    name, smile = drug.name, drug.smiles
+    ref_drugs = OrderedDict({n: s for n, s in Drug.objects.values_list('name', 'smiles') if n!=name})
+    similar__drugs = similar_drugs(ref_drugs, {name: smile})
+    similar__drugs = sorted(similar__drugs, key=similar__drugs.get)
+    similar__drugs.reverse()
+    similar__drugs = similar__drugs[:5] # Limit to top 5 similar drugs
+    response = dict()
+    for i, n in enumerate(similar__drugs):
+        d = Drug.objects.get(name=n)
+        response[i] = {'id': d.id, 'name': d.name, 'smiles': d.smiles}
+    return JsonResponse(response)

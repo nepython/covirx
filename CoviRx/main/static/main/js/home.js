@@ -87,15 +87,13 @@ $(document).ready(function(){
                         $("<div/>", {  // add a single suggestion div
                             id: key,
                             "class": "suggestion row",
-                            title: key
+                            title: key,
+                            onclick: `location.href='/drug/${val['id']}';`
                         }).appendTo("#suggestions");
                         var suggestion = $(`div[id='${key}']`);
                         suggestion.prepend("<div class='zero'></div><div class='one col-3'></div>"+
                         "<div class='two col-7'></div> <div class='three col-2'></div>");
                         addFields(key, val, suggestion);
-                        if ($("#suggestions")[0].childElementCount==1) {
-                            suggestion.css("background-color", "rgba(211, 211, 211, 0.39)");
-                        }
                     });
                     $(`.suggestion-field-${identifier}`).css("font-weight", "bold");
                 }
@@ -116,7 +114,7 @@ $(document).ready(function(){
         $(".suggestion").html(`<i class="bi bi-emoji-frown"></i>
         <p>Sorry, we could not find a drug starting with the keywords <div class="suggestion-field"
         style="width: max-content;padding-top: unset;">${fields}</div>&nbsp;
-        in our database.</p>`)
+        in our database.</p>`);
     }
 
     var colMap = {
@@ -124,8 +122,8 @@ $(document).ready(function(){
         'name': 1,
         'synonyms': 1,
         'chebl': 1,
-        'pubchem': 1,
-        'cas': 2,
+        'pubchemcid': 1,
+        'cas_number': 2,
         'smiles': 2,
         'inchi': 2,
         'indication_class': 2,
@@ -146,7 +144,6 @@ $(document).ready(function(){
                 $("<div/>", {
                     id: `${key}-suggestion-field-${k}`,
                     "class": `suggestion-field suggestion-field-${k}`,
-                    title: k
                 }).appendTo(suggestion[0].children[colMap[k]]);
                 $(`div[id='${key}-suggestion-field-${k}']`).html(v!=null?v:"-NA-");
                 if (k=="smiles") { addSMILESVisualization(key, k, v, suggestion[0].children[3]); }
@@ -158,7 +155,6 @@ $(document).ready(function(){
         $("<canvas/>", {
             id: `${key}-suggestion-field-canvas`,
             "class": `suggestion-field-canvas`,
-            title: k,
         }).appendTo(parent);
         let options = {
             width: 140,
@@ -207,8 +203,3 @@ function closeNav() {
     $("#identifier-sidenav").removeClass("open");
     $(".sidenav-modal").css("display", "none");
 }
-
-
-
-
-

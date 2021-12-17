@@ -1,0 +1,87 @@
+html {
+    overflow: auto;
+}
+.drug-container, #smiles-visualization {
+    border: 3px solid;
+    border-color: rgba(89, 2, 122, 0.3);
+    border-radius: .6rem;
+    margin-top: 2rem;
+}
+.drug-container-name {
+    margin-top: -38px;
+    background: white;
+    width: max-content;
+    height: max-content;
+    margin-bottom: unset;
+    text-transform: uppercase;
+    font-weight: 900;
+}
+.property-name {
+    font-weight: 900;
+    font-size: 16px;
+    color: rgba(89, 2, 122, 1);
+}
+.property-value {
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+    text-overflow: ellipsis;
+}
+.property-value:hover {
+    overflow: unset;
+    z-index: 100;
+    background-color: white;
+    position: relative;
+    width: max-content;
+    border: solid thin;
+    border-radius: 17px;
+    box-shadow: 0px 8px 10px lightgray, -10px 8px 15px lightgray,
+        10px 8px 15px lightgray;
+    padding: 4px;
+    margin-bottom: -10px;
+}
+#keyword {
+    border-radius: 20px 0 0 20px;
+}
+#search {
+    border-radius: 0 20px 20px 0;
+}
+.smiles-inchi {
+    border: 1px solid #ced4da;
+    border-radius: .3rem;
+    background-color: #e9ecef;
+}
+#share-drug-info {
+    display: none;
+}
+
+#no-match.no-match.suggestion.row i.bi.bi-emoji-frown {
+    text-align: center !important;
+    font-size: 16px !important;
+}
+#suggestions {
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0px 8px 10px lightgray, -10px 8px 15px lightgray,
+        10px 8px 15px lightgray;
+    max-height: 45vh;
+    overflow: auto;
+    font-size: 16px;
+}
+#suggestions .one, #suggestions .two, #similar_drugs .one, #similar_drugs .two {
+    display: flex;
+    align-items: center;
+}
+#suggestions .suggestion.row, #similar_drugs .suggestion.row {
+    border-top: 2px solid blue;
+    margin: unset;
+}
+#suggestions .suggestion-field, #similar_drugs .suggestion.row {
+    padding: 8px 0px 0px 0px;
+    font-weight: bolder;
+    color: purple;
+}
+.suggestion.row:not(.no-match):hover {
+    cursor: pointer;
+    background-color: rgba(211, 211, 211, 0.39);
+}

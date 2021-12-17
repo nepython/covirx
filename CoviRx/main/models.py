@@ -53,10 +53,10 @@ class Drug(models.Model):
     inchi = models.TextField(blank=True, null=True, unique=True)
     # Drug identifiers
     synonyms = models.TextField(blank=True, null=True, unique=True)
-    cas = models.TextField(blank=True, null=True, unique=True)
+    cas_number = models.TextField(blank=True, null=True, unique=True)
     chebl = models.TextField(blank=True, null=True, unique=True)
     chembl = models.TextField(blank=True, null=True)
-    pubchem = models.TextField(blank=True, null=True, unique=True)
+    pubchemcid = models.TextField(blank=True, null=True, unique=True)
     chembank = models.TextField(blank=True, null=True)
     drugbank = models.TextField(blank=True, null=True)
     indication_class = models.TextField(blank=True, null=True, verbose_name='indication_class/category')
@@ -69,6 +69,15 @@ class Drug(models.Model):
         ('4', _('Amber')),
     ]
     label = models.CharField(max_length=1, choices=LABEL_CHOICES, default='1')
+    similar_drugs = models.TextField(blank=True, null=True)
+    mw = models.TextField(blank=True, null=True)
+    nochiralcentres = models.TextField(blank=True, null=True)
+    logp = models.TextField(blank=True, null=True)
+    hba = models.TextField(blank=True, null=True)
+    hbd = models.TextField(blank=True, null=True)
+    psa = models.TextField(blank=True, null=True)
+    rotbonds = models.TextField(blank=True, null=True)
+    administration_route = models.TextField(blank=True, null=True)
     custom_fields = models.JSONField(default=dict, blank=True)
 
     @classmethod
@@ -86,12 +95,12 @@ class Drug(models.Model):
     def clean(self):
         if not self.smiles:
             self.smiles = None
-        if not self.cas:
-            self.cas = None
+        if not self.cas_number:
+            self.cas_number = None
         if not self.chebl:
             self.chebl = None
-        if not self.pubchem:
-            self.pubchem = None
+        if not self.pubchemcid:
+            self.pubchemcid = None
 
     def __str__(self):
         return f"{self.name}"
@@ -103,9 +112,9 @@ class Drug(models.Model):
             models.Index(fields=['smiles',]),
             models.Index(fields=['inchi',]),
             models.Index(fields=['synonyms',]),
-            models.Index(fields=['cas',]),
+            models.Index(fields=['cas_number',]),
             models.Index(fields=['chebl',]),
-            models.Index(fields=['pubchem',]),
+            models.Index(fields=['pubchemcid',]),
         ]
 
 
@@ -122,7 +131,7 @@ class DrugBulkUpload(models.Model):
     valid_count = models.IntegerField(default=0)
     invalid_count = models.IntegerField(default=0)
     total_count = models.IntegerField(default=0)
-    uploaded_by = models.CharField(max_length=40, blank=False, null=False)
+    uploaded_by = models.CharField(max_length=100, blank=False, null=False)
 
     def invalid_drug(self):
         """ Increments the counter for invalid drugs, is useful to display while uploading """
