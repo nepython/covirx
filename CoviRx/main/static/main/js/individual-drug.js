@@ -1,18 +1,4 @@
 $(document).ready(function(){
-    // DRAW SMILES
-    let options = {
-        width: 265,
-        height: 265,
-        terminalCarbons:true,
-        compactDrawing:false,
-        explicitHydrogens:false
-    };
-    // Initialize the drawer to draw to canvas
-    let smilesDrawer = new SmilesDrawer.Drawer(options);
-    SmilesDrawer.parse("{{ smiles }}", function(tree) {
-        smilesDrawer.draw(tree, "smiles-visualization", "light", false);
-    });
-
     // COPY LINK TO CLIPBOARD
     var $temp = $("<input>");
     var $url = $(location).attr('href');
@@ -79,7 +65,7 @@ $(document).ready(function(){
             "class": "no-match suggestion row",
             title: "No results found!"
         }).appendTo("#suggestions")
-        $(".suggestion").html(`<i class="bi bi-emoji-frown"></i>
+        $("#no-match").html(`<i class="bi bi-emoji-frown"></i>
         <p>Sorry, we could not find a drug starting with the keywords ${fields}
         in our database.</p>`);
     }
@@ -117,11 +103,11 @@ $(document).ready(function(){
         $(".flat-loader").css('display', 'none');
         if (isEmptyObject(data)) {
             $("<div/>", {
-                id: "no-match",
-                "class": "no-match suggestion row",
+                id: "no-similar-match",
+                "class": "no-similar-match suggestion row",
                 title: "No results found!"
             }).appendTo("#similar_drugs")
-            $(".suggestion").html("<p>No similar drug found in our database.</p>");
+            $("#no-similar-match").html("<p>No similar drug found in our database.</p>");
         }
         else {
             $.each(data, function(key, val) {

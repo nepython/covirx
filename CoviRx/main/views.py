@@ -24,7 +24,7 @@ from accounts.models import User, Visitor
 from .csv_upload import get_invalid_headers, save_drugs_from_csv
 from .forms import DrugBulkUploadForm, DrugForm
 from .models import Drug, DrugBulkUpload, Contact, AddDrug
-from .utils import invalid_drugs, search_fields, store_fields, verbose_names, sendmail
+from .utils import invalid_drugs, search_fields, store_fields, verbose_names, target_model_names, sendmail
 from .tanimoto import similar_drugs
 import csv
 
@@ -140,7 +140,8 @@ def individual_drug(request, drug_id):
             'Administration route': drug.administration_route,
             'Indication class/ category': drug.indication_class
         },
-        'target_models': {},
+        'activity_rank': drug.rank_score,
+        'target_models': {k: v for k, v in drug.custom_fields.items() if k in target_model_names},
         'other_details': {
             'CAS Number': drug.cas_number,
             'Formula': drug.formula,
@@ -151,7 +152,7 @@ def individual_drug(request, drug_id):
             'Drug Bank': drug.drugbank,
             'Clinical Phase': drug.phase,
         },
-        'similar_drugs': {},
+        'filters_passed': drug.filters_passed,
     }
     if 'download' in request.GET:
         json_file = StringIO()
@@ -221,8 +222,7 @@ def csv_upload(request):
             raise ValidationError('The submitted form is invalid!')
         csv_file = form.cleaned_data['csv_file']
         if not csv_file.name.endswith('.csv'):
-            messages.error(request, 'File is not CSV type')
-            return redirect('drug-bulk-upload')
+            return JsonResponse({'error': 'File is not CSV type'})
         user = '{} <{}>'.format(request.user.get_full_name(), request.user.email)
         upload = DrugBulkUpload(csv_file=csv_file, uploaded_by=user)
         upload.full_clean()
@@ -233,8 +233,7 @@ def csv_upload(request):
         return JsonResponse({'csv-id': str(upload.pk), 'invalid-headers': invalid_headers})
     except Exception as e:
         logging.getLogger('error_logger').error(f'Unable to upload file. {repr(e)}')
-        messages.error(request, f'Unable to upload file. {repr(e)}')
-        return JsonResponse({})
+        return JsonResponse({'error': f'Unable to upload file. {repr(e)}'})
 
 
 @user_passes_test(lambda u: u.is_staff, login_url='/login/')

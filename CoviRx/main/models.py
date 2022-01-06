@@ -68,6 +68,7 @@ class Drug(models.Model):
         ('3', _('Red')),
         ('4', _('Amber')),
     ]
+    # Other parameters
     label = models.CharField(max_length=1, choices=LABEL_CHOICES, default='1')
     similar_drugs = models.TextField(blank=True, null=True)
     mw = models.TextField(blank=True, null=True)
@@ -78,6 +79,8 @@ class Drug(models.Model):
     psa = models.TextField(blank=True, null=True)
     rotbonds = models.TextField(blank=True, null=True)
     administration_route = models.TextField(blank=True, null=True)
+    rank_score = models.TextField(blank=True, null=True)
+    filters_passed = models.IntegerField(default=0)
     custom_fields = models.JSONField(default=dict, blank=True)
 
     @classmethod

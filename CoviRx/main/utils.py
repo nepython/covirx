@@ -23,6 +23,22 @@ store_fields = [f.name for f in Drug._meta.get_fields() if f.name not in ignore_
 # Dictionary contains the list of all invalidated drugs during drug upload
 invalid_drugs = OrderedDict()
 
+target_model_names = [
+    'Caco2 Ellinger',
+    'Vero-E6 Zaliani',
+    'Vero-E6 Touret',
+    'HRCE Heiser',
+    '3CLPro Kuzikov',
+    'Vero-E6 Riva',
+    'Bakowski',
+    'SARS-CoV Pseudotyped particle entry Vero E6 - NCATS and PubChem (AID:1479145)',
+    'SARS-CoV Pseudotyped particle entry Vero E6 (Tox counterscreen)- NCATS and PubChem (AID:1479150)',
+    'MERS Pseudotyped particle entry Huh7 - NCATS and PubChem (AID:1479149)',
+    'MERS Pseudotyped particle entry Huh7 (Tox counterscreen) - NCATS and PubChem (AID:1479147)',
+    'SARS-CoV-2 cytopathic effect (CPE)(Tox counterscreen) - NCATS, PubChem (AID:1508605) and Chen',
+    'SARS-CoV-2 cytopathic effect (CPE) - NCATS, PubChem (AID:1508606) and Chen',
+]
+
 
 def sendmail(html, subject, recepients, bcc=list(), log=None):
     """

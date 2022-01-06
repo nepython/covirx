@@ -87,7 +87,6 @@ $(document).ready(function(){
                         $("<div/>", {  // add a single suggestion div
                             id: key,
                             "class": "suggestion row",
-                            title: key,
                             onclick: `location.href='/drug/${val['id']}';`
                         }).appendTo("#suggestions");
                         var suggestion = $(`div[id='${key}']`);

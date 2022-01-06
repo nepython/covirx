@@ -67,6 +67,7 @@ html {
     max-height: 45vh;
     overflow: auto;
     font-size: 16px;
+    position: relative;
 }
 #suggestions .one, #suggestions .two, #similar_drugs .one, #similar_drugs .two {
     display: flex;
@@ -84,4 +85,16 @@ html {
 .suggestion.row:not(.no-match):hover {
     cursor: pointer;
     background-color: rgba(211, 211, 211, 0.39);
+}
+@media screen and (max-width: 485px) {
+    #d-name, #d-chembl {
+        margin: unset !important;
+    }
+    #side-col {
+        padding-left: unset !important;
+        padding-right: 4rem;
+    }
+    .container {
+        padding-left: 4rem;
+    }
 }

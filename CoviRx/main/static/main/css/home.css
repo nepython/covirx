@@ -55,7 +55,7 @@ html {
     text-transform: capitalize;
 }
 @media screen and (max-height: 450px) {
-    .identifier-sidenav {
+    .@identifier-sidenav {
         padding-top: 15px;
     }
     .identifier-sidenav a {

@@ -25,10 +25,14 @@ $('form').submit(function(e) {
         processData: false,
         success: function(data) {
             $("#updates").css("display", "block");
-            pk = data['csv-id'];
-            var fields = data['invalid-headers'].join(", ");
-            $('#msg').html(`Started databse update. The following fields were ignored, kindly add them as custom fields in the admin if they need to be stored in the database. <b>${fields}<b>`).fadeIn('slow');
-            showUpdate(0, 0, -1);
+            if (data.hasOwnProperty('error'))
+                $('#msg').html(data['error']);
+            else {
+                pk = data['csv-id'];
+                var fields = data['invalid-headers'].join(", ");
+                $('#msg').html(`Started databse update. The following fields were ignored, kindly add them as custom fields in the admin if they need to be stored in the database. <b>${fields}<b>`).fadeIn('slow');
+                showUpdate(0, 0, -1);
+            }
         }
     });
 
