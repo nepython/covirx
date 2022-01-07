@@ -121,6 +121,7 @@ nav {
     color: #fff!important;
     background-color: #29a156;
     text-transform: uppercase;
+    border: unset;
 }
 #CookielawBanner #CookielawCross {
     background: url(../images/close-ic.png) no-repeat 9px 9px;
@@ -139,4 +140,16 @@ nav {
 #CookielawBanner .Container p a {
     color: #259344;
     text-decoration: none;
+}
+#google_translate_element {
+    bottom: 75px;
+    right: 5%;
+    position: fixed;
+    z-index: 900;
+    background: #78387826;
+    padding: 8px;
+    border-radius: 10%;
+}
+body > .skiptranslate {
+    display: none;
 }

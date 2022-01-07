@@ -3,88 +3,79 @@
 {% load static %}
 
 {% block extra_head %}
+<style>
+    .cookie-policy {
+        font-size: 16px;
+    }
+    .cookie-policy li {
+        list-style-type: none;
+    }
+    .cookie-policy a {
+        text-decoration: none;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<main id="main">
-    <div class="layout-content">
-        <div class="container slide-up">
-            <h1>CoviRx</h1>
-            <h2>Covid19 Drug Repurposing Database</h2>
-            <section class="cookie-policy">
-                <h2>
-                    Definition and uses of cookies in this site
-                </h2>
-                <p>
-                A cookie is a small text file that’s stored on your computer or mobile device when you visit a website. We use them to:
+<div class="container slide-up">
+    <h1>CoviRx</h1>
+    <h2>Covid19 Drug Repurposing Database</h2>
+    <div class="cookie-policy mt-5">
+        <h3 class="mt-5">
+            Definition and uses of cookies in this site
+        </h3>
+        <p>A cookie is a small text file that’s stored on your computer or mobile device when you visit a website.</p>
 
-                </p><ul class="checklist">
-                    <li>
-                        Remember your preferences.
-                    </li>
-                    <li>
-                        Tailor our sites to your interests.
-                    </li>
-                </ul>
-                <p></p>
-
-                <h2>
-                    What kind of cookies does this website use?
-                </h2>
-                <p>
-                    <b>First party cookies:</b> These are set by the website when you login. Only that website can read them.
-                </p>
-                <p>
-                    <b>Session cookies:</b> These are stored while you’re browsing. They get deleted from your device when you close your browser e.g. Internet Explorer or Safari.
-                </p>
-                <p>
-                <b>Third party cookies (Google Analytics):</b> These are set by someone other than the owner of the website you’re visiting. Google Analytics is the tool which helps website and the owners of applications to understand the way in which their visitors interact with them. GA can use some cookies to collect statistical information regarding the user behaviour without personally identifying the users. <a href="https://developers.google.com/analytics/devguides/collection/analyticsjs/cookie-usage">More information.</a>
-                </p>
-
-                <h2>
-                    Rejection or elimination of cookies
-                </h2>
-                <p>
-                    You can allow, block or delete the cookies installed on your computer through your browser’s settings options, in which case you may not be able to access certain areas of the website. If you wish to know how to manage your browser’s cookies, please access the following links:
-
-                    </p><ul class="browsers-list">
-                        <li>
-                            <a href="https://support.google.com/chrome/answer/95647?hl=en">
-                                Google Chrome
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://support.mozilla.org/en-US/kb/enable-and-disable-cookies-website-preferences">
-                                Firefox
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://support.microsoft.com/en-gb/help/17442/windows-internet-explorer-delete-manage-cookies#">
-                                Internet Explorer
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://support.apple.com/kb/PH17191?locale=es_ES&amp;viewlocale=en_US">
-                                Safari
-                            </a>
-                        </li>
-                        <li>
-                            <a href="http://help.opera.com/Windows/11.50/en/cookies.html">
-                                Opera
-                            </a>
-                        </li>
-                    </ul>
-                <p></p>
-                <h2>
-                More information
-                </h2>
-                <p>
-                If you wish to have more information regarding the use of cookies on this site, you can request it <a href="/contact/">here</a>.
-                </p>
-            </section>
-        </div>
+        <h3 class="mt-3">
+            What kind of cookies does this website use?
+        </h3>
+        <p>
+            <b>Session cookies:</b> These are stored while you’re browsing. They get deleted from your device when you close your browser e.g. Google Chrome or Safari. Cookies include sessionid, csrftoken.
+        </p>
+        <p>
+        <b>Third party cookies (Google Charts, Google Auth, Google reCAPTCHA):</b> These cookies are set when using the various external components in the website. Google Charts helps developers to create charts and it has been used in Home and Admin pages, Google reCAPTCHA has been used in Contact and Drug Contribution pages, Google Auth has been used for login.
+        </p>
+        <h3 class="mt-3">
+            Rejection or elimination of cookies
+        </h3>
+        <p>
+            You can allow, block or delete the cookies installed on your computer through your browser’s settings options, in which case you may not be able to access certain areas of the website. If you wish to know how to manage your browser’s cookies, please access the following links:
+            </p><ul class="browsers-list">
+                <li>
+                    <a href="https://support.google.com/chrome/answer/95647?hl=en">
+                        Google Chrome
+                    </a>
+                </li>
+                <li>
+                    <a href="https://support.mozilla.org/en-US/kb/enable-and-disable-cookies-website-preferences">
+                        Firefox
+                    </a>
+                </li>
+                <li>
+                    <a href="https://support.microsoft.com/en-gb/help/17442/windows-internet-explorer-delete-manage-cookies#">
+                        Internet Explorer
+                    </a>
+                </li>
+                <li>
+                    <a href="https://support.apple.com/kb/PH17191?locale=es_ES&amp;viewlocale=en_US">
+                        Safari
+                    </a>
+                </li>
+                <li>
+                    <a href="http://help.opera.com/Windows/11.50/en/cookies.html">
+                        Opera
+                    </a>
+                </li>
+            </ul>
+        <p></p>
+        <h3 class="mt-3">
+        More information
+        </h3>
+        <p>
+        If you wish to have more information regarding the use of cookies on this site, you can request it <a href="/contact">here</a>.
+        </p>
     </div>
-</main>
+</div>
 {% endblock content %}
 
 {% block footer_scripts %}

@@ -124,3 +124,15 @@ color: #fff;
         opacity: 0;
     }
 }
+#google_translate_element {
+    bottom: 75px;
+    right: 5%;
+    position: fixed;
+    z-index: 900;
+    background: #78387826;
+    padding: 8px;
+    border-radius: 10%;
+}
+body > .skiptranslate {
+    display: none;
+}

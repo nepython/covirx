@@ -1,6 +1,7 @@
 // Wait for window load
 $(window).on('load', function(){
     $(".se-pre-con").fadeOut(1000);
+    $('#msg').html("Kindly use English when using search. Since search feature currently doesn't support input in any other languages.");
 });
 
 function googleInit() {
@@ -31,4 +32,18 @@ function sendID(id_token) {
 function onFailure(error) {
     $('#msg').html(error).fadeIn('slow');
     $('#msg').delay(20000).fadeOut('slow');
+}
+function cookieAccept() {
+    document.cookie = "cookie-accept=1 path=/";
+    $("#CookielawBanner").css('display', 'none');
+}
+function checkCookieAccept() {
+    return document.cookie.match(/^(.*;)?\s*cookie-accept\s*=\s*[^;]+(.*)?$/);
+}
+if (checkCookieAccept())
+    $("#CookielawBanner").css('display', 'none');
+
+// Google Translate
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
 }

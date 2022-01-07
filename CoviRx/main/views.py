@@ -157,6 +157,7 @@ def individual_drug(request, drug_id):
             'Clinical Phase': drug.phase,
         },
         'filters_passed': drug.filters_passed,
+        'references': drug.references,
     }
     if 'download' in request.GET:
         json_file = StringIO()
