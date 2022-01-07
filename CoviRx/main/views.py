@@ -91,6 +91,10 @@ def add_drug(request):
         {'form':form,'submitted':submitted})
 
 
+def cookie_policy(request):
+    return render(request, 'main/cookie-policy.html')
+
+
 def home(request):
     Visitor.record(request)
     return render(request, 'main/index.html', {'fields': search_fields})
@@ -156,7 +160,7 @@ def individual_drug(request, drug_id):
     }
     if 'download' in request.GET:
         json_file = StringIO()
-        json_file.write(json.dumps(kwargs))
+        json_file.write(json.dumps(kwargs, indent=4))
         json_file.seek(0)
         wrapper = FileWrapper(json_file)
         response = HttpResponse(wrapper, content_type='application/json')

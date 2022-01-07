@@ -111,8 +111,7 @@ $(document).ready(function(){
             title: "No results found!"
         }).appendTo("#suggestions")
         $(".suggestion").html(`<i class="bi bi-emoji-frown"></i>
-        <p>Sorry, we could not find a drug starting with the keywords <div class="suggestion-field"
-        style="width: max-content;padding-top: unset;">${fields}</div>&nbsp;
+        <p>Sorry, we could not find a drug starting with the keywords ${fields}
         in our database.</p>`);
     }
 
@@ -144,7 +143,11 @@ $(document).ready(function(){
                     id: `${key}-suggestion-field-${k}`,
                     "class": `suggestion-field suggestion-field-${k}`,
                 }).appendTo(suggestion[0].children[colMap[k]]);
-                $(`div[id='${key}-suggestion-field-${k}']`).html(v!=null?v:"-NA-");
+                var elem = $(`div[id='${key}-suggestion-field-${k}']`);
+                elem.html(v!=null?v:"-NA-");
+                if(elem[0]!=undefined && elem[0].clientWidth < elem[0].scrollWidth) {
+                    elem[0].classList.add("hide-overflow");
+                }
                 if (k=="smiles") { addSMILESVisualization(key, k, v, suggestion[0].children[3]); }
             }
         });

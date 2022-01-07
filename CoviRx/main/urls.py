@@ -12,6 +12,7 @@ urlpatterns = [
     path('api/drugs-metadata', autocomplete, name='drugs-metadata'),
     path('organisations', organisations, name='organisations'),
     path('contact', contact, name='contact'),
+    path('cookie-policy', cookie_policy, name='cookie-policy'),
     path('references', references, name='references'),
     path('api/charts-json', charts_json, name='charts-json'),
     path('add_drug', add_drug, name='add-drug'),

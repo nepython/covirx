@@ -50,6 +50,7 @@ def save_drugs_from_csv(obj, invalid_headers): #TODO: Make the code less redunda
                     drug_details[verbose_names[field]] = drug[i]
                 elif field in custom_fields:
                     custom[field] = drug[i]
+            drug_details['label'] = drug_label(drug, drugs[1])
             drug_details['filters_passed'] = filters_passed(drug, drugs[0], drugs[1])
             custom.update(save_target_models(drug, position, drugs[1])) # Save the various target models as custom fields
             try:
@@ -99,6 +100,16 @@ def save_target_models(drug, position, headers):
         if any(x != str() for x in target_model.values()):
             target_models[target] = target_model
     return target_models
+
+
+def drug_label(drug, header):
+    if drug[header.index('Covid trials')].lower()=='' or drug[header.index('Covid trials')].lower()=='no':
+        return '1'
+    if 'completed' in drug[header.index('Outcome')].lower():
+        return '2'
+    if 'withdrawn' in drug[header.index('Outcome')].lower():
+        return '3'
+    return '4'
 
 
 def filters_passed(drug, header0, header1):

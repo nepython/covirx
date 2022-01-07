@@ -5,87 +5,6 @@
 {% block extra_head %}
 <link rel="stylesheet" href={% static "main/css/flat-loader.css"%} />
 <link rel="stylesheet" href={% static "main/css/individual-drug.css"%} />
-<style>
-#target-models .row.property-name {
-    border-top: 3px solid;
-    border-color: rgba(89, 2, 122, 0.3);
-}
-#target-models .row.property-value.bold-500 {
-    font-weight: 500;
-}
-#target-models #activity-rank {
-    font-size: 1.5rem;
-    text-align: center;
-    margin: unset;
-}
-#target-models #activity-rank span {
-    font-weight: bolder;
-    color: green;
-}
-
-.filters {
-    padding: unset;
-    margin-right: calc(var(--bs-gutter-x) * -.5);
-    margin-left: calc(var(--bs-gutter-x) * -.5);
-}
-.filters li {
-    color: grey;
-  display: flex;
-}
-.filters .filter-number {
-  position: relative;
-  padding-right: 1em;
-  width: 4.8em;
-}
-.filters .filter-number::after {
-    content: "";
-    background: white;
-    position: absolute;
-    z-index: 2;
-    right: 0;
-    top: 0;
-    transform: translateX(50%);
-    border-radius: 50%;
-    border: 1px #ccc solid;
-    width: 1.2em;
-    height: 1.2em;
-    line-height: 1.2em;
-    text-align:center;
-    font-weight: bold;
-}
-.filters li.checked, .filters li.failed {
-    color: black;
-}
-.filters li.checked .filter-number::after {
-    content: "\2713";
-    background: yellowgreen;
-    color: white;
-}
-.filters li.failed .filter-number::after {
-    content: "\2715";
-    background: red;
-    color: white;
-}
-.filters span {
-  padding: 0 0 1.5em 1.5em;
-  position: relative;
-  width: 12em;
-}
-.filters span::before {
-   content: "";
-   position: absolute;
-   z-index: 1;
-   left: 0;
-   height: 100%;
-   border-left: 3px #ccc solid;
-}
-.filters li.checked span::before {
-    border-left: 3px yellowgreen solid;
-}
-.filters li.failed span::before {
-    border-left: 3px red solid;
-}
-</style>
 {% endblock %}
 
 {% block content %}
@@ -96,20 +15,20 @@
         <div class="col-9 mb-4">
             <div class="row mt-2 mb-5">
                 <div id="d-chembl" class="col-auto me-5">
-                    <div class="row property-name">ChEMBL ID</div>
-                    <div class="row property-value">{{ chembl }}</div>
+                    <div class="row ps-1 property-name">ChEMBL ID</div>
+                    <div class="row ps-1 property-value">{{ chembl }}</div>
                 </div>
                 <div id="d-name" class="col-auto ms-5">
-                    <div class="row property-name">Drug name</div>
-                    <div class="row property-value">{{ name }}</div>
+                    <div class="row ps-1 property-name">Drug name</div>
+                    <div class="row ps-1 property-value">{{ name }}</div>
                 </div>
             </div>
             <div class="drug-container p-4 row">
                 <div class="row"><div class="drug-container-name">Drug Likeness</div></div>
                 {% for k, v in drug_likeness.items %}
                 <div class="col-3 mt-3">
-                    <div class="row property-name">{{ k }}</div>
-                    <div class="row property-value">{% if v %}{{ v }}{% else %}-NA-{% endif %}</div>
+                    <div class="row ps-1 property-name">{{ k }}</div>
+                    <div class="row ps-1 property-value">{% if v %}{{ v }}{% else %}-NA-{% endif %}</div>
                 </div>
                 {% endfor %}
             </div>
@@ -117,8 +36,8 @@
                 <div class="row"><div class="drug-container-name">Other Details</div></div>
                 {% for k, v in other_details.items %}
                 <div class="col-3 mt-3">
-                    <div class="row property-name">{{ k }}</div>
-                    <div class="row property-value">{% if v %}{{ v }}{% else %}-NA-{% endif %}</div>
+                    <div class="row ps-1 property-name">{{ k }}</div>
+                    <div class="row ps-1 property-value">{% if v %}{{ v }}{% else %}-NA-{% endif %}</div>
                 </div>
                 {% endfor %}
             </div>
@@ -129,8 +48,8 @@
                 <div class="row property-name mt-3">{{ k }}</div>
                     {% for v1, v2 in v.items %}
                     <div class="col-3 mt-1">
-                        <div class="row property-value bold-500">{{ v1 }}</div>
-                        <div class="row property-value">{% if v2 %}{{ v2 }}{% else %}-NA-{% endif %}</div>
+                        <div class="row ps-1 mt-2 property-value bold-700">{{ v1 }}</div>
+                        <div class="row ps-1 property-value">{% if v2 %}{{ v2 }}{% else %}-NA-{% endif %}</div>
                     </div>
                     {% endfor %}
                 {% endfor %}

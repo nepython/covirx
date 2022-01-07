@@ -85,3 +85,58 @@ nav {
     height: 100%;
     z-index: 9999;
 }
+#CookielawBanner {
+    padding: 15px 0 15px 0;
+    background-color: floralwhite;
+    box-shadow: 0 -2px 10px 0 rgba(38,50,56,.7);
+    position: fixed;
+    bottom: 0;
+    z-index: 999;
+    width: 100%;
+}
+#CookielawBanner .Container {
+    width: 77%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+#CookielawBanner .Container .btn {
+    border-radius: 45px;
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+    font-family: Raleway,sans-serif;
+    -webkit-transition: background-color .3s ease;
+    -moz-transition: background-color .3s ease;
+    transition: background-color .3s ease;
+    width: 137px;
+    font-weight: 600;
+    font-size: .875em;
+    height: 40px;
+    line-height: 28px;
+    color: #fff!important;
+    background-color: #29a156;
+    text-transform: uppercase;
+}
+#CookielawBanner #CookielawCross {
+    background: url(../images/close-ic.png) no-repeat 9px 9px;
+    cursor: pointer;
+    display: block;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+}
+#CookielawBanner .Container p {
+    margin: unset;
+    line-height: 100%;
+}
+#CookielawBanner .Container p a {
+    color: #259344;
+    text-decoration: none;
+}

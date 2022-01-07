@@ -28,7 +28,7 @@ html {
     display: block;
     text-overflow: ellipsis;
 }
-.property-value:hover {
+.property-value.hide-overflow:hover {
     overflow: unset;
     z-index: 100;
     background-color: white;
@@ -97,4 +97,82 @@ html {
     .container {
         padding-left: 4rem;
     }
+}
+#target-models .row.property-name {
+    border-top: 3px solid;
+    border-color: rgba(89, 2, 122, 0.3);
+}
+#target-models .row.property-value.bold-700 {
+    font-weight: 700;
+}
+#target-models #activity-rank {
+    font-size: 1.5rem;
+    text-align: center;
+    margin: unset;
+}
+#target-models #activity-rank span {
+    font-weight: bolder;
+    color: green;
+}
+.filters {
+    padding: unset;
+    margin-right: calc(var(--bs-gutter-x) * -.5);
+    margin-left: calc(var(--bs-gutter-x) * -.5);
+}
+.filters li {
+    color: grey;
+  display: flex;
+}
+.filters .filter-number {
+  position: relative;
+  padding-right: 1em;
+  width: 4.8em;
+}
+.filters .filter-number::after {
+    content: "";
+    background: white;
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    top: 0;
+    transform: translateX(50%);
+    border-radius: 50%;
+    border: 1px #ccc solid;
+    width: 1.2em;
+    height: 1.2em;
+    line-height: 1.2em;
+    text-align:center;
+    font-weight: bold;
+}
+.filters li.checked, .filters li.failed {
+    color: black;
+}
+.filters li.checked .filter-number::after {
+    content: "\2713";
+    background: yellowgreen;
+    color: white;
+}
+.filters li.failed .filter-number::after {
+    content: "\2715";
+    background: red;
+    color: white;
+}
+.filters span {
+  padding: 0 0 1.5em 1.5em;
+  position: relative;
+  width: 12em;
+}
+.filters span::before {
+   content: "";
+   position: absolute;
+   z-index: 1;
+   left: 0;
+   height: 100%;
+   border-left: 3px #ccc solid;
+}
+.filters li.checked span::before {
+    border-left: 3px yellowgreen solid;
+}
+.filters li.failed span::before {
+    border-left: 3px red solid;
 }

@@ -55,7 +55,7 @@ html {
     text-transform: capitalize;
 }
 @media screen and (max-height: 450px) {
-    .@identifier-sidenav {
+    .identifier-sidenav {
         padding-top: 15px;
     }
     .identifier-sidenav a {
@@ -169,7 +169,7 @@ form#identifiers {
     text-overflow: ellipsis;
     padding: 8px 0px 0px 30px;
 }
-#suggestions .suggestion-field:hover {
+#suggestions .suggestion-field.hide-overflow:hover {
     overflow: unset;
     z-index: 100;
     background-color: white;
@@ -233,10 +233,10 @@ form#identifiers {
     margin-left: -30px;
 }
 .no-match {
-    font-size: 40px;
+    text-align: center !important;
+    font-size: 20px;
 }
 #no-match.no-match.suggestion.row i.bi.bi-emoji-frown {
-    text-align: center !important;
     font-size: 40px !important;
 }
 #advanced-search,

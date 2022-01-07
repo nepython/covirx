@@ -123,4 +123,11 @@ $(document).ready(function(){
             });
         }
     });
+
+    // Overflow
+    $(".property-value").each(function(i, elem) {
+        if(elem.clientWidth < elem.scrollWidth) {
+            elem.classList.add("hide-overflow");
+        }
+    });
 });
