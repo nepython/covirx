@@ -13,7 +13,7 @@ search_fields = ['name', 'smiles', 'inchi', 'synonyms', 'cas_number', 'chebl', '
 # Fields which have been name differently in excel sheet and in our Drug model
 # It should be in lowercase with spaces replaced by underscore
 verbose_names = {
-    'indication': 'indication_class'
+    'indication_(1)': 'indication_class'
 }
 
 # Fields that need to be stored during a bulk drug upload

@@ -21,6 +21,18 @@ def get_invalid_headers(obj):
     return invalid_headers
 
 
+def generate_position(drugs, given_names=target_model_names):
+    position = dict()
+    prev_target = None
+    for i, target in enumerate(drugs[0]):
+        if target and prev_target and len(position[prev_target])<2:
+            position[prev_target].append(i)
+        if target in given_names:
+            position[target] = [i]
+            prev_target = target
+    return position
+
+
 def save_drugs_from_csv(obj, invalid_headers): #TODO: Make the code less redundant
     cache.set('valid_count', 0, None)
     cache.set('invalid_count', 0, None)
@@ -34,7 +46,8 @@ def save_drugs_from_csv(obj, invalid_headers): #TODO: Make the code less redunda
         cache.set('total_count', len(drugs)-2, None)
         obj.save()
         headers = [drug.lower().replace(' ', '_') for drug in drugs[1]]
-        position = generate_position_for_target(drugs)
+        position_covid, position_indication = generate_position(drugs, ['COVID Trials']), generate_position(drugs, ['Original Indication'])
+        position_pk, position_target = generate_position(drugs, ['PK/PD']), generate_position(drugs)
         valid_headers = set(headers)-set(invalid_headers)
         for drug in drugs[2:]:
             if cache.get(obj.pk, None):
@@ -52,7 +65,10 @@ def save_drugs_from_csv(obj, invalid_headers): #TODO: Make the code less redunda
                     custom[field] = drug[i]
             drug_details['label'] = drug_label(drug, drugs[1])
             drug_details['filters_passed'] = filters_passed(drug, drugs[0], drugs[1])
-            custom.update(save_target_models(drug, position, drugs[1])) # Save the various target models as custom fields
+            custom.update(save_positions(drug, position_target, drugs[1])) # Save the various target models as custom fields
+            custom.update(save_positions(drug, position_covid, drugs[1], exclude=['Comments/Notes', 'Analogue in trial'])) # Save the COVID trials data as custom fields
+            custom.update(save_positions(drug, position_pk, drugs[1])) # Save the PK/ PD data as custom fields
+            custom.update(save_positions(drug, position_indication, drugs[1], exclude=['References'])) # Save the Original indication data as custom fields
             try:
                 drug_details['custom_fields'] = custom
                 Drug.get_or_create(drug_details).custom_fields
@@ -74,29 +90,18 @@ def save_drugs_from_csv(obj, invalid_headers): #TODO: Make the code less redunda
     invalid_drugs.clear()
 
 
-def generate_position_for_target(drugs):
-    position = dict()
-    prev_target = None
-    for i, target in enumerate(drugs[0]):
-        if target and prev_target and len(position[prev_target])<2:
-            position[prev_target].append(i)
-        if target in target_model_names:
-            position[target] = [i]
-            prev_target = target
-    return position
-
-
-def save_target_models(drug, position, headers):
+def save_positions(drug, position, headers, exclude=list()):
     """
     Args:
         drug (list): Contains all the parameter for the drug
-        position (dictionary of list (start, end)): Contains the starting and ending position of every target model
+        position (dictionary of list (start, end)): Contains the starting and ending position of columns to store
     """
     target_models = dict()
     for target, pos in position.items():
         target_model = dict()
         for h in range(pos[0], pos[1]):
-            target_model[headers[h]] = drug[h]
+            if headers[h] not in exclude:
+                target_model[headers[h]] = drug[h]
         if any(x != str() for x in target_model.values()):
             target_models[target] = target_model
     return target_models

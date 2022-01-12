@@ -57,11 +57,8 @@ nav {
 #msg {
     width: 100%;
     text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
     display: block;
-    text-overflow: ellipsis;
-    padding: unset;
+    padding: 1px;
     line-height: 1;
 }
 @media (min-width: 576px){
@@ -95,7 +92,7 @@ nav {
     width: 100%;
 }
 #CookielawBanner .Container {
-    width: 77%;
+    width: 88%;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
@@ -108,7 +105,7 @@ nav {
     z-index: 2;
     text-align: center;
     display: block;
-    margin: 0 auto;
+    margin: 0 0 0 10px;
     font-family: Raleway,sans-serif;
     -webkit-transition: background-color .3s ease;
     -moz-transition: background-color .3s ease;
@@ -152,4 +149,7 @@ nav {
 }
 body > .skiptranslate {
     display: none;
+}
+svg > g > g:last-child {
+    pointer-events: none; /* Google Charts flickering issue */
 }

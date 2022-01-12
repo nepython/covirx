@@ -144,9 +144,8 @@ def individual_drug(request, drug_id):
             'Administration route': drug.administration_route,
             'Indication class/ category': drug.indication_class
         },
-        'activity_rank': drug.rank_score,
-        'target_models': {k: v for k, v in drug.custom_fields.items() if k in target_model_names},
-        'other_details': {
+        'original_indication': drug.custom_fields['Original Indication'],
+        'identifiers': {
             'CAS Number': drug.cas_number,
             'Formula': drug.formula,
             'Synonyms': drug.synonyms,
@@ -154,12 +153,15 @@ def individual_drug(request, drug_id):
             'PubChem ID': drug.pubchemcid,
             'ChemBank': drug.chembank,
             'Drug Bank': drug.drugbank,
-            'Clinical Phase': drug.phase,
         },
+        'activity_rank': drug.rank_score,
+        'target_models': {k: v for k, v in drug.custom_fields.items() if k in target_model_names},
+        'covid_trials': drug.custom_fields['COVID Trials'],
+        'pk_pd': drug.custom_fields['PK/PD'],
         'filters_passed': drug.filters_passed,
         'references': drug.references,
     }
-    if 'download' in request.GET:
+    if 'download-json' in request.GET:
         json_file = StringIO()
         json_file.write(json.dumps(kwargs, indent=4))
         json_file.seek(0)
@@ -233,9 +235,14 @@ def csv_upload(request):
         upload.full_clean()
         upload.save()
         invalid_headers = get_invalid_headers(upload)
+        res = {'csv-id': str(upload.pk)}
+        if cache.get('total_count', 0): # Previous upload in progress, kill it
+            previous_upload = DrugBulkUpload.objects.order_by('-date_uploaded').first()
+            cache.set(previous_upload.pk, 'cancel', 3600)
+            res['error'] = f'Previous upload by {previous_upload.uploaded_by} which was in progress was cancelled mid-way.'
         # async from the process so that the view gets returned post successful upload
         Thread(target = save_drugs_from_csv, args = (upload, invalid_headers)).start()
-        return JsonResponse({'csv-id': str(upload.pk), 'invalid-headers': invalid_headers})
+        return JsonResponse(res)
     except Exception as e:
         logging.getLogger('error_logger').error(f'Unable to upload file. {repr(e)}')
         return JsonResponse({'error': f'Unable to upload file. {repr(e)}'})

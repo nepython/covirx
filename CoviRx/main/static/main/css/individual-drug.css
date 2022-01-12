@@ -176,3 +176,9 @@ html {
 .filters li.failed span::before {
     border-left: 3px red solid;
 }
+@media print {
+    #smiles-visualization {
+        break-inside: avoid;
+        break-before: always; 
+    }
+}

@@ -3,7 +3,6 @@
 {% load static %}
 
 {% block extra_head %}
-<link rel="stylesheet" href={% static "main/css/main.css"%} />
 <link rel="stylesheet" href={% static "main/css/drug-bulk-upload.css"%} />
 <link rel="stylesheet" href={% static "main/css/round-loader.css"%} />
 <link rel="stylesheet" href={% static "main/css/flat-loader.css"%} />
@@ -68,7 +67,6 @@
             <div class="file-upload-progress"></div>
         </div>
     </div>
-    <div>
     <div id="updates" class="mt-5 pt-5">
         <h3 id="head">Drugs are being added in the database after validation</h3>
         <div class="round-loader"></div>
@@ -89,12 +87,12 @@
                 <h3> Drugs Invalidated</h3>
                 <div id="show-invalid">-NA-</div>
             </div>
-        <div>
-    <div>
-    <div  class="mt-5 "><h3>List of invalid drugs<h3>
-        <button class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#share-invalid-drugs-modal">Share Invalid Drugs</button>
-        <ul id="invalidated-drugs"></ul>
-        <div class="flat-loader"></div>
+        </div>
+        <div  class="mt-5 "><h3>List of invalid drugs<h3>
+            <button class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#share-invalid-drugs-modal">Share Invalid Drugs</button>
+            <ul id="invalidated-drugs"></ul>
+            <div class="flat-loader"></div>
+        </div>
     </div>
 </div>
 {% endblock content %}

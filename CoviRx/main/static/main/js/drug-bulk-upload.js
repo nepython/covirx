@@ -23,18 +23,19 @@ $('form').submit(function(e) {
         data: new FormData(document.getElementById("uploadForm")),
         contentType: false,
         processData: false,
-        success: function(data) {
-            $("#updates").css("display", "block");
-            if (data.hasOwnProperty('error'))
-                $('#msg').html(data['error']);
-            else {
-                pk = data['csv-id'];
-                var fields = data['invalid-headers'].join(", ");
-                $('#msg').html(`Started databse update. The following fields were ignored, kindly add them as custom fields in the admin if they need to be stored in the database. <b>${fields}<b>`).fadeIn('slow');
-                showUpdate(0, 0, -1);
-            }
-        }
+        success: function(data){checkStatus(data)},
     });
+
+    function checkStatus(data) {
+        $("#updates").css("display", "block");
+        if (data.hasOwnProperty('error'))
+            $('#msg').html(data['error']);
+        else {
+            pk = data['csv-id'];
+            $('#msg').html(`Started database update. Some fields in the csv file were ignored, kindly add them as custom fields in the admin if they need to be stored in the database.`).fadeIn('slow');
+            showUpdate(0, 0, -1);
+        }
+    }
 
     const format = (num, decimals) => num.toLocaleString('en-US', {  // redude to two decimal places
         minimumFractionDigits: 2,

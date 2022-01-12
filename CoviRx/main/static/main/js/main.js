@@ -1,7 +1,9 @@
 // Wait for window load
 $(window).on('load', function(){
     $(".se-pre-con").fadeOut(1000);
-    $('#msg').html("Kindly use English when using search. Since search feature currently doesn't support input in any other languages.");
+    $('.site-header').on('DOMSubtreeModified', function(){
+        $(".container.slide-up").css("margin-top", 15+$(".site-header").height());
+    });
 });
 
 function googleInit() {

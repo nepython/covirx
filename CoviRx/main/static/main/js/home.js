@@ -22,6 +22,7 @@ function toggleAdvancedSearch() {
 
 $(document).ready(function(){
     $('.nav-link')[0].classList.add('active'); // highlights the Home nav item
+    $('#msg').html("Kindly use English when using search. Since search feature currently doesn't support input in any other languages.");
 
     function isEmptyObject(obj) {  // returns bool value whether the object is empty
         for(var key in obj) {
