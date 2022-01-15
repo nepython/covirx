@@ -1,8 +1,9 @@
 // Wait for window load
 $(window).on('load', function(){
     $(".se-pre-con").fadeOut(1000);
+    $(".container").css("margin-top", `${15+$(".site-header").height()}px`);
     $('.site-header').on('DOMSubtreeModified', function(){
-        $(".container.slide-up").css("margin-top", 15+$(".site-header").height());
+        $(".container.slide-up").css("margin-top", `${15+$(".site-header").height()}px`);
     });
 });
 
@@ -49,3 +50,5 @@ if (checkCookieAccept())
 function googleTranslateElementInit() {
     new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
 }
+
+window.addEventListener('offline', () => $("#msg").html("You are offline please turn on internet connection to run website."));

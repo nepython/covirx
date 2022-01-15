@@ -54,6 +54,11 @@ nav .covirx-nav-logo {
 nav {
     background-color: #772e78;
 }
+#msg0 {
+    margin: unset;
+    text-align: center;
+    line-height: 1;
+}
 #msg {
     width: 100%;
     text-align: center;

@@ -29,72 +29,6 @@ from .tanimoto import similar_drugs
 import csv
 
 
-def drug_csv(request):
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=drugs.csv'
-    # Create a csv writer
-    writer = csv.writer(response)
-    drugs = AddDrug.objects.all()
-    # Add column headings to the csv file
-    writer.writerow(['Name of Person','Email id','Organization','Drug name','Invitro','Invivo','Exvivo','Activity Results(IC50/EC50)','Inference'])
-    # Loop Thu and output
-    for drug in drugs:
-        writer.writerow([drug.personName, drug.email, drug.organisation, drug.drugName, drug.invitro, drug.invivo, drug.exvivo, drug.results, drug.inference])
-    return response
-
-
-def show_drug(request, drug_id):
-    drug = AddDrug.objects.get(pk=drug_id)
-    return render(request , 'main/show_drug.html', 
-        {'drug':drug})
-
-
-def list_drugs(request):
-    drugs_list = AddDrug.objects.all()
-    return render(request , 'main/drug.html', 
-        {'drugs_list':drugs_list})
-
-
-def add_drug(request):
-    submitted = False
-    if request.method == "POST":
-        post_data = request.POST.copy()
-        # Google recaptcha verification
-        recaptcha_response = post_data.pop('g-recaptcha-response')
-        data = {
-            'secret': settings.GOOGLE_INVISIBLE_RECAPTCHA_SECRET_KEY,
-            'response': recaptcha_response,
-        }
-        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
-        result = r.json()
-        if not result['success']:
-            return render(request, 'main/add_drug.html', {'msg': 'Invalid reCAPTCHA. Please try again.'})
-        form = DrugForm(post_data)
-        if form.is_valid():
-            form.save()
-            try:
-                added_drug = AddDrug.objects.get(personName=post_data.get('personName'), drugName=post_data.get('drugName'))
-                email = post_data.get('email')
-                html = get_template('mail_templates/add_drug.html').render({'added_drug': added_drug})
-                recepients = list(User.objects.filter(email_notifications=True).values_list('email', flat=True))
-                bcc = [email] if post_data.get('response-copy') else list()
-                log = f'Copy of mail successfully sent for new drug received from {added_drug.personName}'
-                Thread(target = sendmail, args = (html, 'New drug submitted to CoviRx', recepients, bcc, log)).start() # async from the process so that the view gets returned post successful save
-            except:
-                pass
-            return HttpResponseRedirect('/add_drug?submitted=True')
-    else:
-        form = DrugForm
-        if 'submitted' in request.GET:
-            submitted = True
-    return render(request , 'main/add_drug.html',
-        {'form':form,'submitted':submitted})
-
-
-def cookie_policy(request):
-    return render(request, 'main/cookie-policy.html')
-
-
 def home(request):
     Visitor.record(request)
     return render(request, 'main/index.html', {'fields': search_fields})
@@ -216,6 +150,72 @@ def references(request):
     Visitor.record(request)
     refs = [r[0] for r in Drug.objects.values_list('references').distinct() if r[0]!=None and r[0]!='']
     return render(request, 'main/references.html', {'references': refs})
+
+
+def add_drug(request):
+    submitted = False
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        # Google recaptcha verification
+        recaptcha_response = post_data.pop('g-recaptcha-response')
+        data = {
+            'secret': settings.GOOGLE_INVISIBLE_RECAPTCHA_SECRET_KEY,
+            'response': recaptcha_response,
+        }
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        result = r.json()
+        if not result['success']:
+            return render(request, 'main/add_drug.html', {'msg': 'Invalid reCAPTCHA. Please try again.'})
+        form = DrugForm(post_data)
+        if form.is_valid():
+            form.save()
+            try:
+                added_drug = AddDrug.objects.get(personName=post_data.get('personName'), drugName=post_data.get('drugName'))
+                email = post_data.get('email')
+                html = get_template('mail_templates/add_drug.html').render({'added_drug': added_drug})
+                recepients = list(User.objects.filter(email_notifications=True).values_list('email', flat=True))
+                bcc = [email] if post_data.get('response-copy') else list()
+                log = f'Copy of mail successfully sent for new drug received from {added_drug.personName}'
+                Thread(target = sendmail, args = (html, 'New drug submitted to CoviRx', recepients, bcc, log)).start() # async from the process so that the view gets returned post successful save
+            except:
+                pass
+            return HttpResponseRedirect('/add_drug?submitted=True')
+    else:
+        form = DrugForm
+        if 'submitted' in request.GET:
+            submitted = True
+    return render(request , 'main/add_drug.html',
+        {'form':form,'submitted':submitted})
+
+
+def show_drug(request, drug_id):
+    drug = AddDrug.objects.get(pk=drug_id)
+    return render(request , 'main/show_drug.html', 
+        {'drug':drug})
+
+
+def list_drugs(request):
+    drugs_list = AddDrug.objects.all()
+    return render(request , 'main/drug.html', 
+        {'drugs_list':drugs_list})
+
+
+def drug_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=drugs.csv'
+    # Create a csv writer
+    writer = csv.writer(response)
+    drugs = AddDrug.objects.all()
+    # Add column headings to the csv file
+    writer.writerow(['Name of Person','Email id','Organization','Drug name','Invitro','Invivo','Exvivo','Activity Results(IC50/EC50)','Inference'])
+    # Loop Thu and output
+    for drug in drugs:
+        writer.writerow([drug.personName, drug.email, drug.organisation, drug.drugName, drug.invitro, drug.invivo, drug.exvivo, drug.results, drug.inference])
+    return response
+
+
+def cookie_policy(request):
+    return render(request, 'main/cookie-policy.html')
 
 
 @user_passes_test(lambda u: u.is_staff, login_url='/login/')

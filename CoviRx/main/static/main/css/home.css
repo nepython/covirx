@@ -321,6 +321,9 @@ form#identifiers {
     .suggestions-slider {
         display: none;
     }
+    #suggestions .suggestion-field-canvas {
+        display: none;
+    }
 }
 .slide-up #sidenav-button {
     display: none;
