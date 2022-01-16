@@ -16,11 +16,10 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv(dotenv_path=f'{BASE_DIR}/.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -174,9 +173,9 @@ GOOGLE_INVISIBLE_RECAPTCHA_SECRET_KEY = os.getenv('GOOGLE_INVISIBLE_RECAPTCHA_SE
 
 # PRODUCTION SETTINGS
 if not DEBUG:
-    import django_heroku
-    django_heroku.settings(locals())
-    MIDDLEWARE += ('whitenoise.middleware.WhiteNoiseMiddleware',) # django-heroku changes type from list to tuple
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-    ALLOWED_HOSTS += ['covirx.herokuapp.com']
+    # import django_heroku
+    # django_heroku.settings(locals())
+    # MIDDLEWARE += ('whitenoise.middleware.WhiteNoiseMiddleware',) # django-heroku changes type from list to tuple
+    # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    ALLOWED_HOSTS += ['*']
     SECRET_KEY = os.getenv('SECRET_KEY')

@@ -7,7 +7,9 @@ __pycache__
 logs
 *.csv
 logs
-images
+covirx_images
 drugs
 contacts
 .DS_Store
+staticfiles
+

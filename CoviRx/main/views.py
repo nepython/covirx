@@ -311,11 +311,11 @@ def charts_json(request):
             .values('indication_class')
             .annotate(count=Count('indication_class')))
         others_count = qs.filter(count=1).count() # we club all categories which occur only once in others
-        na_count = Drug.objects.filter(indication_class__isnull=True).count() # category not available
+        #na_count = Drug.objects.filter(indication_class__isnull=True).count() # category not available
         categories = list(qs.filter(count__gt=1))
         charts['categories'] = [['Drug Categories', 'Number of drugs']]
         charts['categories'] += [[category['indication_class'], category['count']] for category in categories]
-        charts['categories'] += [['Others', others_count], ['NA', na_count]]
+        charts['categories'] += [['Others', others_count]]
         charts['total_drugs'] = Drug.objects.all().count()
     if 'labels' in charts_requested:
         labels = list(Drug.objects.filter()

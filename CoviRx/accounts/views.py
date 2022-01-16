@@ -24,14 +24,19 @@ def auth(request):
     user_lname = idinfo['family_name']
     user_picture = idinfo['picture']
     msg = str()
+    print(1)
     try:
         user = User.objects.get(email=user_email)
+        print(2)
         if ((not user_email_verified) or (user.google_oauth_id and user.google_oauth_id != token)):
             msg = f'We cannot verify your email id {user_email}.'
+            print(3)
         if user.google_oauth_id is None:
             user.google_oauth_id = token
             user.save()
+            print(4)
     except: # User not present in db
+        print(5)
         try: # Check if user has been sent an invite in past 7 days
             invitee = Invitee.objects.get(email=user_email, sent_on__gte=(now()-timedelta(30)).date())
             user = User(email=user_email, first_name=user_fname, last_name=user_lname, google_oauth_id=token, is_superuser=False, is_staff=True, is_active=True, pic=user_picture)

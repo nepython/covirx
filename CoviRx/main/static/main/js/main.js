@@ -19,7 +19,7 @@ function onSignIn(googleUser) {
     sendID(id_token);
 }
 function sendID(id_token) {
-    $.getJSON( "api/social-auth", {
+    $.getJSON( "/api/social-auth", {
         id_token: id_token
     }).done(function( data ) {
         console.log(data);

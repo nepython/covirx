@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from premailer import transform
 
-from .models import Drug, DrugBulkUpload
+from .models import Drug
 
 # Fields to be used to search on home page
 search_fields = ['name', 'smiles', 'inchi', 'synonyms', 'cas_number', 'chebl', 'pubchemcid']
@@ -38,8 +38,6 @@ target_model_names = [
     'SARS-CoV-2 cytopathic effect (CPE)(Tox counterscreen) - NCATS, PubChem (AID:1508605) and Chen',
     'SARS-CoV-2 cytopathic effect (CPE) - NCATS, PubChem (AID:1508606) and Chen',
 ]
-
-previous_upload = DrugBulkUpload.objects.order_by('-date_uploaded').first()
 
 
 def sendmail(html, subject, recepients, bcc=list(), log=None):

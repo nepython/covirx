@@ -6,5 +6,4 @@ from .views import *
 urlpatterns = [
     path('api/social-auth', auth, name='social-auth'),
     path('api/invite-members', invite_members, name='invite-members'),
-   
 ]
