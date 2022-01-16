@@ -7,15 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-signin-client_id" content="451260237676-sokoabp2tb0e73tgveglhhid0atq285r.apps.googleusercontent.com">
     <title>{% block title %}CoviRx: Covid19 Drug Repurposing Database{% endblock %}</title>
+    <link rel="shortcut icon" type="image/png" href="{% static 'main/images/favicon.ico' %}"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
-    <link rel="stylesheet" href={% static "main/css/main.css"%} />
+    <link rel="stylesheet" href='{% static "main/css/main.css" %}' />
     <style>.se-pre-con {background: url({% static "main/images/Preloader.gif" %}) center no-repeat #fff;}</style>
     {% block extra_head %}
-    <link rel="stylesheet" href={% static "main/css/home.css"%} />
+    <link rel="stylesheet" href='{% static "main/css/home.css" %}' />
     <link rel="stylesheet" href="https://simeydotme.github.io/jQuery-ui-Slider-Pips/dist/css/jqueryui.min.css" />
     <link rel="stylesheet" href="https://simeydotme.github.io/jQuery-ui-Slider-Pips/dist/css/jquery-ui-slider-pips.min.css" />
-    <link rel="stylesheet" href={% static "main/css/flat_slider.css"%} />
+    <link rel="stylesheet" href='{% static "main/css/flat_slider.css" %}' />
     {% endblock %}
 </head>
 <body>

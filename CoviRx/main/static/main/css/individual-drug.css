@@ -86,6 +86,12 @@ html {
     cursor: pointer;
     background-color: rgba(211, 211, 211, 0.39);
 }
+@media (max-width: 1000px) {
+    /* CSS that should be displayed if width is equal to or less than 1000px goes here */
+    #suggestions .suggestion-field-canvas {
+        display: none;
+    }
+}
 @media screen and (max-width: 485px) {
     #d-name, #d-chembl {
         margin: unset !important;
