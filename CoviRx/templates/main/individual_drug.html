@@ -24,6 +24,15 @@
                 </div>
             </div>
             <div class="drug-container p-4 row">
+                <div class="row"><div class="drug-container-name">Identifiers</div></div>
+                {% for k, v in identifiers.items %}
+                <div class="col-3 mt-3">
+                    <div class="row ps-1 property-name">{{ k }}</div>
+                    <div class="row ps-1 property-value">{% if v %}{{ v }}{% else %}-NA-{% endif %}</div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="drug-container p-4 row">
                 <div class="row"><div class="drug-container-name">Drug Likeness</div></div>
                 {% for k, v in drug_likeness.items %}
                 <div class="col-3 mt-3">
