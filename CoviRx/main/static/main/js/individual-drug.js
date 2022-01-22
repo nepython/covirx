@@ -1,4 +1,27 @@
 $(document).ready(function(){
+    // Add hyperlinks to identifiers
+    let identifiers = ["ChEMBL ID", "CAS Number", "PubChem ID", "Drug Bank"]
+    $.each(identifiers, function(index, identifier) {
+        let element = $(`div[title='${identifier}']`)[0]
+        let val = element.innerHTML;
+        let content = val;
+        if (val!="-NA-") {
+            if (index==0) {
+                content = `<a class="link-no-decoration" href="https://www.ebi.ac.uk/chembl/compound_report_card/${val.split("|")[0]}/" target="_blank">${val}</a>`
+            }
+            else if (index==1) {
+                content = `<a class="link-no-decoration" href="https://commonchemistry.cas.org/detail?cas_rn=${val.split("|")[0]}" target="_blank">${val}</a>`
+            }
+            else if (index==2) {
+                content = `<a class="link-no-decoration" href="https://pubchem.ncbi.nlm.nih.gov/compound/${val.split("|")[0]}" target="_blank">${val}</a>`
+            }
+            else if (index==3) {
+                content = `<a class="link-no-decoration" href="https://go.drugbank.com/drugs/${val.split("|")[0]}" target="_blank">${val}</a>`
+            }
+            element.innerHTML = content;
+        }
+    });
+
     // COPY LINK TO CLIPBOARD
     var $temp = $("<input>");
     var $url = $(location).attr('href');

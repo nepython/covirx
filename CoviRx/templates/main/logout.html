@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block extra_head %}
-	<link rel="stylesheet" href='{% static "main/css/contact.css" %}'/>
+	<link rel="stylesheet" href='{% static "main/css/contact.css" %}?v={{ static_version }}'/>
 {% endblock %}
 
 {% block content %}

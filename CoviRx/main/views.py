@@ -24,7 +24,7 @@ from accounts.models import User, Visitor
 from .csv_upload import get_invalid_headers, save_drugs_from_csv
 from .forms import DrugBulkUploadForm, DrugForm
 from .models import Drug, DrugBulkUpload, Contact, AddDrug
-from .utils import invalid_drugs, search_fields, store_fields, verbose_names, target_model_names, sendmail
+from .utils import invalid_drugs, search_fields, store_fields, verbose_names, target_model_names, extra_references, sendmail
 from .tanimoto import similar_drugs
 import csv
 
@@ -92,6 +92,7 @@ def individual_drug(request, drug_id):
         'target_models': {k: v for k, v in drug.custom_fields.items() if k in target_model_names},
         'covid_trials': drug.custom_fields['COVID Trials'],
         'pk_pd': drug.custom_fields['PK/PD'],
+        'red_flags': drug.custom_fields['Red Flags'],
         'filters_passed': drug.filters_passed,
         'references': drug.references,
     }
@@ -148,7 +149,7 @@ def organisations(request):
 
 def references(request):
     Visitor.record(request)
-    refs = [r[0] for r in Drug.objects.values_list('references').distinct() if r[0]!=None and r[0]!='']
+    refs = [r[0] for r in Drug.objects.values_list('references').distinct() if r[0]!=None and r[0]!='']+extra_references
     return render(request, 'main/references.html', {'references': refs})
 
 

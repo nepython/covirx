@@ -7,6 +7,8 @@ from premailer import transform
 
 from .models import Drug
 
+static_version = '0.0.1'
+
 # Fields to be used to search on home page
 search_fields = ['name', 'smiles', 'inchi', 'synonyms', 'cas_number', 'chebl', 'pubchemcid']
 
@@ -37,6 +39,13 @@ target_model_names = [
     'MERS Pseudotyped particle entry Huh7 (Tox counterscreen) - NCATS and PubChem (AID:1479147)',
     'SARS-CoV-2 cytopathic effect (CPE)(Tox counterscreen) - NCATS, PubChem (AID:1508605) and Chen',
     'SARS-CoV-2 cytopathic effect (CPE) - NCATS, PubChem (AID:1508606) and Chen',
+]
+
+extra_references = [
+    'Probst, Daniel, Reymond, Jean-Louis. SmilesDrawer: Parsing and Drawing SMILES-Encoded Molecular Structures Using Client-Side JavaScript. J. Chem. Inf. Model. 2018, 58, 1, 1–7',
+    'Therapeutic Goods Administration (TGA). 2022. Search the TGA website. [online] Available at: <https://tga-search.clients.funnelback.com/s/search.html?query=&collection=tga-artg> [Accessed 20 January 2022].',
+    'Accessdata.fda.gov. 2022. Drugs@FDA: FDA-Approved Drugs. [online] Available at: <https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm> [Accessed 20 January 2022].',
+    'Drugs.ncats.io. 2022. NCATS Inxight Drugs. [online] Available at: <https://drugs.ncats.io/> [Accessed 20 January 2022].'
 ]
 
 

@@ -60,3 +60,12 @@
     font-size: 0.6em;
     color: #8e8e8e;
 }
+.labels-description {
+    background-color: #e7f8ff;
+    padding: unset;
+    margin: -10px 10px 10px 10px;
+}
+.labels-description ol {
+    padding-left: unset;
+    margin: 0 15px 0 15px;
+}

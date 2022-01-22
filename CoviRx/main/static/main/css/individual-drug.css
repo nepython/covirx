@@ -185,6 +185,10 @@ html {
 @media print {
     #smiles-visualization {
         break-inside: avoid;
-        break-before: always; 
+        break-before: always;
     }
+}
+.link-no-decoration {
+    padding: unset;
+    text-decoration: unset;
 }

@@ -30,6 +30,8 @@ def generate_position(drugs, given_names=target_model_names):
         if target in given_names:
             position[target] = [i]
             prev_target = target
+    if (len(position[prev_target])==1):
+        position[prev_target].append(len(drugs[0])-1)
     return position
 
 
@@ -48,6 +50,7 @@ def save_drugs_from_csv(obj, invalid_headers): #TODO: Make the code less redunda
         headers = [drug.lower().replace(' ', '_') for drug in drugs[1]]
         position_covid, position_indication = generate_position(drugs, ['COVID Trials']), generate_position(drugs, ['Original Indication'])
         position_pk, position_target = generate_position(drugs, ['PK/PD']), generate_position(drugs)
+        position_red_flags = generate_position(drugs, ['Red Flags'])
         valid_headers = set(headers)-set(invalid_headers)
         for drug in drugs[2:]:
             if cache.get(obj.pk, None):
@@ -69,6 +72,7 @@ def save_drugs_from_csv(obj, invalid_headers): #TODO: Make the code less redunda
             custom.update(save_positions(drug, position_covid, drugs[1], exclude=['Comments/Notes', 'Analogue in trial'])) # Save the COVID trials data as custom fields
             custom.update(save_positions(drug, position_pk, drugs[1])) # Save the PK/ PD data as custom fields
             custom.update(save_positions(drug, position_indication, drugs[1], exclude=['References'])) # Save the Original indication data as custom fields
+            custom.update(save_positions(drug, position_red_flags, drugs[1])) # Save the Red Flags data as custom fields
             try:
                 drug_details['custom_fields'] = custom
                 Drug.get_or_create(drug_details).custom_fields

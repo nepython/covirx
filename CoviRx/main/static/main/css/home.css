@@ -359,3 +359,12 @@ form#identifiers {
 #categories-chart, .covirx-g-chart {
     margin: 10px;
 }
+.labels-description {
+    background-color: #e7f8ff;
+    padding: unset;
+    margin: -10px 10px 10px 10px;
+}
+.labels-description ol {
+    padding-left: unset;
+    margin: 0 15px 0 15px;
+}
