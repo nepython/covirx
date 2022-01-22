@@ -78,7 +78,7 @@ def individual_drug(request, drug_id):
             'Administration route': drug.administration_route,
             'Indication class/ category': drug.indication_class
         },
-        'original_indication': drug.custom_fields['Original Indication'],
+        'original_indication': drug.custom_fields.get('Original Indication', dict()),
         'identifiers': {
             'CAS Number': drug.cas_number,
             'Formula': drug.formula,
@@ -90,9 +90,9 @@ def individual_drug(request, drug_id):
         },
         'activity_rank': drug.rank_score,
         'target_models': {k: v for k, v in drug.custom_fields.items() if k in target_model_names},
-        'covid_trials': drug.custom_fields['COVID Trials'],
-        'pk_pd': drug.custom_fields['PK/PD'],
-        'red_flags': drug.custom_fields['Red Flags'],
+        'covid_trials': drug.custom_fields.get('COVID Trials', dict()),
+        'pk_pd': drug.custom_fields.get('PK/PD', dict()),
+        'red_flags': drug.custom_fields.get('Red Flags', dict()),
         'filters_passed': drug.filters_passed,
         'references': drug.references,
     }

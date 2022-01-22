@@ -3,8 +3,8 @@
 {% load static %}
 
 {% block extra_head %}
-<link rel="stylesheet" href='{% static "main/css/flat-loader.css?v={{ static_version }}" %}?v={{ static_version }}' />
-<link rel="stylesheet" href='{% static "main/css/individual-drug.css?v={{ static_version }}" %}?v={{ static_version }}' />
+<link rel="stylesheet" href='{% static "main/css/flat-loader.css" %}?v={{ static_version }}' />
+<link rel="stylesheet" href='{% static "main/css/individual-drug.css" %}?v={{ static_version }}' />
 {% endblock %}
 
 {% block content %}
@@ -16,13 +16,14 @@
             <div class="row mt-2 mb-5">
                 <div id="d-chembl" class="col-auto me-5">
                     <div class="row ps-1 property-name">ChEMBL ID</div>
-                    <div title="ChEMBL ID" class="row ps-1 property-value">{{ chembl }}</div>
+                    <div title="ChEMBL ID" class="row ps-1 property-value">{% if chembl %}{{ chembl }}{% else %}-NA-{% endif %}</div>
                 </div>
                 <div id="d-name" class="col-auto ms-5">
                     <div class="row ps-1 property-name">Drug name</div>
                     <div class="row ps-1 property-value">{{ name }}</div>
                 </div>
             </div>
+            {% if identifiers %}
             <div class="drug-container p-4 row">
                 <div class="row"><div class="drug-container-name">Identifiers</div></div>
                 {% for k, v in identifiers.items %}
@@ -32,6 +33,8 @@
                 </div>
                 {% endfor %}
             </div>
+            {% endif %}
+            {% if drug_likeness %}
             <div class="drug-container p-4 row">
                 <div class="row"><div class="drug-container-name">Drug Likeness</div></div>
                 {% for k, v in drug_likeness.items %}
@@ -41,6 +44,8 @@
                 </div>
                 {% endfor %}
             </div>
+            {% endif %}
+            {% if original_indication %}
             <div class="drug-container p-4 row">
                 <div class="row"><div class="drug-container-name">Original Indication</div></div>
                 {% for k, v in original_indication.items %}
@@ -50,6 +55,8 @@
                 </div>
                 {% endfor %}
             </div>
+            {% endif %}
+            {% if target_models %}
             <div id="target-models" class="drug-container p-4 row">
                 <div class="row"><div class="drug-container-name">Target Models</div></div>
                 <p id="activity-rank"><span>Activity Rank Score:</span>  {{ activity_rank }}</p>
@@ -63,6 +70,8 @@
                     {% endfor %}
                 {% endfor %}
             </div>
+            {% endif %}
+            {% if pk_pd %}
             <div class="drug-container p-4 row">
                 <div class="row"><div class="drug-container-name">PK / PD</div></div>
                 {% for k, v in pk_pd.items %}
@@ -71,6 +80,8 @@
                     <div class="row ps-1 property-value">{% if v %}{{ v }}{% else %}-NA-{% endif %}</div>
                 </div>
                 {% endfor %}
+            {% endif %}
+            {% if covid_trials %}
             </div>
             <div class="drug-container p-4 row">
                 <div class="row"><div class="drug-container-name">COVID Trials</div></div>
@@ -85,6 +96,8 @@
                     </div>
                 </div>
                 {% endfor %}
+            {% endif %}
+            {% if red_flags %}
             </div>
             <div class="drug-container p-4 row">
                 <div class="row"><div class="drug-container-name">Red Flags</div></div>
@@ -95,6 +108,7 @@
                 </div>
                 {% endfor %}
             </div>
+            {% endif %}
             <div class="row pt-3 ps-1 property-name">References</div>
             <div class="row ps-1">{{ references }}</div>
         </div>
@@ -211,5 +225,5 @@
     }
     $(`#filter-${filters}`).addClass('failed', filters*800);
 </script>
-<script src='{% static "main/js/individual-drug.js?v={{ static_version }}" %}?v={{ static_version }}' type="text/javascript"></script>
+<script src='{% static "main/js/individual-drug.js" %}?v={{ static_version }}' type="text/javascript"></script>
 {% endblock footer_scripts %}
