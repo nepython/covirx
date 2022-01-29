@@ -1,6 +1,6 @@
 $(document).ready(function(){
     // Add hyperlinks to identifiers
-    let identifiers = ["ChEMBL ID", "CAS Number", "PubChem ID", "Drug Bank"]
+    let identifiers = ["ChEMBL ID", "CAS Number", "PubChem ID", "Drug Bank", "ChEBI"]
     $.each(identifiers, function(index, identifier) {
         let element = $(`div[title='${identifier}']`)[0]
         let val = element.innerHTML;
@@ -17,6 +17,9 @@ $(document).ready(function(){
             }
             else if (index==3) {
                 content = `<a class="link-no-decoration" href="https://go.drugbank.com/drugs/${val.split("|")[0]}" target="_blank">${val}</a>`
+            }
+            else if (index==4) {
+                content = `<a class="link-no-decoration" href="https://www.ebi.ac.uk/chebi/searchId.do?chebiId=${val.split("|")[0]}" target="_blank">${val}</a>`
             }
             element.innerHTML = content;
         }
@@ -151,6 +154,7 @@ $(document).ready(function(){
     $(".property-value").each(function(i, elem) {
         if(elem.clientWidth < elem.scrollWidth) {
             elem.classList.add("hide-overflow");
+            elem.classList.add("wrap");
         }
     });
 });

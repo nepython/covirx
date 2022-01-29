@@ -7,10 +7,16 @@ from premailer import transform
 
 from .models import Drug
 
+# Used for auto-versioning of static files
+# Changing below version would force browsers to reload static files
 static_version = '0.0.1'
 
+# The suggestions that is to be returned for autocomplete
+# We are adding a backend check to prevent misuse of API
+MAX_SUGGESTIONS = 20
+
 # Fields to be used to search on home page
-search_fields = ['name', 'smiles', 'inchi', 'synonyms', 'cas_number', 'chebl', 'pubchemcid']
+search_fields = ['name', 'smiles', 'inchi', 'synonyms', 'cas_number', 'chebi', 'pubchemcid']
 
 # Fields which have been name differently in excel sheet and in our Drug model
 # It should be in lowercase with spaces replaced by underscore

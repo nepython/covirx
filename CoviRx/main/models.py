@@ -54,10 +54,9 @@ class Drug(models.Model):
     # Drug identifiers
     synonyms = models.TextField(blank=True, null=True, unique=True)
     cas_number = models.TextField(blank=True, null=True, unique=True)
-    chebl = models.TextField(blank=True, null=True, unique=True)
+    chebi = models.TextField(blank=True, null=True, unique=True)
     chembl = models.TextField(blank=True, null=True)
     pubchemcid = models.TextField(blank=True, null=True, unique=True)
-    chembank = models.TextField(blank=True, null=True)
     drugbank = models.TextField(blank=True, null=True)
     indication_class = models.TextField(blank=True, null=True, verbose_name='indication_class/category')
     phase = models.TextField(blank=True, null=True)
@@ -100,8 +99,8 @@ class Drug(models.Model):
             self.smiles = None
         if not self.cas_number:
             self.cas_number = None
-        if not self.chebl:
-            self.chebl = None
+        if not self.chebi:
+            self.chebi = None
         if not self.pubchemcid:
             self.pubchemcid = None
 
@@ -116,7 +115,7 @@ class Drug(models.Model):
             models.Index(fields=['inchi',]),
             models.Index(fields=['synonyms',]),
             models.Index(fields=['cas_number',]),
-            models.Index(fields=['chebl',]),
+            models.Index(fields=['chebi',]),
             models.Index(fields=['pubchemcid',]),
         ]
 
@@ -136,15 +135,31 @@ class DrugBulkUpload(models.Model):
     total_count = models.IntegerField(default=0)
     uploaded_by = models.CharField(max_length=100, blank=False, null=False)
 
+    def start_upload(self, total_count, invalid_drugs):
+        self.total_count = total_count
+        cache.set_many({'total_count': total_count, 'email_recepients': ''}, None)
+        cache.set_many({'valid_count': 0, 'invalid_count': 0}, 60)
+        self.save()
+        invalid_drugs.clear()
+
     def invalid_drug(self):
         """ Increments the counter for invalid drugs, is useful to display while uploading """
         self.invalid_count+=1
-        cache.set('invalid_count', self.invalid_count, None)
+        cache.set('invalid_count', self.invalid_count, 60)
 
     def valid_drug(self):
         """ Increments the counter for valid drugs, is useful to display while uploading """
         self.valid_count+=1
-        cache.set('valid_count', self.valid_count, None)
+        cache.set('valid_count', self.valid_count, 60)
+
+    def finish_upload(self, invalid_drugs):
+        # Other cache keys have timeout set to 60s
+        cache.touch('total_count', 60)
+        cache.touch('email_recepients', 60)
+        self.invalid_drugs = str(invalid_drugs)
+        self.full_clean()
+        self.save()
+        invalid_drugs.clear()
 
 
 class Contact(models.Model):

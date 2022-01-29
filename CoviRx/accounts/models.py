@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now
 
-from .utils import tzinfo
+from .utils import tzinfo, INVITE_EXPIRY
 
 
 def storage_path(instance, filename):
@@ -141,14 +141,14 @@ class Invitee(models.Model):
         verbose_name=_('email address'), max_length=255, unique=True, blank=False, null=False
     )
     sent_on = models.DateField(_('Invite was sent out on'), null=False, auto_now=True)
+    admin_access = models.BooleanField('Admin Access', default=False)
 
     def __str__(self):
         return self.email
 
+    @property
     def expired(self):
-        return (now().date()-self.sent_on).days>7
-
-    expired.boolean = True
+        return (now().date()-self.sent_on).days>INVITE_EXPIRY
 
     class Meta:
         verbose_name = "Invite"

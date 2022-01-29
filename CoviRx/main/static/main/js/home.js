@@ -120,7 +120,7 @@ $(document).ready(function(){
         'label': 0,
         'name': 1,
         'synonyms': 1,
-        'chebl': 1,
+        'chebi': 1,
         'pubchemcid': 1,
         'cas_number': 2,
         'smiles': 2,
@@ -148,6 +148,7 @@ $(document).ready(function(){
                 elem.html(v!=null?v:"-NA-");
                 if(elem[0]!=undefined && elem[0].clientWidth < elem[0].scrollWidth) {
                     elem[0].classList.add("hide-overflow");
+                    elem[0].classList.add("wrap");
                 }
                 if (k=="smiles") { addSMILESVisualization(key, k, v, suggestion[0].children[3]); }
             }

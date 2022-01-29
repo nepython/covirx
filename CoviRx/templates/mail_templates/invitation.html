@@ -58,9 +58,13 @@
         <div class="container">
             <h1>CoviRx</h1>
             <h2>Covid19 Drug Repurposing Database</h2>
+            {% if admin_access %}
             <p>You have been invited to the CoviRx admin panel by <i>{{ invited_by }}</i>.</p>
-            <p>To become an admin member, visit our website <a href="{{ home_link }}"><button class="btn btn-primary" >Home Page</button></a> and click on the Google button in the header pane to login.</p>
-            <p>Please login within 7 days to accept the invite. This invite will expire in 7 days from the time of receiving this email.</p>
+            {% else %}
+            <p>You have been invited to contribute drugs to CoviRx by <i>{{ invited_by }}</i>.
+            {% endif %}
+            <p>To become a member, visit our website <a href="{{ login_link }}"><button class="btn btn-primary" >Login Page</button></a> and click on the Google button to login.</p>
+            <p>Please login within {{ expiry }} days to accept the invite. This invite will expire in {{ expiry }} days from the time of receiving this email.</p>
         </div>
         <br>
     </body>

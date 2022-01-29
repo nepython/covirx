@@ -174,7 +174,6 @@ form#identifiers {
     z-index: 100;
     background-color: white;
     position: relative;
-    width: max-content;
     border: solid thin;
     border-radius: 17px;
     box-shadow: 0px 8px 10px lightgray, -10px 8px 15px lightgray,
@@ -202,7 +201,7 @@ form#identifiers {
 #suggestions .suggestion-field-cas_number:before, .adv-search-field-col-cas_number label:before {
     content: 'CAS Number:  ';
 }
-#suggestions .suggestion-field-chebl:before, .adv-search-field-col-chebl label:before {
+#suggestions .suggestion-field-chebi:before, .adv-search-field-col-chebi label:before {
     content: 'ChEBI ID:  ';
 }
 #suggestions .suggestion-field-pubchemcid:before, .adv-search-field-col-pubchemcid label:before {

@@ -9,7 +9,10 @@ $(window).on('load', function(){
 
 function googleInit() {
     gapi.load('auth2', function() {
-        auth2 = gapi.auth2.init({});
+        auth2 = gapi.auth2.init({
+            client_id: '451260237676-sokoabp2tb0e73tgveglhhid0atq285r.apps.googleusercontent.com',
+            cookiepolicy: 'single_host_origin',
+        });
         element = document.getElementById('googleBtn');
         auth2.attachClickHandler(element, {}, onSignIn, onFailure);
      });
@@ -19,10 +22,9 @@ function onSignIn(googleUser) {
     sendID(id_token);
 }
 function sendID(id_token) {
-    $.getJSON( "/api/social-auth", {
+    $.get( "/api/social-auth", {
         id_token: id_token
     }).done(function( data ) {
-        console.log(data);
         if (data['admin']) {
             window.location.replace(data['admin']);
         }

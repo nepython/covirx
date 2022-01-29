@@ -158,3 +158,10 @@ body > .skiptranslate {
 svg > g > g:last-child {
     pointer-events: none; /* Google Charts flickering issue */
 }
+.wrap:hover {
+    white-space: pre-wrap !important;      /* CSS3 */
+    white-space: -moz-pre-wrap !important; /* Firefox */
+    white-space: -pre-wrap !important;     /* Opera <7 */
+    white-space: -o-pre-wrap !important;   /* Opera 7 */
+    word-wrap: break-word !important;      /* IE */
+}

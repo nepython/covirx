@@ -96,7 +96,7 @@ class UserAdmin(BaseUserAdmin):
                 'classes': ('wide',),
                 'fields': (
                     'email', 'first_name', 'last_name', 'password1',
-                    'password2'
+                    'password2', 'is_staff', 'email_notifications'
                 )
             }
         ),
@@ -122,7 +122,7 @@ class InviteeAdmin(admin.ModelAdmin):
         return super().get_readonly_fields(*args, **kwargs)+('expired', 'sent_on')
 
     def get_list_display(self, *args, **kwargs):
-        return super().get_list_display(*args, **kwargs)+('email', 'sent_on', 'expired',)
+        return super().get_list_display(*args, **kwargs)+('email', 'sent_on', 'admin_access', 'expired',)
 
     def has_add_permission(self, request, obj=None):
         return False

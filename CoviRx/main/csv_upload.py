@@ -36,17 +36,11 @@ def generate_position(drugs, given_names=target_model_names):
 
 
 def save_drugs_from_csv(obj, invalid_headers): #TODO: Make the code less redundant
-    cache.set('valid_count', 0, None)
-    cache.set('invalid_count', 0, None)
-    cache.set('email_recepients', '', None)
-    invalid_drugs.clear()
     file_path = obj.csv_file.path
     custom_fields = cache.get('custom_fields')
     with open(file_path, 'r') as fp:
         drugs = list(csv.reader(fp, delimiter=','))
-        obj.total_count = len(drugs)-2
-        cache.set('total_count', len(drugs)-2, None)
-        obj.save()
+        obj.start_upload(len(drugs)-2, invalid_drugs)
         headers = [drug.lower().replace(' ', '_') for drug in drugs[1]]
         position_covid, position_indication = generate_position(drugs, ['COVID Trials']), generate_position(drugs, ['Original Indication'])
         position_pk, position_target = generate_position(drugs, ['PK/PD']), generate_position(drugs)
@@ -72,7 +66,7 @@ def save_drugs_from_csv(obj, invalid_headers): #TODO: Make the code less redunda
             custom.update(save_positions(drug, position_covid, drugs[1], exclude=['Comments/Notes', 'Analogue in trial'])) # Save the COVID trials data as custom fields
             custom.update(save_positions(drug, position_pk, drugs[1])) # Save the PK/ PD data as custom fields
             custom.update(save_positions(drug, position_indication, drugs[1], exclude=['References'])) # Save the Original indication data as custom fields
-            custom.update(save_positions(drug, position_red_flags, drugs[1])) # Save the Red Flags data as custom fields
+            custom.update(save_positions(drug, position_red_flags, drugs[1], exclude=['Breast feeding'], rename_fields={'Notes (Breast feeding)': 'Breast feeding (Notes))'})) # Save the Red Flags data as custom fields
             try:
                 drug_details['custom_fields'] = custom
                 Drug.get_or_create(drug_details).custom_fields
@@ -84,17 +78,10 @@ def save_drugs_from_csv(obj, invalid_headers): #TODO: Make the code less redunda
                 invalid_drugs[drug_details['name']] = repr(e.error_dict) if hasattr(e, 'error_dict') else repr(e)
     if cache.get('email_recepients'):
         mail_invalid_drugs(cache.get('email_recepients').split(';'), deepcopy(invalid_drugs), obj.uploaded_by, obj.timestamp)
-    cache.delete('total_count')
-    cache.delete('valid_count')
-    cache.delete('invalid_count')
-    cache.delete('email_recepients')
-    obj.invalid_drugs = str(invalid_drugs)
-    obj.full_clean()
-    obj.save()
-    invalid_drugs.clear()
+    obj.finish_upload(invalid_drugs)
 
 
-def save_positions(drug, position, headers, exclude=list()):
+def save_positions(drug, position, headers, exclude=list(), rename_fields=None):
     """
     Args:
         drug (list): Contains all the parameter for the drug
@@ -105,7 +92,10 @@ def save_positions(drug, position, headers, exclude=list()):
         target_model = dict()
         for h in range(pos[0], pos[1]):
             if headers[h] not in exclude:
-                target_model[headers[h]] = drug[h]
+                field_name = headers[h]
+                if rename_fields and field_name in rename_fields:
+                    field_name = rename_fields[field_name]
+                target_model[field_name] = drug[h]
         if any(x != str() for x in target_model.values()):
             target_models[target] = target_model
     return target_models

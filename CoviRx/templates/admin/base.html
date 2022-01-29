@@ -36,8 +36,10 @@
         {% block userlinks %}
             <nav class="navbar navbar-expand-lg navbar-dark">
                 <div class="container-fluid">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#header" aria-controls="header" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#header" aria-controls="header" aria-expanded="false" aria-label="Toggle navigation">
+                        <a class="nav-link" href="{% url 'home' %}">
+                            <span class="navbar-toggler-icon"></span>&nbsp;Home
+                        </a>
                     </button>
                     <div class="collapse navbar-collapse">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">

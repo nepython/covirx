@@ -24,7 +24,7 @@ from accounts.models import User, Visitor
 from .csv_upload import get_invalid_headers, save_drugs_from_csv
 from .forms import DrugBulkUploadForm, DrugForm
 from .models import Drug, DrugBulkUpload, Contact, AddDrug
-from .utils import invalid_drugs, search_fields, store_fields, verbose_names, target_model_names, extra_references, sendmail
+from .utils import invalid_drugs, search_fields, store_fields, verbose_names, target_model_names, extra_references, sendmail, MAX_SUGGESTIONS
 from .tanimoto import similar_drugs
 import csv
 
@@ -38,7 +38,7 @@ def autocomplete(request):
     if request.method == 'POST':
         return JsonResponse({})
     keyword = json.loads(request.GET.get('keyword', '{}'))
-    suggestions = int(request.GET.get('suggestions', 5))
+    suggestions = min(int(request.GET.get('suggestions', 5)), MAX_SUGGESTIONS)
     if (not keyword):
         return JsonResponse({})
     return JsonResponse(search_drug(keyword, suggestions))
@@ -74,18 +74,15 @@ def individual_drug(request, drug_id):
             'HBA': drug.hba,
             'HBD': drug.hbd,
             'PSA': drug.psa,
-            'Rotation bonds': drug.rotbonds,
-            'Administration route': drug.administration_route,
-            'Indication class/ category': drug.indication_class
+            'Rotatable bonds': drug.rotbonds,
         },
         'original_indication': drug.custom_fields.get('Original Indication', dict()),
         'identifiers': {
             'CAS Number': drug.cas_number,
             'Formula': drug.formula,
             'Synonyms': drug.synonyms,
-            'ChEBL': drug.chebl,
+            'ChEBI': drug.chebi,
             'PubChem ID': drug.pubchemcid,
-            'ChemBank': drug.chembank,
             'Drug Bank': drug.drugbank,
         },
         'activity_rank': drug.rank_score,
@@ -219,7 +216,7 @@ def cookie_policy(request):
     return render(request, 'main/cookie-policy.html')
 
 
-@user_passes_test(lambda u: u.is_staff, login_url='/login/')
+@user_passes_test(lambda u: u.is_staff, login_url='/login')
 def csv_upload(request):
     if request.method == 'GET':
         form = DrugBulkUploadForm()
@@ -249,7 +246,7 @@ def csv_upload(request):
         return JsonResponse({'error': f'Unable to upload file. {repr(e)}'})
 
 
-@user_passes_test(lambda u: u.is_staff, login_url='/login/')
+@user_passes_test(lambda u: u.is_staff, login_url='/login')
 def csv_upload_updates(request):
     if request.method == 'GET':
         pk = request.GET.get('cancel-upload')
@@ -295,7 +292,7 @@ drug_label = {
 def charts_json(request):
     charts = dict()
     charts_requested = dict(request.GET).get('charts[]', list())
-    if 'visitors' in charts_requested:
+    if 'visitors' in charts_requested and request.user.is_staff:
         site_visitors = Visitor.site_visitors()
         page_visitors = Visitor.page_visitors()
         charts['visitors'] = [list(column_order.keys())]
