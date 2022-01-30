@@ -31,7 +31,7 @@ def generate_position(drugs, given_names=target_model_names):
             position[target] = [i]
             prev_target = target
     if (len(position[prev_target])==1):
-        position[prev_target].append(len(drugs[0])-1)
+        position[prev_target].append(len(drugs[0]))
     return position
 
 
@@ -62,7 +62,10 @@ def save_drugs_from_csv(obj, invalid_headers): #TODO: Make the code less redunda
                     custom[field] = drug[i]
             drug_details['label'] = drug_label(drug, drugs[1])
             drug_details['filters_passed'] = filters_passed(drug, drugs[0], drugs[1])
-            custom.update(save_positions(drug, position_target, drugs[1])) # Save the various target models as custom fields
+            custom.update(save_positions(drug, position_target, drugs[1], rename_fields={
+                'Potency (μM) Concentration at which compound exhibits half-maximal efficacy, AC50. Extrapolated AC50s also include the highest efficacy observed and the concentration of compound at which it was observed.': 'Potency (μM)',
+                'Efficacy (%) Maximal efficacy of compound, reported as a percentage of control. These values are estimated based on fits of the Hill equation to the dose-response curves.': 'Efficacy (%)'
+            })) # Save the various target models as custom fields
             custom.update(save_positions(drug, position_covid, drugs[1], exclude=['Comments/Notes', 'Analogue in trial'])) # Save the COVID trials data as custom fields
             custom.update(save_positions(drug, position_pk, drugs[1])) # Save the PK/ PD data as custom fields
             custom.update(save_positions(drug, position_indication, drugs[1], exclude=['References'])) # Save the Original indication data as custom fields
@@ -86,6 +89,7 @@ def save_positions(drug, position, headers, exclude=list(), rename_fields=None):
     Args:
         drug (list): Contains all the parameter for the drug
         position (dictionary of list (start, end)): Contains the starting and ending position of columns to store
+        rename_fields (dict): if key present in field to be stored then rename it as value
     """
     target_models = dict()
     for target, pos in position.items():

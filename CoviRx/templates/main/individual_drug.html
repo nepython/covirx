@@ -219,11 +219,13 @@
     });
 
     // Filters
-    var filters = parseInt({{ filters_passed }});
-    for(let i=0;i<filters; i++) {
+    var filters = parseInt("{{ filters_passed }}");
+    for(let i=1;i<=filters; i++) {
         $(`#filter-${i}`).addClass('checked', i*800);
     }
-    $(`#filter-${filters}`).addClass('failed', filters*800);
+    if (filters != 11) { // all filters passed
+        $(`#filter-${filters+1}`).addClass('failed', filters*800);
+    }
 </script>
 <script src='{% static "main/js/individual-drug.js" %}?v={{ static_version }}' type="text/javascript"></script>
 {% endblock footer_scripts %}
