@@ -11,7 +11,7 @@ from .utils import store_fields, verbose_names, invalid_drugs, target_model_name
 
 def get_invalid_headers(obj):
     file_path = obj.csv_file.path
-    with open(file_path, 'r') as fp:
+    with open(file_path, 'r', encoding='UTF-8') as fp:
         drugs = list(csv.reader(fp, delimiter=','))
         headers = [drug.lower().replace(' ', '_') for drug in drugs[1]]
         invalid_headers = list()
@@ -38,7 +38,7 @@ def generate_position(drugs, given_names=target_model_names):
 def save_drugs_from_csv(obj, invalid_headers): #TODO: Make the code less redundant
     file_path = obj.csv_file.path
     custom_fields = cache.get('custom_fields')
-    with open(file_path, 'r') as fp:
+    with open(file_path, 'r', encoding='UTF-8') as fp:
         drugs = list(csv.reader(fp, delimiter=','))
         obj.start_upload(len(drugs)-2, invalid_drugs)
         headers = [drug.lower().replace(' ', '_') for drug in drugs[1]]
@@ -96,7 +96,6 @@ def save_positions(drug, position, headers, exclude=list(), rename_fields=None):
         target_model = dict()
         for h in range(pos[0], pos[1]):
             if headers[h] not in exclude:
-                print(headers[h])
                 field_name = headers[h]
                 if rename_fields and field_name in rename_fields:
                     field_name = rename_fields[field_name]
@@ -124,7 +123,7 @@ def filters_passed(drug, header0, header1):
     removal_reason = drug[header1.index('Notes- Reason for removal')].lower()
     if drug[header0.index('Filtering')].lower()=='no' 'approval' in removal_reason:
         return 1
-    if 'clinical' in removal_reason and 'class' not in removal_reason:
+    if 'clinical trial' in removal_reason and 'clinical trials' not in removal_reason:
         return 2
     if 'cc50' in removal_reason or 'si<10' in removal_reason:
         return 3
@@ -134,7 +133,7 @@ def filters_passed(drug, header0, header1):
         return 5
     if 'cad' in removal_reason or 'pains' in removal_reason:
         return 6
-    if 'class' in removal_reason:
+    if 'same class of drug' in removal_reason:
         return 7
     if 'indication' in removal_reason:
         return 8
