@@ -48,14 +48,14 @@ class Drug(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.TextField(blank=False, null=False, unique=True)
     # Drug Structure
-    formula = models.TextField(blank=True, null=True)
+    formula = models.TextField(blank=True, null=True, unique=True)
     smiles = models.TextField(blank=True, null=True, unique=True)
     inchi = models.TextField(blank=True, null=True, unique=True)
     # Drug identifiers
     synonyms = models.TextField(blank=True, null=True, unique=True)
     cas_number = models.TextField(blank=True, null=True, unique=True)
     chebi = models.TextField(blank=True, null=True, unique=True)
-    chembl = models.TextField(blank=True, null=True)
+    chembl = models.TextField(blank=True, null=True, unique=True)
     pubchemcid = models.TextField(blank=True, null=True, unique=True)
     drugbank = models.TextField(blank=True, null=True)
     indication_class = models.TextField(blank=True, null=True, verbose_name='indication_class/category')
@@ -90,20 +90,26 @@ class Drug(models.Model):
             # Ensure persistent IDs by storing ID using a SHA-1 hash of a namespace UUID and drug name
             drug = Drug(pk=uuid.uuid5(uuid.NAMESPACE_DNS, kwargs['name']))
         drug.__dict__.update(kwargs)
-        if setings.DEBUG:
+        if settings.DEBUG:
             print(drug.name)
         drug.full_clean()
         drug.save()
         return drug
 
     def clean(self):
-        if not self.smiles:
+        if not self.smiles or self.smiles=="N/A":
             self.smiles = None
-        if not self.cas_number:
+        if not self.cas_number or self.cas_number=="N/A":
             self.cas_number = None
-        if not self.chebi:
+        if not self.chebi or self.chebi=="N/A":
             self.chebi = None
-        if not self.pubchemcid:
+        if not self.chembl or self.chembl=="N/A":
+            self.chembl = None
+        if not self.formula or self.formula=="N/A":
+            self.formula = None
+        if not self.synonyms or self.synonyms=="N/A":
+            self.synonyms = None
+        if not self.pubchemcid or self.pubchemcid=="N/A":
             self.pubchemcid = None
 
     def __str__(self):
