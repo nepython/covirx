@@ -69,7 +69,7 @@ def save_drugs_from_csv(obj, invalid_headers): #TODO: Make the code less redunda
             custom.update(save_positions(drug, position_covid, drugs[1], exclude=['Comments/Notes', 'Analogue in trial'])) # Save the COVID trials data as custom fields
             custom.update(save_positions(drug, position_pk, drugs[1])) # Save the PK/ PD data as custom fields
             custom.update(save_positions(drug, position_indication, drugs[1], exclude=['References'])) # Save the Original indication data as custom fields
-            custom.update(save_positions(drug, position_red_flags, drugs[1], exclude=['Breast feeding'], rename_fields={'Notes (Breast feeding)': 'Breast feeding (Notes))'})) # Save the Red Flags data as custom fields
+            custom.update(save_positions(drug, position_red_flags, drugs[1], exclude=['Breast feeding'])) # Save the Red Flags data as custom fields
             try:
                 drug_details['custom_fields'] = custom
                 Drug.get_or_create(drug_details).custom_fields
@@ -80,7 +80,7 @@ def save_drugs_from_csv(obj, invalid_headers): #TODO: Make the code less redunda
                 obj.invalid_drug()
                 invalid_drugs[drug_details['name']] = repr(e.error_dict) if hasattr(e, 'error_dict') else repr(e)
     if cache.get('email_recepients'):
-        mail_invalid_drugs(cache.get('email_recepients').split(';'), deepcopy(invalid_drugs), obj.uploaded_by, obj.timestamp)
+        mail_invalid_drugs(cache.get('email_recepients').split(';'), deepcopy(invalid_drugs), obj.uploaded_by, obj.date_uploaded)
     obj.finish_upload(invalid_drugs)
 
 
@@ -96,6 +96,7 @@ def save_positions(drug, position, headers, exclude=list(), rename_fields=None):
         target_model = dict()
         for h in range(pos[0], pos[1]):
             if headers[h] not in exclude:
+                print(headers[h])
                 field_name = headers[h]
                 if rename_fields and field_name in rename_fields:
                     field_name = rename_fields[field_name]

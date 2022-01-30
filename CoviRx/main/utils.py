@@ -9,7 +9,7 @@ from .models import Drug
 
 # Used for auto-versioning of static files
 # Changing below version would force browsers to reload static files
-static_version = '0.0.1'
+static_version = '0.0.2'
 
 # The suggestions that is to be returned for autocomplete
 # We are adding a backend check to prevent misuse of API

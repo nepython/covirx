@@ -125,7 +125,7 @@
     width: 30px;
     margin-left: -15px;
     text-align: center;
-    color: black;
+    color: white;
     font-weight: 800;
     top: 10px;
     -webkit-transform: rotateZ(45deg);
@@ -151,7 +151,7 @@
     .ui-slider-pip[class*='ui-slider-pip-selected']
     .ui-slider-line,
 #flat-slider-vertical-3 .ui-slider-range {
-    background-color: #67c3ec;
+    background-color: #772e78;;
 }
 #vertical-slider {
     height: 150px;

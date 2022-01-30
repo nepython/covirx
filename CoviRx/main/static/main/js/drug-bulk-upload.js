@@ -52,7 +52,6 @@ $('form').submit(function(e) {
             contentType: false,
             processData: false,
             success: function(data) {
-                if (valid>data['valid']) return // update completed
                 var v = `${format(100*data['valid']/Math.max(data['total'], 1))}%`;
                 var i = `${format(100*data['invalid']/Math.max(data['total'], 1))}%`
                 $('.valid').css('width', v);
@@ -80,9 +79,17 @@ $('form').submit(function(e) {
                 });
                 // if no updates happening, show connection error
                 if (upload) return;
-                setTimeout(function() {
-                    showUpdate(pk, data['valid'], data['invalid'], data['total']);
-                }, 300);
+                if (data['valid'] + data['invalid'] == data['total']) {
+                    alert("All the drugs uploaded have been successfully added to the database.\nThe drugs invalidated are shown below.");
+                    $(".round-loader").css('display', 'none');
+                    $(".flat-loader").css('display', 'none');
+                    $("#upload-button").css('display', 'none');
+                }
+                else {
+                    setTimeout(function() {
+                        showUpdate(pk, data['valid'], data['invalid'], data['total']);
+                    }, 300);
+                }
             }
         });
     }

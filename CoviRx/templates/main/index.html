@@ -192,7 +192,8 @@
                 <div class="col-4">
                     <div id="categories-chart">
                         <div id="drug-categories-chart"></div>
-                        <div id="labelOverlay">
+                        {% comment %} Remove once the invalidated drugs have been added {% endcomment %}
+                        <div id="labelOverlay" style="display: none;">
                             <p class="donut-center-figure"><span>-NA-</span></p>
                             <p class="donut-center-text">Total Drugs</p>
                         </div>
