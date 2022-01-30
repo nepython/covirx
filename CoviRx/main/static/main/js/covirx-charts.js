@@ -66,7 +66,8 @@ function DrugCategories(data, total_categories) {
     };
     var chart = new google.visualization.PieChart(document.getElementById('drug-categories-chart'));
     chart.draw(data, options);
-    $('#categories-chart #labelOverlay').css('display', 'block');
+    // TODO: Uncomment below line once the invalidated drugs have been added
+    // $('#categories-chart #labelOverlay').show();
     $('#labelOverlay span').html(total_categories);
 }
 function DrugLabels(data) {
@@ -80,6 +81,7 @@ function DrugLabels(data) {
     };
     var chart = new google.visualization.PieChart(document.getElementById('drug-labels-chart'));
     chart.draw(data, options);
+    $('#drug-labels-chart .labels-description').show()
 }
 function DrugPhase(data) {
     var data = google.visualization.arrayToDataTable(data);

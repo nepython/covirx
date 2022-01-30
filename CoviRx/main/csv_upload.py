@@ -126,7 +126,7 @@ def filters_passed(drug, header0, header1):
         return 1
     if 'clinical' in removal_reason and 'class' not in removal_reason:
         return 2
-    if 'cc50' in removal_reason or 'si' in removal_reason:
+    if 'cc50' in removal_reason or 'si<10' in removal_reason:
         return 3
     if 'ic50' in removal_reason:
         return 4

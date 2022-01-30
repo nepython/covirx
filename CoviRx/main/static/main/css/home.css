@@ -368,3 +368,6 @@ form#identifiers {
     padding-left: unset;
     margin: 0 15px 0 15px;
 }
+#drug-labels-chart .labels-description {
+    display: none;
+}
