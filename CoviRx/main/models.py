@@ -87,7 +87,8 @@ class Drug(models.Model):
         try:
             drug = Drug.objects.get(name=kwargs['name'])
         except:
-            drug = Drug()
+            # Ensure persistent IDs by storing ID using a SHA-1 hash of a namespace UUID and drug name
+            drug = Drug(pk=uuid.uuid5(uuid.NAMESPACE_DNS, kwargs['name']))
         drug.__dict__.update(kwargs)
         print(drug.name)
         drug.full_clean()
