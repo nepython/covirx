@@ -3,7 +3,7 @@ var mode = false; // advanced search mode
 var suggestions = 5;
 $("#showIdentifier").html(identifier);
 function toggleAdvancedSearch() {
-    $("#advanced-search-btn").toggleClass("btn-danger");
+    $("#advanced-search-btn").toggleClass("btn-orangered");
     $("body").toggleClass("advanced-mode");
     mode = !mode;
     if (mode) {

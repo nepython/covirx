@@ -48,7 +48,7 @@ class Drug(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.TextField(blank=False, null=False, unique=True)
     # Drug Structure
-    formula = models.TextField(blank=True, null=True, unique=True)
+    formula = models.TextField(blank=True, null=True)
     smiles = models.TextField(blank=True, null=True, unique=True)
     inchi = models.TextField(blank=True, null=True, unique=True)
     # Drug identifiers
@@ -97,19 +97,17 @@ class Drug(models.Model):
         return drug
 
     def clean(self):
-        if not self.smiles or self.smiles=="N/A":
+        if not self.smiles or self.smiles in ['N/A', '|N/A']:
             self.smiles = None
-        if not self.cas_number or self.cas_number=="N/A":
+        if not self.cas_number or self.cas_number in ['N/A', '|N/A']:
             self.cas_number = None
-        if not self.chebi or self.chebi=="N/A":
+        if not self.chebi or self.chebi in ['N/A', '|N/A']:
             self.chebi = None
-        if not self.chembl or self.chembl=="N/A":
+        if not self.chembl or self.chembl in ['N/A', '|N/A']:
             self.chembl = None
-        if not self.formula or self.formula=="N/A":
-            self.formula = None
-        if not self.synonyms or self.synonyms=="N/A":
+        if not self.synonyms or self.synonyms in ['N/A', '|N/A']:
             self.synonyms = None
-        if not self.pubchemcid or self.pubchemcid=="N/A":
+        if not self.pubchemcid or self.pubchemcid in ['N/A', '|N/A']:
             self.pubchemcid = None
 
     def __str__(self):

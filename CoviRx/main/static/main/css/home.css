@@ -294,6 +294,10 @@ form#identifiers {
     font-weight: bold;
     padding: 10px;
 }
+.btn-orangered, .btn-orangered:hover {
+    background-color: orangered !important;
+    border-color: orangered !important;
+}
 .adv-search-field-col.row {
     display: flex;
     align-items: center !important;
