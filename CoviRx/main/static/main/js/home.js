@@ -21,6 +21,10 @@ function toggleAdvancedSearch() {
 }
 
 $(document).ready(function(){
+    // Charts
+    var requested_charts = {'charts': ['categories', 'labels', 'phase']};
+    load_charts(requested_charts);
+
     $('.nav-link')[0].classList.add('active'); // highlights the Home nav item
     $('#msg').html("Kindly use English when using search. Since search feature currently doesn't support input in any other languages.");
 
@@ -169,8 +173,9 @@ $(document).ready(function(){
         };
         // Initialize the drawer to draw to canvas
         let smilesDrawer = new SmilesDrawer.Drawer(options);
+        theme = (localStorage.getItem("covirx-dark-mode") == 'on')?"dark":"light";
         SmilesDrawer.parse(v, function(tree) {
-            smilesDrawer.draw(tree, `${key}-suggestion-field-canvas`, "light", false);
+            smilesDrawer.draw(tree, `${key}-suggestion-field-canvas`, theme, false);
         });
     }
 

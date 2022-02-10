@@ -38,9 +38,9 @@ class DrugAdmin(admin.ModelAdmin):
     actions = [delete_all_drugs]
 
     class Media:
-        js = ('main/js/jquery-3.6.0.min.js', 'main/js/drug_individual_admin.js',)
+        js = ('main/js/jquery-3.6.0.min.js', 'admin/js/drug_customfield.js',)
         css = {
-            'all': ('main/css/drug_individual_admin.css',)
+            'all': ('admin/css/drug_customfield.css',)
         }
 
 

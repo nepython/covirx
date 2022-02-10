@@ -120,7 +120,10 @@ color: #fff;
     text-decoration: none;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
 }
-@media (max-width: 1370px) {
+#branding {
+    align-self: normal;
+}
+@media (max-width: 500px) {
     #branding {
         opacity: 0;
     }
@@ -130,7 +133,7 @@ color: #fff;
     right: 5%;
     position: fixed;
     z-index: 900;
-    background: #78387826;
+    background: aqua;
     padding: 8px;
     border-radius: 10%;
 }
@@ -140,3 +143,76 @@ body > .skiptranslate {
 svg > g > g:last-child {
     pointer-events: none; /* Google Charts flickering issue */
 }
+#dark-mode-toggle {
+    bottom: 75px;
+    left: 5%;
+    position: fixed;
+    z-index: 900;
+    padding: 8px;
+    border-radius: 10%;
+}
+#dark-mode-toggle #darkModeToggle {
+    opacity: 0;
+    position: absolute;
+}
+#dark-mode-toggle .label {
+    width: 40px;
+    height: 14px;
+    background-color:#413b3b;
+    display: flex;
+    border-radius:50px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    position: relative;
+    transform: scale(1.5);
+}
+#dark-mode-toggle .ball {
+    width: 20px;
+    height: 20px;
+    background-color: skyblue;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    border-radius: 50%;
+    transition: transform 0.2s linear;
+}
+/*  target the elemenent after the label*/
+.checkbox:checked + .label .ball{
+    transform: translateX(24px);
+}
+.bi-moon-stars:before {
+    color: pink;
+    content: '\263D';
+    font-size: 18px;
+}
+.bi-sun:before {
+    color: yellow;
+    content: '\263C';
+    font-size: 18px;
+}
+[data-darkreader-mode="dynamic"] .admin-interface {
+    --primary: #264b5d;
+    --primary-fg: #eee;
+    --body-fg: #eeeeee;
+    --body-bg: #121212;
+    --body-quiet-color: #bbafaf;
+    --body-loud-color: #ffffff;
+    --breadcrumbs-link-fg: #e0e0e0;
+    --breadcrumbs-bg: var(--primary);
+    --link-fg: #81d4fa;
+    --link-hover-color: #4ac1f7;
+    --link-selected-fg: #6f94c6;
+    --hairline-color: #373434;
+    --border-color: #353535;
+    --error-fg: #e35f5f;
+    --message-success-bg: #006b1b;
+    --message-warning-bg: #583305;
+    --message-error-bg: #570808;
+    --darkened-bg: #2a2929;
+    --selected-bg: #1b1b1b;
+    --selected-row: #00363a;
+    --close-button-bg: #333333;
+    --close-button-hover-bg: #666666;
+}
+

@@ -117,8 +117,9 @@ $(document).ready(function(){
         };
         // Initialize the drawer to draw to canvas
         let smilesDrawer = new SmilesDrawer.Drawer(options);
+        theme = (localStorage.getItem("covirx-dark-mode") == 'on')?"dark":"light";
         SmilesDrawer.parse(v, function(tree) {
-            smilesDrawer.draw(tree, `${key}-suggestion-field-canvas`, "light", false);
+            smilesDrawer.draw(tree, `${key}-suggestion-field-canvas`, theme, false);
         });
     }
 

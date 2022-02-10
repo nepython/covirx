@@ -10,7 +10,7 @@ def forwards_func(apps, schema_editor):
     Theme = apps.get_model("admin_interface", "Theme")
     theme = Theme.objects.get(name="USWDS")
     theme.active=True
-    theme.logo.name = "static/main/images/covirx_light.png"
+    theme.logo.name = "main/static/main/images/covirx_light.png"
     theme.title = "CoviRx: Covid19 Drug Repurposing Database"
     theme.save()
 

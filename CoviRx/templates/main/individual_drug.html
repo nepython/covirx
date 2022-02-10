@@ -80,9 +80,9 @@
                     <div class="row ps-1 property-value">{% if v %}{{ v }}{% else %}-NA-{% endif %}</div>
                 </div>
                 {% endfor %}
+            </div>
             {% endif %}
             {% if covid_trials %}
-            </div>
             <div class="drug-container p-4 row">
                 <div class="row"><div class="drug-container-name">COVID Trials</div></div>
                 {% for k, v in covid_trials.items %}
@@ -96,9 +96,9 @@
                     </div>
                 </div>
                 {% endfor %}
+            </div>
             {% endif %}
             {% if red_flags %}
-            </div>
             <div class="drug-container p-4 row">
                 <div class="row"><div class="drug-container-name">Red Flags</div></div>
                 {% for k, v in red_flags.items %}
@@ -214,8 +214,9 @@
     };
     // Initialize the drawer to draw to canvas
     let smilesDrawer = new SmilesDrawer.Drawer(options);
+    theme = (localStorage.getItem("covirx-dark-mode") == 'on')?"dark":"light";
     SmilesDrawer.parse("{{ smiles }}", function(tree) {
-        smilesDrawer.draw(tree, "smiles-visualization", "light", false);
+        smilesDrawer.draw(tree, "smiles-visualization", theme, false);
     });
 
     // Filters

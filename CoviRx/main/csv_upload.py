@@ -114,14 +114,23 @@ def drug_label(drug, header):
         return '3'
     return '4'
 
-
 def filters_passed(drug, header0, header1):
-    if drug[header0.index('Filtering')+1].lower=='':
+    """
+    A drug could have failed multiple filters since some
+    filters were applied in parallel and not sequentially,
+    return the filter count which is the least
+    """
+    removal_reasons = drug[header1.index('Notes- Reason for removal')].lower()
+    first_failure = 11
+    for reason in removal_reasons.replace(';', ',').split(','):
+        first_failure = min(first_failure, _filters_passed(reason, drug, header0, header1))
+    return first_failure
+
+def _filters_passed(removal_reason, drug, header0, header1):
+    # Assay Data not present
+    if not removal_reason and drug[header0.index('Filtering')+1]=='':
         return 0
-    if drug[header1.index('FDA/TGA')]!='FDA' and drug[header1.index('FDA/TGA')]!='TGA':
-        return 1
-    removal_reason = drug[header1.index('Notes- Reason for removal')].lower()
-    if drug[header0.index('Filtering')].lower()=='no' 'approval' in removal_reason:
+    if drug[header1.index('FDA/TGA')] not in ['FDA', 'TGA']:
         return 1
     if 'clinical trial' in removal_reason and 'clinical trials' not in removal_reason:
         return 2

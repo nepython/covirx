@@ -332,6 +332,9 @@ form#identifiers {
 .slide-up #sidenav-button {
     display: none;
 }
+.charts-visualisation {
+    display: none;
+}
 .charts-visualisation h4 {
     text-align: center;
 }

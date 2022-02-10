@@ -21,6 +21,7 @@ function load_charts(requested_charts) {
                     google.charts.setOnLoadCallback(DrugCategories(data['categories'], data['total_drugs']));
                     google.charts.setOnLoadCallback(DrugLabels(data['labels']));
                     google.charts.setOnLoadCallback(DrugPhase(data['phase']));
+                    $('.charts-visualisation').show();
                 }
             }, 300);
         }
@@ -81,7 +82,6 @@ function DrugLabels(data) {
     };
     var chart = new google.visualization.PieChart(document.getElementById('drug-labels-chart'));
     chart.draw(data, options);
-    $('#drug-labels-chart .labels-description').show()
 }
 function DrugPhase(data) {
     var data = google.visualization.arrayToDataTable(data);
