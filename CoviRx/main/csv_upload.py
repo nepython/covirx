@@ -128,7 +128,7 @@ def filters_passed(drug, header0, header1):
 
 def _filters_passed(removal_reason, drug, header0, header1):
     # Assay Data not present
-    if not removal_reason and drug[header0.index('Filtering')+1]=='':
+    if not removal_reason and drug[header0.index('Filtering')+1]=='NO':
         return 0
     if drug[header1.index('FDA/TGA')] not in ['FDA', 'TGA']:
         return 1

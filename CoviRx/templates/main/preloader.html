@@ -22,7 +22,7 @@
         stroke:#59027A;
         stroke-width:3;
     }
-    .ml11 {
+    .ml11, .preLoader-bottom {
         font-weight: 700;
         font-size: calc(.5rem + 1.5vw);
         color: #59027A;
@@ -94,6 +94,15 @@
         display: inline-block;
         line-height: 1em;
     }
+    .preLoader-bottom {
+        bottom: 5%;
+        position: fixed;
+        width: 100%;
+        text-align: center;
+    }
+    .preLoader-bottom p {
+        margin: 4px;
+    }
 </style>
 <div id="preLoader">
     <div id="lineDrawing" class="center">
@@ -123,6 +132,10 @@
                 </span>
             </div>
         </div>
+    </div>
+    <div class="preLoader-bottom">
+        <p>Developed with &#10084; by</p>
+        <p>BITS Pilani</p>
     </div>
 </div>
 <script>
@@ -157,67 +170,67 @@
         duration: 1800,
         delay: (el, i) => 29 * (i+1)
     }, '-=1330')
+    setTimeout(function(){ dissappearPreLoader = true; }, 4000);
     // inspired from https://codepen.io/kkhenriquez/pen/dvPgbG
     setTimeout(function(){
-        dissappearPreLoader = true;
-        var circle1 = anime ({
-            targets: ['.loader-circle-1'],
-            translateY: -24,
-            translateX: 52,
-            direction: 'alternate',
-            loop: true,
-            elasticity: 400,
-            easing: 'easeInOutElastic',
-            duration: 800,
-            delay: 200,
-        });
-        var circle2 = anime ({
-            targets: ['.loader-circle-2'],
-            translateY: 24,
-            direction: 'alternate',
-            loop: true,
-            elasticity: 400,
-            easing: 'easeInOutElastic',
-            duration: 800,
-            delay: 200,
-        });
-        var circle3 = anime ({
-            targets: ['.loader-circle-3'],
-            translateY: -24,
-            direction: 'alternate',
-            loop: true,
-            elasticity: 400,
-            easing: 'easeInOutElastic',
-            duration: 800,
-            delay: 200,
-        });
-        var circle4 = anime ({
-            targets: ['.loader-circle-4'],
-            translateY: 24,
-            translateX: -52,
-            direction: 'alternate',
-            loop: true,
-            elasticity: 400,
-            easing: 'easeInOutElastic',
-            duration: 800,
-            delay: 200,
-        });
-        // Wrap every letter in a span
-        var textWrapper = document.querySelector('.ml6 .letters');
-        textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
-        anime.timeline({loop: true}).add({
-            targets: '.ml6 .letter',
-            translateY: ["1.1em", 0],
-            translateZ: 0,
-            duration: 1750,
-            delay: (el, i) => 100 * i
-        }).add({
-            targets: '.ml6',
-            opacity: 0,
-            duration: 2000,
-            easing: "easeOutExpo",
-            delay: 4000
-        });
         document.getElementById("loading-info").style.opacity=1;
-    }, 4000);
+    }, 5000);
+    var circle1 = anime ({
+        targets: ['.loader-circle-1'],
+        translateY: -24,
+        translateX: 52,
+        direction: 'alternate',
+        loop: true,
+        elasticity: 400,
+        easing: 'easeInOutElastic',
+        duration: 800,
+        delay: 200,
+    });
+    var circle2 = anime ({
+        targets: ['.loader-circle-2'],
+        translateY: 24,
+        direction: 'alternate',
+        loop: true,
+        elasticity: 400,
+        easing: 'easeInOutElastic',
+        duration: 800,
+        delay: 200,
+    });
+    var circle3 = anime ({
+        targets: ['.loader-circle-3'],
+        translateY: -24,
+        direction: 'alternate',
+        loop: true,
+        elasticity: 400,
+        easing: 'easeInOutElastic',
+        duration: 800,
+        delay: 200,
+    });
+    var circle4 = anime ({
+        targets: ['.loader-circle-4'],
+        translateY: 24,
+        translateX: -52,
+        direction: 'alternate',
+        loop: true,
+        elasticity: 400,
+        easing: 'easeInOutElastic',
+        duration: 800,
+        delay: 200,
+    });
+    // Wrap every letter in a span
+    var textWrapper = document.querySelector('.ml6 .letters');
+    textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+    var preloader_loading = anime.timeline({loop: true}).add({
+        targets: '.ml6 .letter',
+        translateY: ["1.1em", 0],
+        translateZ: 0,
+        duration: 1750,
+        delay: (el, i) => 100 * i
+    }).add({
+        targets: '.ml6',
+        opacity: 0,
+        duration: 2000,
+        easing: "easeOutExpo",
+        delay: 4000
+    });
 </script>

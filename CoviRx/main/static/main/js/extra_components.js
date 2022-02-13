@@ -29,6 +29,7 @@ if (localStorage.getItem("covirx-dark-mode") == 'on') {
 
 // Dark Mode, Light mode toggle
 async function darkModeToggle() {
+    msgAboutSmiles();
     if (localStorage.getItem("covirx-dark-mode") == 'on') {
         localStorage.setItem("covirx-dark-mode", 'off');
         DarkReader.disable();
@@ -37,7 +38,6 @@ async function darkModeToggle() {
     localStorage.setItem("covirx-dark-mode", 'on');
     disableDarkReaderLog();
     DarkReader.enable();
-    msgAboutSmiles();
 }
 function disableDarkReaderLog() {
     // logs are disabled for 5s as darkReader (external library) logs are not useful to us
@@ -51,7 +51,7 @@ function disableDarkReaderLog() {
 function msgAboutSmiles() {
     if (document.getElementsByTagName("canvas").length==0)
         return;
-    document.getElementById("msg").innerHTML = "The page contains Drug structure figures which might be displayed incorrectly.\n Reload the page to display them properly."
+    document.getElementById("msg").innerHTML = "The page contains Drug structure figures which might be displayed incorrectly due to theme switch.\n Reload the page to display them properly."
 }
 
 // Give alert to user on him going offline
