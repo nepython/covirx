@@ -15,8 +15,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src='{% static "main/js/covirx-charts.js" %}?v={{ static_version }}' type="text/javascript"></script>
 <script type="text/javascript">
-    var requested_charts = {'charts': ['visitors', 'categories', 'labels', 'phase']};
-    load_charts(requested_charts);
+    $(document).ready(function(){
+        var requested_charts = {'charts': ['visitors', 'categories', 'labels', 'phase']};
+        load_charts(requested_charts);
+    });
 </script>
 {% endblock %}
 

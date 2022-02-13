@@ -1,0 +1,223 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha512-z4OUqw38qNLpn1libAN9BsoDx6nbNFio5lA6CuTp9NlK83b89hgyCVq+N5FdBJptINztxn1Z3SaKSKUS5UP60Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+    #preLoader {
+        display: block;
+        text-align: -webkit-center;
+        background: white;
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+    }
+    .center {
+        position: absolute;
+        top: 20%;
+        width: 100%;
+        padding: 10%;
+    }
+    .loader-path {
+        fill:none;
+        stroke:#59027A;
+        stroke-width:3;
+    }
+    .ml11 {
+        font-weight: 700;
+        font-size: calc(.5rem + 1.5vw);
+        color: #59027A;
+    }
+    .ml11 .text-wrapper {
+        position: relative;
+        display: inline-block;
+        padding-top: 0.1em;
+        padding-right: 0.05em;
+        padding-bottom: 0.15em;
+    }
+    .ml11 .line {
+        opacity: 0;
+        position: absolute;
+        left: 0;
+        height: 100%;
+        width: 3px;
+        background-color: #5A87FF;
+        transform-origin: 0 50%;
+    }
+    .ml11 .line1 {
+        top: 0;
+        left: 0;
+    }
+    .ml11 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }
+    #loading-info {
+        margin-top: 80px;
+        opacity: 0;
+    }
+    .loader-circle {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin: 0 4px;
+    }
+    .loader-circle-1 {
+        border: 4px solid #FC1460;
+    }
+    .loader-circle-2 {
+        border: 4px solid #5A87FF;
+    }
+    .loader-circle-3 {
+        border: 4px solid #18FD91;
+    }
+    .loader-circle-4 {
+        border: 4px solid #FBF38C;
+    }
+    .ml6 {
+        margin-top: 30px;
+        position: relative;
+        font-weight: 900;
+        font-size: 1.3em;
+        color: black;
+        opacity: 0.6;
+    }
+    .ml6 .text-wrapper {
+        position: relative;
+        display: inline-block;
+        padding-top: 0.2em;
+        padding-right: 0.05em;
+        padding-bottom: 0.1em;
+        overflow: hidden;
+    }
+    .ml6 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }
+</style>
+<div id="preLoader">
+    <div id="lineDrawing" class="center">
+        <svg width="40%" viewBox="0 0 375 73" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path class="loader-path" d="M48.84 50.84H52.776C53.032 51.864 53.256 53.112 53.448 54.584C53.704 55.992 53.896 57.528 54.024 59.192C54.216 60.792 54.344 62.392 54.408 63.992C54.472 65.592 54.504 67.032 54.504 68.312C52.264 69.72 49.448 70.712 46.056 71.288C42.728 71.864 39.304 72.152 35.784 72.152C30.472 72.152 25.64 71.512 21.288 70.232C17 68.888 13.32 66.808 10.248 63.992C7.24 61.112 4.904 57.496 3.24 53.144C1.576 48.728 0.744003 43.448 0.744003 37.304C0.744003 31.224 1.64 26.008 3.432 21.656C5.288 17.24 7.752 13.624 10.824 10.808C13.896 7.992 17.448 5.944 21.48 4.664C25.576 3.32 29.864 2.648 34.344 2.648C38.568 2.648 42.376 2.968 45.768 3.608C49.224 4.184 52.04 4.984 54.216 6.008C54.216 7.032 54.152 8.344 54.024 9.944C53.96 11.544 53.8 13.24 53.544 15.032C53.352 16.76 53.096 18.488 52.776 20.216C52.52 21.88 52.264 23.288 52.008 24.44H47.976L42.696 9.944C42.12 9.624 41.192 9.368 39.912 9.176C38.632 8.984 37.32 8.888 35.976 8.888C33.352 8.888 30.888 9.432 28.584 10.52C26.28 11.544 24.232 13.208 22.44 15.512C20.648 17.816 19.24 20.792 18.216 24.44C17.192 28.024 16.68 32.344 16.68 37.4C16.68 46.552 18.504 53.592 22.152 58.52C25.8 63.448 30.76 65.912 37.032 65.912C38.824 65.912 40.328 65.784 41.544 65.528C42.824 65.208 43.688 64.792 44.136 64.28L48.84 50.84Z" fill="#59027A"/>
+            <path class="loader-path" d="M72.0585 47C72.0585 43.096 72.6345 39.608 73.7865 36.536C75.0025 33.4 76.6985 30.744 78.8745 28.568C81.1145 26.392 83.8025 24.728 86.9385 23.576C90.0745 22.424 93.6265 21.848 97.5945 21.848C102.075 21.848 105.915 22.488 109.115 23.768C112.379 24.984 115.035 26.712 117.083 28.952C119.195 31.128 120.731 33.784 121.691 36.92C122.651 39.992 123.131 43.352 123.131 47C123.131 50.904 122.555 54.424 121.403 57.56C120.251 60.632 118.555 63.256 116.315 65.432C114.139 67.608 111.451 69.272 108.251 70.424C105.115 71.576 101.563 72.152 97.5945 72.152C93.2425 72.152 89.4665 71.544 86.2665 70.328C83.0665 69.048 80.4105 67.32 78.2985 65.144C76.1865 62.904 74.6185 60.248 73.5945 57.176C72.5705 54.04 72.0585 50.648 72.0585 47ZM86.9385 47C86.9385 49.88 87.0985 52.536 87.4185 54.968C87.8025 57.336 88.4425 59.352 89.3385 61.016C90.2345 62.68 91.4505 63.992 92.9865 64.952C94.5225 65.848 96.5065 66.296 98.9385 66.296C100.347 66.296 101.627 65.976 102.779 65.336C103.931 64.632 104.923 63.544 105.755 62.072C106.587 60.536 107.195 58.552 107.579 56.12C108.027 53.624 108.251 50.584 108.251 47C108.251 44.056 108.059 41.4 107.675 39.032C107.355 36.664 106.747 34.648 105.851 32.984C105.019 31.32 103.867 30.04 102.395 29.144C100.923 28.184 99.0665 27.704 96.8265 27.704C95.1625 27.704 93.7225 28.056 92.5065 28.76C91.2905 29.4 90.2665 30.488 89.4345 32.024C88.6025 33.496 87.9625 35.48 87.5145 37.976C87.1305 40.408 86.9385 43.416 86.9385 47Z" fill="#59027A"/>
+            <path class="loader-path" d="M159.524 72.152L140.324 29.048C138.468 28.408 136.772 27.64 135.236 26.744V23H160.484V26.648C159.652 27.096 158.788 27.544 157.892 27.992C157.06 28.376 156.1 28.728 155.012 29.048L163.94 53.624L165.764 60.056H165.956L167.492 53.528L175.652 29.048C174.628 28.792 173.668 28.472 172.772 28.088C171.94 27.704 171.14 27.256 170.372 26.744V23H188.9V26.744C188.26 27.192 187.46 27.608 186.5 27.992C185.604 28.376 184.58 28.728 183.428 29.048L166.628 71L159.524 72.152Z" fill="#59027A"/>
+            <path class="loader-path" d="M228.938 71H202.442V67.256C203.402 66.744 204.394 66.328 205.418 66.008C206.442 65.624 207.562 65.272 208.778 64.952V29.816L202.442 29.048V25.304C203.402 24.92 204.586 24.536 205.994 24.152C207.466 23.768 209.002 23.448 210.602 23.192C212.202 22.872 213.77 22.616 215.306 22.424C216.842 22.168 218.186 21.976 219.338 21.848H222.602V64.952C223.882 65.272 225.034 65.624 226.058 66.008C227.082 66.328 228.042 66.744 228.938 67.256V71ZM207.146 7.256C207.146 5.016 207.914 3.256 209.45 1.976C210.986 0.695999 212.97 0.0559998 215.402 0.0559998C217.834 0.0559998 219.818 0.695999 221.354 1.976C222.89 3.256 223.658 5.016 223.658 7.256C223.658 9.432 222.89 11.16 221.354 12.44C219.818 13.72 217.834 14.36 215.402 14.36C212.97 14.36 210.986 13.72 209.45 12.44C207.914 11.16 207.146 9.432 207.146 7.256Z" fill="#59027A"/>
+            <path class="loader-path" d="M267.053 64.568C268.525 64.888 269.837 65.304 270.989 65.816C272.141 66.328 273.261 66.84 274.349 67.352V71H244.781V67.352C246.189 66.584 247.533 66.008 248.813 65.624C250.093 65.176 251.373 64.824 252.653 64.568V10.232C249.453 9.528 246.829 8.6 244.781 7.448V3.8H254.957C256.237 3.8 257.677 3.768 259.277 3.704C260.941 3.64 262.669 3.576 264.461 3.512C266.253 3.384 268.077 3.288 269.933 3.224C271.789 3.096 273.581 3.032 275.309 3.032C278.829 3.032 282.061 3.448 285.005 4.28C288.013 5.048 290.573 6.232 292.685 7.832C294.861 9.432 296.525 11.448 297.677 13.88C298.893 16.248 299.501 19.032 299.501 22.232C299.501 26.84 298.381 30.616 296.141 33.56C293.901 36.504 290.829 38.712 286.925 40.184C289.485 44.216 292.205 48.344 295.085 52.568C297.965 56.728 301.005 60.76 304.205 64.664L308.813 67.736V71H292.781L288.653 67.832C285.709 64.312 283.085 60.248 280.781 55.64C278.541 50.968 276.557 46.392 274.829 41.912H267.053V64.568ZM271.853 9.272C269.869 9.272 268.269 9.464 267.053 9.848V36.632H272.717C275.981 36.632 278.765 35.48 281.069 33.176C283.373 30.808 284.525 27.32 284.525 22.712C284.525 20.344 284.205 18.328 283.565 16.664C282.925 14.936 282.029 13.528 280.877 12.44C279.725 11.352 278.381 10.552 276.845 10.04C275.309 9.528 273.645 9.272 271.853 9.272Z" fill="#59027A"/>
+            <path class="loader-path" d="M354.247 45.272L369.415 64.952C371.079 65.464 372.647 66.232 374.119 67.256V71H349.639V67.352C350.343 66.84 351.047 66.392 351.751 66.008C352.519 65.56 353.287 65.208 354.055 64.952L344.935 51.896L336.103 64.952C336.999 65.272 337.767 65.624 338.407 66.008C339.111 66.392 339.783 66.808 340.423 67.256V71H322.279V67.256C323.175 66.744 323.975 66.296 324.679 65.912C325.447 65.528 326.311 65.208 327.271 64.952L341.479 47.288L327.175 29.048C326.279 28.728 325.479 28.408 324.775 28.088C324.071 27.704 323.431 27.256 322.855 26.744V23H346.951V26.648C346.183 27.16 345.479 27.64 344.839 28.088C344.263 28.472 343.527 28.792 342.631 29.048L350.983 40.952L358.951 29.048C357.863 28.728 356.999 28.376 356.359 27.992C355.719 27.608 355.143 27.192 354.631 26.744V23H372.391V26.744C371.751 27.192 371.047 27.608 370.279 27.992C369.511 28.376 368.551 28.728 367.399 29.048L354.247 45.272Z" fill="#59027A"/>
+        </svg>
+        <br>
+        <h1 class="ml11">
+            <span class="text-wrapper">
+                <span class="line line1"></span>
+                <span class="letters">Covid 19 Drug Repurposing Database</span>
+            </span>
+        </h1>
+        <div id="loading-info">
+            <div class="loader-circle loader-circle-1"></div>
+            <div class="loader-circle loader-circle-2"></div>
+            <div class="loader-circle loader-circle-3"></div>
+            <div class="loader-circle loader-circle-4"></div>
+            <div class="ml6">
+                <span class="text-wrapper">
+                    <span class="letters">Loading</span>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var dissappearPreLoader = false;
+    var lineDrawing = anime({
+        targets: '#lineDrawing path.loader-path',
+        strokeDashoffset: [anime.setDashoffset, 0],
+        easing: 'easeInOutSine',
+        duration: 1500,
+        delay: function(el, i) { return i * 250 },
+    });
+    // Wrap every letter in a span
+    var textWrapper = document.querySelector('.ml11 .letters');
+    textWrapper.innerHTML = textWrapper.textContent.replace(/([^\x00-\x80]|\w)/g, "<span class='letter'>$&</span>");
+    anime.timeline({loop: false}).add({
+        targets: '.ml11 .line',
+        scaleY: [0,1],
+        opacity: [0.5,1],
+        easing: "easeInOutSine",
+        duration: 500,
+        delay: 1000,
+    }).add({
+        targets: '.ml11 .line',
+        translateX: [0, document.querySelector('.ml11 .letters').getBoundingClientRect().width + 10],
+        easing: "easeInOutExpo",
+        duration: 1900,
+        delay: 200
+    }).add({
+        targets: '.ml11 .letter',
+        opacity: [0,1],
+        easing: "easeOutExpo",
+        duration: 1800,
+        delay: (el, i) => 29 * (i+1)
+    }, '-=1330')
+    // inspired from https://codepen.io/kkhenriquez/pen/dvPgbG
+    setTimeout(function(){
+        dissappearPreLoader = true;
+        var circle1 = anime ({
+            targets: ['.loader-circle-1'],
+            translateY: -24,
+            translateX: 52,
+            direction: 'alternate',
+            loop: true,
+            elasticity: 400,
+            easing: 'easeInOutElastic',
+            duration: 800,
+            delay: 200,
+        });
+        var circle2 = anime ({
+            targets: ['.loader-circle-2'],
+            translateY: 24,
+            direction: 'alternate',
+            loop: true,
+            elasticity: 400,
+            easing: 'easeInOutElastic',
+            duration: 800,
+            delay: 200,
+        });
+        var circle3 = anime ({
+            targets: ['.loader-circle-3'],
+            translateY: -24,
+            direction: 'alternate',
+            loop: true,
+            elasticity: 400,
+            easing: 'easeInOutElastic',
+            duration: 800,
+            delay: 200,
+        });
+        var circle4 = anime ({
+            targets: ['.loader-circle-4'],
+            translateY: 24,
+            translateX: -52,
+            direction: 'alternate',
+            loop: true,
+            elasticity: 400,
+            easing: 'easeInOutElastic',
+            duration: 800,
+            delay: 200,
+        });
+        // Wrap every letter in a span
+        var textWrapper = document.querySelector('.ml6 .letters');
+        textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+        anime.timeline({loop: true}).add({
+            targets: '.ml6 .letter',
+            translateY: ["1.1em", 0],
+            translateZ: 0,
+            duration: 1750,
+            delay: (el, i) => 100 * i
+        }).add({
+            targets: '.ml6',
+            opacity: 0,
+            duration: 2000,
+            easing: "easeOutExpo",
+            delay: 4000
+        });
+        document.getElementById("loading-info").style.opacity=1;
+    }, 4000);
+</script>

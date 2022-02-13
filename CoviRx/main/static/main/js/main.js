@@ -1,6 +1,6 @@
 // Wait for window load
 $(window).on('load', function(){
-    $(".se-pre-con").fadeOut(100);
+    hidePreLoader();
     $(".container").css("margin-top", `${15+$(".site-header").height()}px`);
     $('.site-header').on('DOMSubtreeModified', function(){
         $(".container.slide-up").css("margin-top", `${15+$(".site-header").height()}px`);
