@@ -173,6 +173,7 @@ class Visitor(models.Model):
     )
     session_key = models.CharField(help_text="Django session identifier", max_length=40)
     page_visited = models.CharField(help_text="URL", max_length=40)
+    drug_overview = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('session_key', 'page_visited', 'timestamp')
@@ -181,15 +182,17 @@ class Visitor(models.Model):
         return self.session_key
 
     @classmethod
-    def record(cls, request):
+    def record(cls, request, drug_overview=None):
         """ Record the visitor if he hasn't visited the page previously """
         if not request.session.exists(request.session.session_key):
             request.session.create()
         sk = request.session.session_key
         page = resolve(request.path_info).url_name
+        if drug_overview:
+            page = f'{page}/{drug_overview}'
         ts = now().date()
         try:
-            visitor = cls(session_key=sk, page_visited=page, timestamp=ts)
+            visitor = cls(session_key=sk, page_visited=page, timestamp=ts, drug_overview=bool(drug_overview))
             visitor.save()
         except:
             pass
@@ -201,6 +204,7 @@ class Visitor(models.Model):
         pages = cls.objects.values_list('page_visited').distinct()
         visits = dict()
         visits = list(Visitor.objects.filter()
+            .exclude(drug_overview=True)
             .extra(select={'day': 'date( timestamp )'})
             .values('day', 'page_visited')
             .order_by('timestamp')

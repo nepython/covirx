@@ -60,7 +60,7 @@ def search_drug(keyword, suggestions): # suggestions is the count of the number 
 
 
 def individual_drug(request, drug_id):
-    # Visitor.record(request)
+    Visitor.record(request, drug_overview=drug_id)
     drug = Drug.objects.get(pk=drug_id)
     kwargs = {
         'name': drug.name,
