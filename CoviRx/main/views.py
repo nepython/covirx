@@ -302,6 +302,19 @@ def charts_json(request):
         for item in site_visitors:
             d = item['day']
             charts['visitors'] += [[d]+[v for v in days[d].values()]+[item['visits']]]
+    # TODO: Implement it on the front end
+    if 'top_drugs' in charts_requested and request.user.is_staff:
+        top_drugs = list(Visitor.objects.filter(drug_overview=True)
+        .values('page_visited')
+        .annotate(count=Count('page_visited'))
+        .order_by('-count')[:10])
+        for d in top_drugs:
+            try:
+                d['page_visited'].replace('individual-drug/', '')
+                name = Drug.objects.get(d['page_visited']).name
+                charts['top_drugs'] += [[name, d['count'], d['page_visited']]]
+            except Exception:
+                pass
     if 'categories' in charts_requested:
         qs = (Drug.objects.filter()
             .exclude(indication_class__isnull=True)
@@ -347,3 +360,7 @@ def similar_drugs_json(request, drug_id):
         d = Drug.objects.get(name=n)
         response[i] = {'id': d.id, 'name': d.name, 'smiles': d.smiles}
     return JsonResponse(response)
+
+
+def target_models(request):
+    return render(request, "main/target_models.html")

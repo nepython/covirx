@@ -58,7 +58,7 @@
             {% endif %}
             {% if target_models %}
             <div id="target-models" class="drug-container p-4 row">
-                <div class="row"><div class="drug-container-name">Target Models</div></div>
+                <div class="row"><div class="drug-container-name">Target Models <a href='{% url "target_models" %}' class="badge bg-secondary text-decoration-none">More Info</a></div></div>
                 <p id="activity-rank"><span>Activity Rank Score:</span>  {{ activity_rank }}</p>
                 {% for k, v in target_models.items %}
                 <div class="row property-name mt-3">{{ k }}</div>

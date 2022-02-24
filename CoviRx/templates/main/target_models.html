@@ -1,0 +1,557 @@
+{% extends 'main/index.html' %} {% block title %}CoviRx: Target Models{% endblock%}
+{% load static %} {% block extra_head %}
+<link
+    rel="stylesheet"
+    href='{% static "main/css/references.css" %}?v={{ static_version }}'
+/>
+{% endblock %} {% block content %}
+<div class="container slide-up mb-5">
+    <h1>CoviRx</h1>
+    <h2>Covid19 Drug Repurposing Database</h2>
+    <h3 id="references-title">List of Target Models:</h3>
+    <div class="table-responsive">
+        <table id="references" class="table table-bordered table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th>Assay</th>
+                    <th>Title</th>
+                    <th>Authors</th>
+                    <th>Description</th>
+                    <th>DOI</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Caco2 Ellinger</td>
+                    <td>
+                        Identification of inhibitors of SARS-CoV-2 in-vitro
+                        cellular toxicity in human (Caco-2) cells using a large
+                        scale drug repurposing collection
+                    </td>
+                    <td>
+                        Bernhard Ellinger, Denisa Bojkova, Andrea Zaliani,
+                        Jindrich Cinatl, Carsten Claussen, Sandra Westhaus,
+                        Jeanette Reinshagen, Maria Kuzikov, Markus Wolf, Gerd
+                        Geisslinger, Philip Gribbon, Sandra Ciesek
+                    </td>
+                    <td>
+                        Antiviral activity determined as inhibition of
+                        SARS-CoV-2 induced cytotoxicity of Caco-2 cells at 10 uM
+                        after 48 hours by high content imaging. To identify
+                        possible candidates for progression towards clinical
+                        studies against SARS-CoV-2, we screened a well-defined
+                        collection of 5632 compounds including 3488 compounds
+                        which have undergone clinical investigations (marketed
+                        drugs, phases 1 -3, and withdrawn) across 600
+                        indications. Compounds were screened for their
+                        inhibition of viral induced cytotoxicity using the human
+                        epithelial colorectal adenocarcinoma cell line Caco-2
+                        and a SARS-CoV-2 isolate. The primary screen of 5632
+                        compounds gave 271 hits. A total of 64 compounds with
+                        IC50 &lt;20 µM were identified, including 19 compounds
+                        with IC50 &lt; 1 µM. Of this confirmed hit population,
+                        90% have not yet been previously reported as active
+                        against SARS-CoV-2 in-vitro cell assays. Some 37 of the
+                        actives are launched drugs, 19 are in phases 1-3 and 10
+                        pre-clinical. Several inhibitors were associated with
+                        modulation of host pathways including kinase signaling
+                        P53 activation, ubiquitin pathways and PDE activity
+                        modulation, with long chain acyl transferases were
+                        effective viral inhibitors. 
+                    </td>
+                    <td>10.21203/rs.3.rs-23951/v1</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Vero-E6 Zaliani</td>
+                    <td>
+                        Cytopathic SARS-Cov2 screening on VERO-E6 cells in a
+                        large repurposing effort
+                    </td>
+                    <td>
+                        Andrea Zaliani, Laura Vangeel, Jeanette Reinshagen,
+                        Daniela Iaconis, Maria Kuzikov, Oliver Keminer, Markus
+                        Wolf, Bernhard Ellinger, Francesca Esposito, Angela
+                        Corona, Enzo Tramontano, Candida Manelfi, Katja Herzog,
+                        Dirk Jochmans, Steven De Jonghe, Winston Chiu, Thibault
+                        Francken, Joost Schepers, Caroline Collard, Kayvan
+                        Abbasi, Carsten Claussen , Vincenzo Summa, Andrea R.
+                        Beccari, Johan Neyts, Philip Gribbon and Pieter Leyssen
+                    </td>
+                    <td>
+                        Antiviral activity determined as inhibition of
+                        SARS-CoV-2 induced cytotoxicity of VERO-6 cells at 10 uM
+                        after 48 hours exposure to 0.01 MOI SARS CoV-2 virus by
+                        high content imaging. Worldwide, there are
+                        intensive efforts to identify repurposed drugs as
+                        potential therapies against SARS-CoV-2 infection and the
+                        associated COVID-19 disease. To date, the
+                        anti-inflammatory drug dexamethasone and (to a lesser
+                        extent) the RNA-polymerase inhibitor remdesivir have
+                        been shown to be effective in reducing mortality and
+                        patient time to recovery, respectively, in patients.
+                        Here, we report the results of a phenotypic screening
+                        campaign within an EU-funded project
+                        (H2020-EXSCALATE4COV) aimed at extending the repertoire
+                        of anti-COVID therapeutics through repurposing of
+                        available compounds and highlighting compounds with new
+                        mechanisms of action against viral infection. We
+                        screened 8702 molecules from different repurposing
+                        libraries, to reveal 110 compounds with an
+                        anti-cytopathic IC50 &lt; 20 µM. From this group, 18
+                        with a safety index greater than 2 are also marketed
+                        drugs, making them suitable for further study as
+                        potential therapies against COVID-19. Our result
+                        supports the idea that a systematic approach to
+                        repurposing is a valid strategy to accelerate the
+                        necessary drug discovery process.
+                    </td>
+                    <td>10.6019/CHEMBL4495565</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Vero-E6 Touret</td>
+                    <td>
+                        In vitro screening of a FDA approved chemical library
+                        reveals potential inhibitors of SARS-CoV-2 replication
+                    </td>
+                    <td>
+                        Franck Touret, Magali Gilles, Karine Barral, Antoine
+                        Nougairède, Etienne Decroly, Xavier de Lamballerie,
+                        Bruno Coutard
+                    </td>
+                    <td>
+                        Inhibition of cell viability relative to arbidol control
+                        (inhibition index &gt; 1 indicates higher activity)
+                        measured by fluorescence (OD590nm) in Vero E6 cells
+                        infected with SARS-CoV-2 (strain BavPat1) at MOI 0.002
+                        after 72hrs. A novel coronavirus, named SARS-CoV-2,
+                        emerged in 2019 from Hubei region in China and rapidly
+                        spread worldwide. As no approved therapeutics exists to
+                        treat Covid-19, the disease associated to SARS-Cov-2,
+                        there is an urgent need to propose molecules that could
+                        quickly enter into clinics. Repurposing of approved
+                        drugs is a strategy that can bypass the time consuming
+                        stages of drug development. In this study, we screened
+                        the Prestwick Chemical Library® composed of 1,520
+                        approved drugs in an infected cell-based assay. 90
+                        compounds were identified. The robustness of the screen
+                        was assessed by the identification of drugs, such as
+                        Chloroquine derivatives and protease inhibitors, already
+                        in clinical trials. The hits were sorted according to
+                        their chemical composition and their known therapeutic
+                        effect, then EC50 and CC50 were determined for a subset
+                        of compounds. Several drugs, such as Azithromycine,
+                        Opipramol, Quinidine or Omeprazol present antiviral
+                        potency with 2&lt;EC50&lt;20µM. By providing new
+                        information on molecules inhibiting SARS-CoV-2
+                        replication in vitro, this study could contribute to the
+                        short-term repurposing of drugs against Covid-19.
+                    </td>
+                    <td>10.1038/s41598-020-70143-6</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>HRCE Heiser</td>
+                    <td>
+                        Identification of potential treatments for COVID-19
+                        through artificial intelligence-enabled phenomic
+                        analysis of human cells infected with SARS-CoV-2
+                    </td>
+                    <td>
+                        Katie Heiser, Peter F. McLean, Chadwick T. Davis, Ben
+                        Fogelson, Hannah B. Gordon, Pamela Jacobson, Brett
+                        Hurst, Ben Miller, Ronald W. Alfa, Berton A. Earnshaw,
+                        Mason L. Victors, Yolanda T. Chong, Imran S. Haque,
+                        Adeline S. Low, Christopher C. Gibson
+                    </td>
+                    <td>
+                        Antiviral activity against SARS-CoV-2 (USA-WA1/2020
+                        strain) measured by imaging in HRCE cells at MOI 0.4
+                        after 96 hrs (reported as hit score from 0-1 for
+                        on-disease vs off-disease activity: scores &gt;0.6
+                        considered hits)
+                    </td>
+                    <td>10.1101/2020.04.21.054387</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>3CLPro Kuzikov</td>
+                    <td>
+                        Identification of inhibitors of SARS-Cov2 M-Pro
+                        enzymatic activity using a small molecule repurposing
+                        screen
+                    </td>
+                    <td>
+                        Maria Kuzikov, Elisa Costanzi, Jeanette Reinshagen,
+                        Francesca Esposito, Laura Vangeel, Markus Wolf, Bernhard
+                        Ellinger, Carsten Claussen, Gerd Geisslinger, Angela
+                        Corona, Daniela Iaconis, Carmine Talarico, Candida
+                        Manelfi, Rolando Cannalire, Giulia Rossetti, Jonas
+                        Gossen, Simone Albani, Francesco Musiani, Katja Herzog,
+                        Yang Ye, Barbara Giabbai, Nicola Demitri, Dirk Jochmans,
+                        Steven De Jonghe, Jasper Rymenants, Vincenzo Summa, Enzo
+                        Tramontano, Andrea R. Beccari, Pieter Leyssen, Paola
+                        Storici, Johan Neyts, Philip Gribbon, and Andrea Zaliani
+                    </td>
+                    <td>
+                        FRET assay of 3CL-Pro activity. Single-point at 20uM. Compound
+                        repurposing is an important strategy being pursued in
+                        the identification of effective treatment against the
+                        SARS-CoV-2 infection and COVID-19 disease. In this
+                        regard, SARS-CoV-2 main protease (M-Pro), also termed
+                        3CL-Pro, is an attractive drug target as it plays a
+                        central role in viral replication by processing the
+                        viral polyprotein into 11 non-structural proteins. We
+                        report the results of a screening campaign involving ca
+                        8.7 K compounds containing marketed drugs, clinical and
+                        preclinical candidates, and chemicals regarded as safe
+                        in humans. We confirmed previously reported inhibitors
+                        of 3CL-Pro, but we have also identified 68 compounds
+                        with IC50 lower than 1 uM and 127 compounds with IC50
+                        lower than 5 uM. Profiling showed 67% of confirmed hits
+                        were selective (&gt; 5 fold) against other Cys- and Ser-
+                        proteases (Chymotrypsin and Cathepsin-L) and MERS
+                        3CL-Pro. Selected compounds were also analysed in their
+                        binding characteristics.
+                    </td>
+                    <td>10.6019/CHEMBL4495564</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Hela-ACE2 Touret</td>
+                    <td>
+                        In vitro screening of a FDA approved chemical library
+                        reveals potential inhibitors of SARS-CoV-2 replication
+                    </td>
+                    <td>
+                        Franck Touret, Franck Touret, Magali Gilles, Karine
+                        Barral, Antoine Nougairède, Jacques van Helden, Etienne
+                        Decroly, Xavier de Lamballerie &amp; Bruno Coutard
+                    </td>
+                    <td>
+                        A novel coronavirus, named SARS-CoV-2, emerged in 2019
+                        in China and rapidly spread worldwide. As no approved
+                        therapeutics exists to treat COVID-19, the disease
+                        associated to SARS-Cov-2, there is an urgent need to
+                        propose molecules that could quickly enter into clinics.
+                        Repurposing of approved drugs is a strategy that can
+                        bypass the time-consuming stages of drug development. In
+                        this study, we screened the PRESTWICK CHEMICAL LIBRARY
+                        composed of 1,520 approved drugs in an infected
+                        cell-based assay. The robustness of the screen was
+                        assessed by the identification of drugs that already
+                        demonstrated in vitro antiviral effect against
+                        SARS-CoV-2. Thereby, 90 compounds were identified as
+                        positive hits from the screen and were grouped according
+                        to their chemical composition and their known
+                        therapeutic effect. Then EC50 and CC50 were determined
+                        for a subset of 15 compounds from a panel of 23 selected
+                        drugs covering the different groups. Eleven compounds
+                        such as macrolides antibiotics, proton pump inhibitors,
+                        antiarrhythmic agents or CNS drugs emerged showing
+                        antiviral potency with 2 &lt; EC50 ≤ 20 µM. By providing
+                        new information on molecules inhibiting SARS-CoV-2
+                        replication in vitro, this study provides information
+                        for the selection of drugs to be further validated in
+                        vivo. Disclaimer: This study corresponds to the early
+                        stages of antiviral development and the results do not
+                        support by themselves the use of the selected drugs to
+                        treat SARS-CoV-2 infection.
+                    </td>
+                    <td>10.1038/s41598-020-70143-6</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Calu-3 Touret</td>
+                    <td>
+                        In vitro screening of a FDA approved chemical library
+                        reveals potential inhibitors of SARS-CoV-2 replication
+                    </td>
+                    <td>
+                        Franck Touret, Franck Touret, Magali Gilles, Karine
+                        Barral, Antoine Nougairède, Jacques van Helden, Etienne
+                        Decroly, Xavier de Lamballerie &amp; Bruno Coutard
+                    </td>
+                    <td>
+                        A novel coronavirus, named SARS-CoV-2, emerged in 2019
+                        in China and rapidly spread worldwide. As no approved
+                        therapeutics exists to treat COVID-19, the disease
+                        associated to SARS-Cov-2, there is an urgent need to
+                        propose molecules that could quickly enter into clinics.
+                        Repurposing of approved drugs is a strategy that can
+                        bypass the time-consuming stages of drug development. In
+                        this study, we screened the PRESTWICK CHEMICAL LIBRARY
+                        composed of 1,520 approved drugs in an infected
+                        cell-based assay. The robustness of the screen was
+                        assessed by the identification of drugs that already
+                        demonstrated in vitro antiviral effect against
+                        SARS-CoV-2. Thereby, 90 compounds were identified as
+                        positive hits from the screen and were grouped according
+                        to their chemical composition and their known
+                        therapeutic effect. Then EC50 and CC50 were determined
+                        for a subset of 15 compounds from a panel of 23 selected
+                        drugs covering the different groups. Eleven compounds
+                        such as macrolides antibiotics, proton pump inhibitors,
+                        antiarrhythmic agents or CNS drugs emerged showing
+                        antiviral potency with 2 &lt; EC50 ≤ 20 µM. By providing
+                        new information on molecules inhibiting SARS-CoV-2
+                        replication in vitro, this study provides information
+                        for the selection of drugs to be further validated in
+                        vivo. Disclaimer: This study corresponds to the early
+                        stages of antiviral development and the results do not
+                        support by themselves the use of the selected drugs to
+                        treat SARS-CoV-2 infection.
+                    </td>
+                    <td>10.1038/s41598-020-70143-6</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Vero E6 Riva</td>
+                    <td>
+                        Discovery of SARS-CoV-2 antiviral drugs through
+                        large-scale compound repurposing
+                    </td>
+                    <td>
+                        Laura Riva, Shuofeng Yuan, Xin Yin, Laura Martin-Sancho,
+                        Naoko Matsunaga, Lars Pache, Sebastian
+                        Burgstaller-Muehlbacher, Paul D. De Jesus, Peter
+                        Teriete, Mitchell V. Hull, Max W. Chang, Jasper
+                        Fuk-Woo Chan, Jianli Cao, Vincent Kwok-Man Poon,
+                        Kristina M. Herbert, Kuoyuan Cheng, Tu-Trinh H.
+                        Nguyen, Andrey Rubanov, Yuan Pu, Courtney Nguyen,
+                        Angela Choi, Raveen Rathnasinghe, Michael
+                        Schotsaert, Lisa Miorin, Marion Dejosez, Thomas P.
+                        Zwaka, Ko-Yung Sit, Luis Martinez-Sobrido, Wen-Chun
+                        Liu, Kris M. White, Mackenzie E. Chapman, Emma K.
+                        Lendy, Richard J. Glynne, Randy Albrecht Eytan
+                        Ruppin, Andrew D. Mesecar, Jeffrey R. Johnson,
+                        Christopher Benner, Ren Sun, Peter G. Schultz,
+                        Andrew I. Su, Adolfo García-Sastre, Arnab K.
+                        Chatterjee, Kwok-Yung Yuen &amp; Sumit K. Chanda
+                    </td>
+                    <td>
+                        ~12,000 compounds were screened at 5 μM against 3,000
+                        cells/well Vero E6 for 16hrs. Cells were then infected
+                        with SARS-CoV-2 (SARS-CoV-2 HKU-001a) for 72 hours and
+                        CPE was measured. At several points throughout
+                        experimentation, infected Vero E6 and human HEK293T-ACE2
+                        or Huh-7-ACE2 cells were subjected to orthogonal
+                        validation using an immunofluorescence-based imaging
+                        assay, labelling the viral NP in infected cells.
+                        %inhibition data from compounds confirmed to inhibit
+                        infection by 40 % or more at a single dose (1 or 2.5 µM)
+                        in Vero E6 cells.
+                    </td>
+                    <td>10.1038/s41586-020-2577-1</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Bakowski</td>
+                    <td>
+                        Drug repurposing screens identify chemical entities for
+                        the development of COVID-19 interventions
+                    </td>
+                    <td>
+                        Malina A. Bakowski, Nathan Beutler, Karen C. Wolff,
+                        Melanie G. Kirkpatrick, Emily Chen, Tu-Trinh H.
+                        Nguyen, Laura Riva, Namir Shaabani, Mara Parren, James
+                        Ricketts, Anil K. Gupta, Kastin Pan, Peiting Kuo,
+                        MacKenzie Fuller, Elijah Garcia, John R. Teijaro, Linlin
+                        Yang, Debashis Sahoo, Victor Chi, Edward Huang,
+                        Natalia Vargas, Amanda J. Roberts, Soumita Das, Pradipta
+                        Ghosh, Ashley K. Woods, Sean B. Joseph, Mitchell V.
+                        Hull, Peter G. Schultz, Dennis R. Burton, Arnab K.
+                        Chatterjee, Case W. McNamara &amp; Thomas F. Rogers
+                    </td>
+                    <td>
+                        high-content imaging infection assays: one using HeLa
+                        cells expressing SARS-CoV-2 receptor ACE2 and the other
+                        using lung epithelial Calu-3 cells. HeLa-ACE2 cells or
+                        Calu-3 were infected with SARS-CoV-2 strain
+                        USA-WA1/2020.The library was prepared at two
+                        concentrations, 2 and 10 mM, to support
+                        low-concentration (2–10 µM) and high-concentration
+                        (10–50 µM) screening formats. Plates were imaged using
+                        the ImageXpress Micro Confocal High-Content Imaging
+                        System (Molecular Devices) with a ×10 objective, with 4
+                        fields imaged per well. Images were analyzed using the
+                        Multi-Wavelength Cell Scoring Application Module
+                        (MetaXpress), with DAPI staining identifying the
+                        host-cell nuclei (the total number of cells in the
+                        images) and the SARS-CoV-2 immunofluorescence signal
+                        leading to identification of infected cells.
+                    </td>
+                    <td>10.1038/s41467-021-23328-0</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>SARS-CoV Pseudotyped particle entry Vero E6</td>
+                    <td>
+                        Identifying SARS-CoV-2 Entry Inhibitors through Drug
+                        Repurposing Screens of SARS-S and MERS-S Pseudotyped
+                        Particles
+                    </td>
+                    <td>
+                        Catherine Z. Chen*, Miao Xu, Manisha Pradhan, Kirill
+                        Gorshkov, Jennifer D. Petersen, Marco R. Straus, Wei
+                        Zhu, Paul Shinn, Hui Guo, Min Shen, Carleen
+                        Klumpp-Thomas, Samuel G. Michael, Joshua Zimmerberg, Wei
+                        Zheng*, and Gary R. Whittaker*
+                    </td>
+                    <td>
+                        The NCATS pharmaceutical collection (NPC) of 2678
+                        compounds, representing approved or investigational
+                        drugs, was used for drug repurposing screens of both
+                        SARS-S and MERS-S PP entry assays. The primary screens
+                        were carried out at four compound concentrations (0.46,
+                        2.3, 11.5, and 57.5 μM). Compound cytotoxicity as
+                        determined by an ATP content assay was counter screened
+                        in both Vero E6 and Huh7 cell lines, at the same
+                        concentrations. All primary screening data sets were
+                        deposited to PubChem. The criteria to select hits for
+                        follow-up experiments include compounds in curve classes
+                        1 and 2 with efficacy &gt;50% in the PP entry assay, and
+                        little to no cell killing effect in the cytotoxicity
+                        assays using Vero E6 or Huh7 cells. Curve class 1
+                        concentration–responses are complete curves that show
+                        both top and bottom asymptotes, while curve class 2
+                        curves show only one asymptote. Sixty-one and sixty-five
+                        compounds were identified as hits from SARS-S and MERS-S
+                        PP viral entry assays, respectively. After removing 20
+                        overlapping hits, 106 primary hits (4.0% hit rate) were
+                        selected for activity confirmation and follow-up
+                        studies.
+                    </td>
+                    <td>https://doi.org/10.1021/acsptsci.0c00112</td>
+                    <td>
+                        AC50 (μM) and AUC data was generated from datasets
+                        downloadable from NCATS. Potency, effficacy, activity
+                        and toxicity were generated from datasets uploaded to
+                        PubChem as referenced in the publication
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        SARS-CoV Pseudotyped particle entry tox screen Vero E6
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>https://opendata.ncats.nih.gov/covid19/assays</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>MERS Pseudotyped particle entry Huh7</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>MERS Pseudotyped particle entry tox screen Huh7</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        Predicted CAD (Cationic amphiphile) induced
+                        phospholipidosis
+                    </td>
+                    <td>
+                        Drug-induced phospholipidosis confounds drug repurposing
+                        for SARS-CoV-2 repurposing for SARS-CoV-2
+                    </td>
+                    <td>
+                        Tia A. Tummino, Veronica V. Rezelj, Benoit Fischer,
+                        Audrey Fischer, Matthew J. O’Meara, Blandine Monel,
+                        Thomas Vallet, Kris M. White, Ziyang Zhang, Assaf Alon,
+                        Heiko Schadt, Henry R. O’Donnell, Jiankun Lyu,
+                        Romel Rosales, Briana L. McGovern, Raveen
+                        Rathnasinghe, Sonia Jangra, Michael Schotsaert,
+                        Jean-René Galarneau, Nevan J. Krogan, Laszlo Urban,
+                        Kevan M. Shokat, Andrew C. Kruse, Adolfo
+                        García-Sastre, Olivier Schwartz, Francesca Moretti,
+                        Marco Vignuzzi, Francois Pognan, Brian K. Shoichet
+                    </td>
+                    <td>
+                        Includes a list of hit compounds identified in each
+                        SARS-CoV-2 repurposing study explored in this paper,
+                        their physico-chemical properties, and the Tanimoto
+                        coefficients and name of each compound&#39;s most
+                        similar known phospholipidosis inducer.
+                    </td>
+                    <td>10.1126/science.abi4708</td>
+                    <td>CAD column</td>
+                </tr>
+                <tr>
+                    <td>SARS-CoV-2 cytopathic effect (CPE)</td>
+                    <td>
+                        Drug Repurposing Screen for Compounds Inhibiting the
+                        Cytopathic Effect of SARS-CoV-2
+                    </td>
+                    <td>
+                        Catherine Z. Chen, Paul Shinn, Zina Itkin, Richard T.
+                        Eastman, Robert Bostwick, Lynn Rasmussen, Ruili Huang,
+                        Min Shen, Xin Hu, Kelli M. Wilson, Brianna M. Brooks,
+                        Hui Guo, Tongan Zhao, Carleen Klump-Thomas, Anton
+                        Simeonov, Samuel G. Michael, Donald C. Lo, Matthew D.
+                        Hall, Wei Zheng
+                    </td>
+                    <td>
+                        In this assay, viral infection kills host cells, and the
+                        cell viability is used as a surrogate readout for viral
+                        infection and replication. In other words, compounds
+                        with anti-viral activities rescue cells from the
+                        cytopathic effect of SARS-CoV-2 (a gain-of-signal
+                        assay).
+                    </td>
+                    <td>https://doi.org/10.3389/fphar.2020.592737</td>
+                    <td>
+                        AC50 (μM) and AUC data was generated from datasets
+                        downloadable from NCATS. Potency, effficacy, activity
+                        and toxicity were generated from datasets uploaded to
+                        PubChem as referenced in the publication. CPE EC50, CPE
+                        % Efficacy, Cytotox CC50 and % Cytotox were generated
+                        from a supplementary data table from the publication
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        SARS-CoV-2 cytopathic effect (CPE) tox counterscreen
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>https://opendata.ncats.nih.gov/covid19/assays</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>PAINS</td>
+                    <td>
+                        New Substructure Filters for Removal of Pan Assay
+                        Interference Compounds (PAINS) from Screening Libraries
+                        and for Their Exclusion in Bioassays.
+                    </td>
+                    <td>Baell JB, Holloway GA.</td>
+                    <td>
+                        The RDKit implimentation of the PAINS filters was used
+                        to annotate potential causes of assay interference
+                    </td>
+                    <td>doi:10.1021/jm901137j</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %} {% block footer_scripts %}
+<script>
+    $('.nav-link')[4].classList.add('active'); // highlights the References nav item
+</script>
+{% endblock footer_scripts %}

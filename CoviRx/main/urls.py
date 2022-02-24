@@ -19,4 +19,5 @@ urlpatterns = [
     path('list_drugs', list_drugs, name='list-drugs'),
     path('show_drug/<drug_id>', show_drug, name='show-drug'),
     path('drug_csv',drug_csv,name='drug_csv'),
+    path('target-models', target_models, name='target_models'),
 ]
