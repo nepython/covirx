@@ -161,8 +161,8 @@ $(document).ready(function(){
 });
 
 function downloadPDF() {
-    $("body > div").not('.container').not($(".container").find("*"))
-        .add(".btn").add(".input-group").add(".dropdown-menu").addClass('d-none');
+    $("body > div").not('.container').not($(".container").find("*")).add(".btn").add(".input-group")
+        .add(".dropdown-menu").add("#dark-mode-toggle").add("#google_translate_element").addClass('d-none');
     window.print();
     $(".d-none").removeClass("d-none");
 }

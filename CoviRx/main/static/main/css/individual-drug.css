@@ -183,6 +183,14 @@ html {
     border-left: 3px red solid;
 }
 @media print {
+    @page {
+        margin: 12mm 12mm 15mm 12mm;
+    }
+    .property-value {
+        overflow: unset;
+        white-space: initial;
+        word-break: break-all;
+    }
     #smiles-visualization {
         break-inside: avoid;
         break-before: always;

@@ -56,3 +56,9 @@ function msgAboutSmiles() {
 
 // Give alert to user on him going offline
 window.addEventListener('offline', () => $("#msg").html("You are offline please turn on internet connection to run website."));
+
+window.addEventListener('online', function(e) {
+    setTimeout(function () {
+        $("#msg").hide();
+    }, 1500);
+}, false);

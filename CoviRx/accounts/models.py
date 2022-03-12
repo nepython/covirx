@@ -194,8 +194,9 @@ class Visitor(models.Model):
         try:
             visitor = cls(session_key=sk, page_visited=page, timestamp=ts, drug_overview=bool(drug_overview))
             visitor.save()
+            request.COOKIES['visited_previously'] = False
         except:
-            pass
+            request.COOKIES['visited_previously'] = True
         return request
 
     @classmethod

@@ -1,4 +1,5 @@
 function hidePreLoader() {
+    if (typeof dissappearPreLoader == "undefined") return;
     if (dissappearPreLoader) {
         $("#preLoader").fadeOut(400);
         circle1.pause();
