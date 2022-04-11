@@ -10,7 +10,6 @@ body::-webkit-scrollbar {
 
 #references td,
 #references th {
-    border: 1px solid #ddd;
     padding: 8px;
 }
 #references td.reference-content {
@@ -34,4 +33,7 @@ body::-webkit-scrollbar {
 }
 #references-title {
     color: #772e78;
+}
+#references a {
+    text-decoration: none;
 }

@@ -5,7 +5,7 @@ venv
 lock
 __pycache__
 logs
-*.csv
+scrape_out.csv
 logs
 covirx_images
 drugs

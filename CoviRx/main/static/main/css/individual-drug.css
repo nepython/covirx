@@ -25,7 +25,6 @@ html {
     font-size: 16px;
     white-space: nowrap;
     overflow: hidden;
-    display: block;
     text-overflow: ellipsis;
 }
 .property-value.hide-overflow:hover {
@@ -199,4 +198,27 @@ html {
 .link-no-decoration {
     padding: unset;
     text-decoration: unset;
+}
+.col-3 {
+    padding: 3% !important;
+}
+.badge {
+    padding: 6px;
+}
+li.filter p {
+    display: none;
+}
+li.filter:hover p {
+    display: block;
+    overflow: unset;
+    z-index: 100;
+    background-color: white;
+    position: absolute;
+    border: solid thin;
+    border-radius: 17px;
+    box-shadow: 0px 8px 10px lightgray, -10px 8px 15px lightgray,
+        10px 8px 15px lightgray;
+    padding: 4px;
+    margin-bottom: -10px;
+    margin-right: 10px;
 }

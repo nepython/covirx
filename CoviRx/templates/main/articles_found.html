@@ -1,0 +1,54 @@
+{% extends 'main/index.html' %} {% block title %}CoviRx: Articles Mining{% endblock%}
+{% load static %} {% block extra_head %}
+<link rel="stylesheet" href='{% static "main/css/references.css" %}?v={{ static_version }}'/>
+<link rel="stylesheet" href='{% static "main/css/pagination.css" %}?v={{ static_version }}'/>
+{% endblock %} {% block content %}
+<div class="container slide-up mb-5">
+    <h1>CoviRx</h1>
+    <h2>Covid19 Drug Repurposing Database</h2>
+    <h3 id="references-title">New articles found for below drugs!</h3>
+    <div class="table-responsive">
+        <table id="references" class="table table-bordered table-hover table-condensed">
+            <thead>
+                <tr>
+                    {% for h in heading %}
+                    <th>{{ h }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                <tr>
+                    {% for k, v in row.items %}
+                    <td class="{{ k }}" id="{{ k }}-{{ forloop.parentloop.counter }}">{{ v }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <script>
+            {% for url in urls %}
+            title = document.getElementById("Title-{{ forloop.counter }}");
+            inner = title.innerHTML;
+            title.innerHTML = `<a href="{{ url }}">${inner}</a>`
+            {% endfor %}
+        </script>
+    </div>
+    <div class="center">
+        <div class="pagination">
+            <a class="active" id="link-prev" onclick="changePage('-1')" href="#">&laquo;</a>
+            <a class="active" id="link-next" onclick="changePage('-2')" href="#">&raquo;</a>
+        </div>
+    </div>
+</div>
+{% endblock content %} {% block footer_scripts %}
+<script>
+    $('#msg').html("{{ msg }}");
+    names = $('td.name');
+    $('td.name').each(function(index, e) {
+        drug_name = e.textContent;
+        names[index].innerHTML = `<a href="related-articles/${drug_name}">${drug_name}</a>`
+    });
+</script>
+<script src='{% static "main/js/pagination.js" %}?v={{ static_version }}' type="text/javascript"></script>
+{% endblock footer_scripts %}

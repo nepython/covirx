@@ -20,4 +20,7 @@ urlpatterns = [
     path('show_drug/<drug_id>', show_drug, name='show-drug'),
     path('drug_csv',drug_csv,name='drug_csv'),
     path('target-models', target_models, name='target_models'),
+    path('clinical-trials/<drug_name>', clinical_trials, name='clinical_trials'),
+    path('articles-found', articles_found, name='articles_found'),
+    path('related-articles/<drug_name>', related_articles, name='related_articles'),
 ]

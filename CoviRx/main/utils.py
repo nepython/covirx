@@ -1,5 +1,6 @@
 from collections import OrderedDict
 import logging
+import csv
 
 from django.conf import settings
 from django.core.mail import EmailMessage
@@ -9,7 +10,7 @@ from .models import Drug
 
 # Used for auto-versioning of static files
 # Changing below version would force browsers to reload static files
-static_version = '0.0.7'
+static_version = '0.0.8'
 
 # The suggestions that is to be returned for autocomplete
 # We are adding a backend check to prevent misuse of API
@@ -53,6 +54,20 @@ extra_references = [
     'Accessdata.fda.gov. 2022. Drugs@FDA: FDA-Approved Drugs. [online] Available at: <https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm> [Accessed 20 January 2022].',
     'Drugs.ncats.io. 2022. NCATS Inxight Drugs. [online] Available at: <https://drugs.ncats.io/> [Accessed 20 January 2022].'
 ]
+
+def _get_clinical_trials():
+    clinical_trials = dict()
+    file_path = f'{settings.BASE_DIR}/clinical_trial_links.csv'
+    with open(file_path, 'r', encoding='UTF-8') as fp:
+        rows = list(csv.reader(fp, delimiter=','))
+        for row in rows[1:]:
+            row = [s.strip() for s in row]
+            if row[2] in ['-', '']:
+                continue
+            clinical_trials[row[0]] = row[2]
+    return clinical_trials
+
+clinical_trial_links = _get_clinical_trials()
 
 
 def sendmail(html, subject, recepients, bcc=list(), log=None):

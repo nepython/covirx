@@ -24,7 +24,8 @@ from accounts.models import User, Visitor
 from .csv_upload import get_invalid_headers, save_drugs_from_csv
 from .forms import DrugBulkUploadForm, DrugForm
 from .models import Drug, DrugBulkUpload, Contact, AddDrug
-from .utils import invalid_drugs, search_fields, store_fields, verbose_names, target_model_names, extra_references, sendmail, MAX_SUGGESTIONS
+from .utils import (invalid_drugs, search_fields, store_fields, verbose_names,
+    clinical_trial_links, target_model_names, extra_references, sendmail, MAX_SUGGESTIONS)
 from .tanimoto import similar_drugs
 import csv
 
@@ -88,6 +89,7 @@ def individual_drug(request, drug_id):
         'activity_rank': drug.rank_score,
         'target_models': {k: v for k, v in drug.custom_fields.items() if k in target_model_names},
         'covid_trials': drug.custom_fields.get('COVID Trials', dict()),
+        'more_info_trials': f'/clinical-trials/{drug.name}' if drug.name in clinical_trial_links else None,
         'pk_pd': drug.custom_fields.get('PK/PD', dict()),
         'red_flags': drug.custom_fields.get('Red Flags', dict()),
         'filters_passed': drug.filters_passed,
@@ -247,6 +249,31 @@ def csv_upload(request):
 
 
 @user_passes_test(lambda u: u.is_staff, login_url='/login')
+def articles_found(request):
+    if request.method == 'GET':
+        kwargs = {
+            'heading': ['Drug Name', 'number of articles'],
+            'rows': [
+                {'name': drug.name, 'count': drug.related_articles().count()} for i, drug in enumerate(Drug.objects.all()) if drug.related_articles().count()
+            ],
+        }
+        return render(request, 'main/articles_found.html', kwargs)
+
+
+@user_passes_test(lambda u: u.is_staff, login_url='/login')
+def related_articles(request, drug_name):
+    if request.method == 'GET':
+        d = Drug.objects.get(name=drug_name)
+        articles = d.related_articles()
+        kwargs = {
+            'heading': ['Title', 'url', 'date mined', 'Target model', 'keywords', 'verified by', 'relevant'],
+            'rows': [article.json() for article in articles],
+            'msg': 'Kindly scroll the table horizontally if all columns are not visible.'
+        }
+        return render(request, 'main/articles_found_individual_drug.html', kwargs)
+
+
+@user_passes_test(lambda u: u.is_staff, login_url='/login')
 def csv_upload_updates(request):
     if request.method == 'GET':
         pk = request.GET.get('cancel-upload')
@@ -364,3 +391,24 @@ def similar_drugs_json(request, drug_id):
 
 def target_models(request):
     return render(request, "main/target_models.html")
+
+
+def clinical_trials(request, drug_name):
+    if not drug_name in clinical_trial_links:
+        return render(request, 'main/clinical_trials.html', {"msg": "We do not have detailed clinical trial for the drug."})
+    # The below name is of the format as required by clinicaltrials.gov
+    name = clinical_trial_links[drug_name]
+    name = name[name.find('&term=')+len('&term='):name.find('+')]
+    url = f'https://clinicaltrials.gov/ct2/results/download_fields?down_count=10000&down_flds=shown&down_fmt=tsv&term={name}&cond=COVID-19&flds=a&flds=b&flds=i&flds=f&flds=k&flds=o&flds=p&flds=n&flds=r&flds=x'
+    r = requests.get(url, allow_redirects=True)
+    records = r.content.decode('utf-8').replace('\r', '')
+    records = [row.split('\t') for row in records.split('\n') if row]
+    kwargs = {
+        'heading': records[0][:-1],
+        'rows': [
+            {records[0][i]: v for i, v in enumerate(record) if (records[0][i]!='URL')} for record in records[1:]
+        ],
+        'urls': [row[-1] for row in records[1:]],
+        'msg': 'Kindly scroll the table horizontally to view all the columns.'
+    }
+    return render(request, 'main/clinical_trials.html', kwargs)

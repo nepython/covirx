@@ -8,6 +8,7 @@ from django.db import models
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
+from accounts.models import User
 
 
 class AddDrug(models.Model):
@@ -84,6 +85,7 @@ class Drug(models.Model):
 
     @classmethod
     def get_or_create(cls, kwargs):
+        kwargs['name'] = kwargs['name'].strip()
         try:
             drug = Drug.objects.get(name=kwargs['name'])
         except:
@@ -109,6 +111,9 @@ class Drug(models.Model):
             self.synonyms = None
         if not self.pubchemcid or self.pubchemcid in ['N/A', '|N/A']:
             self.pubchemcid = None
+
+    def related_articles(self):
+        return self.article_set.all()
 
     def __str__(self):
         return f"{self.name}"
@@ -180,6 +185,32 @@ class Contact(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Article(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    date_mined = models.DateTimeField(auto_now=True)
+    title = models.TextField(blank=True, null=True, unique=True)
+    url = models.TextField(blank=True, null=True)
+    drug = models.ForeignKey(Drug, on_delete=models.CASCADE)
+    target_model = models.TextField(blank=True, null=True)
+    keywords = models.TextField(blank=True, null=True)
+    verified_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, default=None)
+    relevant = models.BooleanField(default=None, null=True, blank=True)
+
+    def json(self):
+        return {
+            'title': self.title,
+            'url': self.url,
+            'date_mined': self.date_mined,
+            'target_model': self.target_model,
+            'keywords': self.keywords,
+            'verified_by': self.verified_by,
+            'relevant': self.relevant
+        }
+
+    class Meta:
+        ordering = ['date_mined']
 
 
 @receiver(models.signals.post_delete, sender=DrugBulkUpload)

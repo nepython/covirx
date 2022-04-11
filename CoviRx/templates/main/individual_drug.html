@@ -84,7 +84,7 @@
             {% endif %}
             {% if covid_trials %}
             <div class="drug-container p-4 row">
-                <div class="row"><div class="drug-container-name">COVID Trials</div></div>
+                <div class="row"><div class="drug-container-name">COVID Trials {% if more_info_trials %}<a href='{{ more_info_trials }}' class="badge bg-secondary text-decoration-none">More Info</a>{% endif %}</div></div>
                 {% for k, v in covid_trials.items %}
                 <div class="col-3 mt-3">
                     <div class="row ps-1 property-name">{{ k }}</div>
@@ -143,49 +143,90 @@
             <div class="my-4 mx-3">
                 <div class="row property-name">Filters passed by drug</div>
                 <ul class="filters">
-                    <li id="filter-1">
+                    <li class="filter" id="filter-1">
                         <div class="filter-number">Filter 1</div>
-                        <span>has Assay data and passed in vitro assays</span>
+                        <span>Assay data</span>
+                        <p>
+                            This filter sought to identify compounds for which at least one in vitro assay result was
+                            present, and compounds that do not have assay data are filtered out.
+                        </p>
                     </li>
-                    <li id="filter-2">
+                    <li class="filter" id="filter-2">
                         <div class="filter-number">Filter 2</div>
-                        <span>FDA or TGA approved</span>
+                        <span>Approval status</span>
+                        <p>
+                            Drugs that are not approved by FDA/TGA are filtered out.
+                        </p>
                     </li>
-                    <li id="filter-3">
+                    <li class="filter" id="filter-3">
                         <div class="filter-number">Filter 3</div>
-                        <span>not in COVID clinical trials</span>
+                        <span>Clinical trials</span>
+                        <p>
+                            This filter screens out drugs that have been evaluated or are under evaluation for the
+                            treatment or management of COVID-19.
+                        </p>
                     </li>
-                    <li id="filter-4">
+                    <li class="filter" id="filter-4">
                         <div class="filter-number">Filter 4</div>
-                        <span>CC50 &gt; 10 µM and SI &gt; 10</span>
+                        <span>CC<sub>50</sub> &gt; 10 µM and SI &gt; 10</span>
+                        <p>
+                            This filter removes cytotoxic drugs and retains drugs with CC<sub>50</sub> &gt;
+                            10 µM and SI &gt; 10.
+                        </p>
                     </li>
-                    <li id="filter-5">
+                    <li class="filter" id="filter-5">
                         <div class="filter-number">Filter 5</div>
-                        <span> COVID IC50 &lt; 10 times original IC50​</span>
+                        <span> COVID IC<sub>50</sub>> &lt; 10 times original IC<sub>50</sub>>​</span>
+                        <p>
+                            This filter screens out drugs with poor COVID IC<sub>50</sub> – i.e those exceeding
+                            10x the original indication.
+                        </p>
                     </li>
-                    <li id="filter-6">
+                    <li class="filter" id="filter-6">
                         <div class="filter-number">Filter 6</div>
-                        <span>Administered orally or by inhalation</span>
+                        <span>Route of administration</span>
+                        <p>
+                            Drugs that are not orally bioavailable are filtered out.
+                        </p>
                     </li>
-                    <li id="filter-7">
+                    <li class="filter" id="filter-7">
                         <div class="filter-number">Filter 7</div>
-                        <span>PAINS, CAD</span>
+                        <span>CAD/PAINS</span>
+                        <p>
+                            This filter removes drugs that are predicted to be cationic amphiphilic drugs (CAD) or
+                            Pan Assay INterference Substances (PAINS).
+                        </p>
                     </li>
-                    <li id="filter-8">
+                    <li class="filter" id="filter-8">
                         <div class="filter-number">Filter 8</div>
-                        <span>different class from clinical trial drugs</span>
+                        <span>Analogs of drugs under clinical trials</span>
+                        <p>
+                            This filter screens out analogs of drugs under clinical trials for COVID-19. The Tanimoto
+                            index was used to identify similar analogs.
+                        </p>
                     </li>
-                    <li id="filter-9">
+                    <li class="filter" id="filter-9">
                         <div class="filter-number">Filter 9</div>
-                        <span>Filter on basis of Indication</span>
+                        <span>Indication</span>
+                        <p>
+                            This filter removes compounds that are used as diagnostic agents, pharmaceutical aids,
+                            supplements, etc.
+                        </p>
                     </li>
-                    <li id="filter-10">
+                    <li class="filter" id="filter-10">
                         <div class="filter-number">Filter 10</div>
-                        <span>Not in pregnancy categories D and X</span>
+                        <span>Pregnancy category</span>
+                        <p>
+                            Drugs that are classified under categories D and X based on The Australian categorization
+                            system for prescribing medicines in pregnancy are screened out.
+                        </p>
                     </li>
-                    <li id="filter-11">
+                    <li class="filter" id="filter-11">
                         <div class="filter-number">Filter 11</div>
-                        <span>No serious side effects</span>
+                        <span>Black box warning</span>
+                        <p>
+                            Screens out drugs that have a black box warning.
+                        </p>
                     </li>
                 </ul>
             </div>
