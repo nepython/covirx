@@ -96,6 +96,12 @@
                     </div>
                 </div>
                 {% endfor %}
+                {% if special_drugs %}
+                <div class="col-12">
+                    <div class="ms-1 ps-1 property-name">Recommendations</div>
+                    <div class="ms-1 ps-1">{{ special_drugs | safe }}</div>
+                </div>
+                {% endif %}
             </div>
             {% endif %}
             {% if red_flags %}
@@ -110,7 +116,7 @@
             </div>
             {% endif %}
             <div class="row pt-3 ps-1 property-name">References</div>
-            <div class="row ps-1">{{ references }}</div>
+            <div id="references" class="row ps-1">{{ references }}</div>
         </div>
         <div id="side-col" class="col-3 ps-5">
             <div class="input-group" id="main-search">

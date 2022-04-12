@@ -181,20 +181,6 @@ html {
 .filters li.failed span::before {
     border-left: 3px red solid;
 }
-@media print {
-    @page {
-        margin: 12mm 12mm 15mm 12mm;
-    }
-    .property-value {
-        overflow: unset;
-        white-space: initial;
-        word-break: break-all;
-    }
-    #smiles-visualization {
-        break-inside: avoid;
-        break-before: always;
-    }
-}
 .link-no-decoration {
     padding: unset;
     text-decoration: unset;
@@ -221,4 +207,34 @@ li.filter:hover p {
     padding: 4px;
     margin-bottom: -10px;
     margin-right: 10px;
+}
+
+@media print {
+    @page {
+        margin: 12mm 12mm 15mm 12mm;
+    }
+    .property-value {
+        overflow: unset;
+        white-space: initial;
+        word-break: break-all;
+    }
+    #smiles-visualization {
+        break-inside: avoid;
+        break-before: always;
+    }
+    @-moz-document url-prefix() {
+        #smiles-visualization {
+            margin-top: 30cm;
+        }
+    }
+    #references {
+        break-after: always;
+    }
+    .col-3, .col-4, .col-5 {
+        width: 95%;
+    }
+    .drug-container .col-12 {
+        padding: unset;
+        margin: unset;
+    }
 }

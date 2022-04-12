@@ -13,6 +13,7 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 
 from .models import User, Invitee
+from .utils import INVITE_EXPIRY
 from main.utils import sendmail
 
 
@@ -38,7 +39,16 @@ def auth(request):
             invites = Invitee.objects.filter(email=user_email, sent_on__gte=(now()-timedelta(INVITE_EXPIRY)).date())
             if not invites:
                 raise Exception(f'No active invite was found for {user_email}.')
-            user = User(email=user_email, first_name=user_fname, last_name=user_lname, google_oauth_id=token, is_superuser=False, is_staff=invites[0].admin_access, is_active=True, pic=user_picture)
+            user = User(
+                email=user_email,
+                first_name=user_fname,
+                last_name=user_lname,
+                google_oauth_id=token,
+                is_superuser=False,
+                is_staff=invites[0].admin_access>0,
+                is_admin=invites[0].admin_access==2,
+                is_active=True,
+                pic=user_picture)
             user.set_password(token[-20:])
             user.save()
             invites.delete()
@@ -63,10 +73,10 @@ def invite_members(request):
     invitees = request.GET.get('members').split(';') if request.GET.get('members') else []
     if not invitees:
         return JsonResponse({})
-    admin_access = request.GET.get('adminAccess', False)
+    admin_access = int(request.GET.get('adminAccess', '0'))
     for invitee in invitees:
         Invitee(email=invitee, admin_access=admin_access).save()
-    messages.info(request, f'{len(invitees)} users have been invited to the CoviRx admin.')
+    messages.info(request, f'{len(invitees)} users have been invited to the CoviRx.')
     html = get_template('mail_templates/invitation.html').render({
         'invited_by': request.user.get_full_name(),
         'login_link': request.build_absolute_uri(reverse('login')),
@@ -79,5 +89,5 @@ def invite_members(request):
         subject = 'You have been invited to contribute drugs to CoviRx'
     log = f'Mail successfully sent to {len(invitees)} users for membership invitation'
     # async from the process so that the view gets returned post successful save
-    Thread(target = sendmail, args = (html, subject, list(), invitees, log)).start()
+    # Thread(target = sendmail, args = (html, subject, list(), invitees, log)).start()
     return JsonResponse({})

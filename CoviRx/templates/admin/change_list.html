@@ -8,10 +8,16 @@
     <a href="{% url 'drug-bulk-upload' %}" target="_blank" class="btn btn-high btn-success">Import Drugs from CSV</a>
 </li>
 {% endif %}
-{% if request.path == "/admin/accounts/invitee/"  %}
+{% if request.path == "/admin/accounts/invitee/" and request.user.is_superuser %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
 <link rel="stylesheet" href='{% static "main/css/email.multiple.css" %}?v={{ static_version }}' />
 <link rel="stylesheet" href='{% static "admin/css/invite-members.css" %}?v={{ static_version }}' />
+<style>
+    #dark-mode-toggle .label {
+        width: 45px;
+        height: 23px;
+    }
+</style>
 <div class="modal fade show" id="invite-members-modal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -29,9 +35,20 @@
                         <input type="text" class="form-control" id="recipient-name" placeholder="Email">
                         <div class="mt-3">Permissions:</div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="adminAccessInvitee">
-                            <label class="form-check-label" for="adminAccessInvitee">
-                                Grant Admin access
+                            <label class="form-check-label user-type-container">
+                                Normal user
+                                <input type="radio" name="user-type" class="user-type" value="0" checked="checked">
+                                </br><small class="form-text text-muted">User cannot access the admin panel but can contribute drugs to CoviRx via a form.</small>
+                            </label>
+                            <label class="form-check-label user-type-container">
+                                Admin user
+                                <input type="radio" name="user-type" class="user-type" value="1">
+                                </br><small class="form-text text-muted">User can access the admin panel and make changes to the database but cannot invite new members or remove members from admin.</small>
+                            </label>
+                            <label class="form-check-label user-type-container">
+                                Super user
+                                <input type="radio" name="user-type" class="user-type" value="2">
+                                </br><small class="form-text text-muted">User has full access to admin panel, can invite or remove members.</small>
                             </label>
                         </div>
                     </div>

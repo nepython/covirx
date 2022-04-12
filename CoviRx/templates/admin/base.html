@@ -30,7 +30,9 @@
     {% block branding %}{% endblock %}
     </div>
     {% block usertools %}
-    {% include "main/preloader.html" %}
+    {% if request.path == "/" and not request.COOKIES.visited_previously %}
+        {% include "main/preloader.html" %}
+    {% endif %}
     {% if has_permission %}
     <div id="user-tools">
         {% block welcome-msg %}

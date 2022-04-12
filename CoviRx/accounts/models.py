@@ -141,7 +141,7 @@ class Invitee(models.Model):
         verbose_name=_('email address'), max_length=255, unique=True, blank=False, null=False
     )
     sent_on = models.DateField(_('Invite was sent out on'), null=False, auto_now=True)
-    admin_access = models.BooleanField('Admin Access', default=False)
+    admin_access = models.SmallIntegerField('Permission level on CoviRx', default=0)
 
     def __str__(self):
         return self.email

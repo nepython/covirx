@@ -24,7 +24,7 @@ from accounts.models import User, Visitor
 from .csv_upload import get_invalid_headers, save_drugs_from_csv
 from .forms import DrugBulkUploadForm, DrugForm
 from .models import Drug, DrugBulkUpload, Contact, AddDrug
-from .utils import (invalid_drugs, search_fields, store_fields, verbose_names,
+from .utils import (invalid_drugs, search_fields, store_fields, verbose_names, special_drugs,
     clinical_trial_links, target_model_names, extra_references, sendmail, MAX_SUGGESTIONS)
 from .tanimoto import similar_drugs
 import csv
@@ -89,6 +89,7 @@ def individual_drug(request, drug_id):
         'activity_rank': drug.rank_score,
         'target_models': {k: v for k, v in drug.custom_fields.items() if k in target_model_names},
         'covid_trials': drug.custom_fields.get('COVID Trials', dict()),
+        'special_drugs': special_drugs.get(drug.name.lower().strip(), None),
         'more_info_trials': f'/clinical-trials/{drug.name}' if drug.name in clinical_trial_links else None,
         'pk_pd': drug.custom_fields.get('PK/PD', dict()),
         'red_flags': drug.custom_fields.get('Red Flags', dict()),
@@ -268,7 +269,8 @@ def related_articles(request, drug_name):
         kwargs = {
             'heading': ['Title', 'url', 'date mined', 'Target model', 'keywords', 'verified by', 'relevant'],
             'rows': [article.json() for article in articles],
-            'msg': 'Kindly scroll the table horizontally if all columns are not visible.'
+            'msg': 'Kindly scroll the table horizontally if all columns are not visible.',
+            'drug_name': drug_name,
         }
         return render(request, 'main/articles_found_individual_drug.html', kwargs)
 

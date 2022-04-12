@@ -2,3 +2,21 @@
     font-size: 20px;
     font-weight: normal;
 }
+.form-check-label.user-type-container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.form-check-label.user-type-container input {
+    left: 0;
+    margin-top: 12px;
+    position: absolute;
+    cursor: pointer;
+}

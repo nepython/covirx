@@ -1,8 +1,11 @@
 from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import Group
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.db import models
+
+from admin_interface.admin import ThemeAdmin
 
 from .models import User, Visitor, Invitee
 
@@ -105,6 +108,10 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('email', 'first_name', 'last_name')
     filter_horizontal = ()
 
+    def has_module_permission(self, request, object=None):
+        return request.user.is_superuser
+
+
 @admin.register(Visitor)
 class VisitorAdmin(admin.ModelAdmin):
     def get_list_display(self, *args, **kwargs):
@@ -115,6 +122,10 @@ class VisitorAdmin(admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         return False
+
+    def has_module_permission(self, request, object=None):
+        return request.user.is_superuser
+
 
 @admin.register(Invitee)
 class InviteeAdmin(admin.ModelAdmin):
@@ -130,5 +141,12 @@ class InviteeAdmin(admin.ModelAdmin):
     def has_change_permission(self, request, obj=None):
         return False
 
+    def has_module_permission(self, request, object=None):
+        return request.user.is_superuser
 
 
+admin.site.unregister(Group)
+
+def has_module_permission(self, request, object=None):
+    return request.user.is_superuser
+setattr(ThemeAdmin, 'has_module_permission', has_module_permission)
