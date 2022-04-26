@@ -2,6 +2,24 @@
 {% load static %} {% block extra_head %}
 <link rel="stylesheet" href='{% static "main/css/references.css" %}?v={{ static_version }}'/>
 <link rel="stylesheet" href='{% static "main/css/pagination.css" %}?v={{ static_version }}'/>
+<style>
+select {
+    width: 100px !important;
+}
+td.url a {
+    width: 200px !important;
+    display: block;
+    overflow-wrap: break-word;
+}
+#update-drug-modal .modal-dialog {
+    max-width: unset !important;
+    width: 95%;
+}
+.target-model-form {
+    border-bottom: solid 2px #772e78;
+    padding-bottom: 16px;
+}
+</style>
 {% endblock %} {% block content %}
 <div class="container slide-up mb-5">
     <h1>CoviRx</h1>
@@ -15,6 +33,7 @@
                     {% for h in heading %}
                     <th>{{ h }}</th>
                     {% endfor %}
+                    <th>Save changes</th>
                 </tr>
             </thead>
             <tbody>
@@ -23,9 +42,22 @@
                     <td id="article-number-{{ forloop.parentloop.counter }}">{{ forloop.counter }}</td>
                     {% for k, v in row.items %}
                     <td class="{{ k }}" id="{{ k }}-{{ forloop.parentloop.counter }}">
-                        {% if k == "relevant" %}<input value="{{ v }}">{% else %}{{ v }}{% endif %}
+                        {% if k == "relevant" %}
+                            <select class="form-select" aria-label="Default select example">
+                                <option value="1">True</option>
+                                <option value="2">False</option>
+                                <option value="3" selected></option>
+                            </select>
+                        {% elif k == "comment" %}
+                            <textarea class="span6" rows="3" placeholder="any additional information goes here">{% if v %}{{ v }}{% endif %}</textarea>
+                        {% elif k == "update_drug" %}
+                            <button id="update-{{ forloop.counter }}" class="btn btn-secondary mx-1 my-1" data-bs-toggle="modal" data-bs-target="#update-drug-modal">Update</button>
+                        {% else %}
+                            {% if v %}{{ v }}{% endif %}
+                        {% endif %}
                     </td>
                     {% endfor %}
+                    <td><button id="save-{{ forloop.counter }}" class="btn btn-primary mx-1 my-1" onclick="saveChanges({{ forloop.counter }})">Save</button></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -45,6 +77,23 @@
         </div>
     </div>
 </div>
+<div class="modal fade show" id="update-drug-modal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="update-drug-modal-title">Update Drug Target model</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column text-center">
+                </div>
+                <div class="text-center mt-3">
+                    <button id="addTargetModel" onclick="addTargetModel()" class="btn btn-success btn-block btn-round">Add Target Model</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %} {% block footer_scripts %}
 <script>
     $('#msg').html("{{ msg }}");
@@ -53,6 +102,108 @@
         url = e.textContent;
         urls[index].innerHTML = `<a target="_blank" href="${url}">${url}</a>`
     });
+
+    function saveChanges(index) {
+        const csrftoken = '{{ csrf_token }}';
+        title = $(`#title-${index}`)[0].innerText;
+        relevant = $(`#relevant-${index} :selected`).val();
+        comment = $(`#comment-${index} textarea`).val();
+        fetch('', {
+            method: 'POST',
+            mode: 'same-origin',  // Do not send CSRF token to another domain.
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({'title': title, 'comment': comment, 'relevant': relevant})
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            if (data['success'])
+                $(`#verified_by-${index}`).html(data['verified_by']);
+            else
+                $('#msg').html(data['msg']);
+        });
+    }
+
+    // update drug modal
+    var numberOfTargetModels = 0;
+    $.getJSON( "{% url 'update_drug' drug_name=drug_name %}").done(function( data ) {
+        numberOfTargetModels = data.length;
+        for (var i=0; i<numberOfTargetModels; i++) {
+            var model_name = data[i]['Model Name'];
+            delete data[i]['Model Name'];
+            var target_model = `<div class="drug-target-model" id=${model_name}>`;
+            target_model+=appendToTargetModel(model_name, 'Model Name', model_name, true);
+            $.each(data[i], function(key, value) {
+                target_model+=appendToTargetModel(model_name, key, value, false);
+            });
+            target_model+='</div>'
+            url = "{% url 'update_drug' drug_name=drug_name %}";
+            form = `<form id='target-model-${i}-form' class='target-model-form' action="${url}" method="post" >
+                {% csrf_token %}
+                ${target_model}
+                <a onClick="removeWarning('${model_name}', '${url}', 'target-model-${i}-form')" class="btn btn-danger btn-block btn-round">Remove</a>
+                <button type="submit" class="btn btn-primary btn-block btn-round">Update</button>
+            </form>`
+            $(form).appendTo('#update-drug-modal .d-flex.flex-column.text-center');
+        }
+    });
+    function appendToTargetModel(model_name, key, value, bold) {
+        entry = `<div class="form-group row py-2">
+            <label for="${model_name}-${key}" class="col-sm-2 col-form-label">${key}</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="${model_name}-${key}" value="${value}">
+            </div>
+        </div>`;
+        if (bold)
+            return `<b>${entry}</b>`
+        return entry;
+    }
+    function addTargetModel() {
+        // hide new model button
+        $('#addTargetModel').hide();
+        var model_name = 'new-target-model'+(++numberOfTargetModels);
+        var target_model = `<div class="drug-target-model" id=${model_name}>
+            ${appendToTargetModel(model_name, 'Model Name', '', true)}</div>`;
+        url = "{% url 'update_drug' drug_name=drug_name %}";
+        form = `<form id='target-model-${numberOfTargetModels}-form' class='target-model-form' action="${url}" method="post" >
+            {% csrf_token %}
+            ${target_model}
+            <a onClick="cancelTargetModel('target-model-${numberOfTargetModels}-form')" class="btn btn-danger btn-block btn-round">Cancel</a>
+            <a onClick="addField('${model_name}', 'target-model-${numberOfTargetModels}-form')" class="btn btn-success btn-block btn-round">Add Field</a>
+            <button onclick="$('#addTargetModel').show();" type="submit" class="btn btn-primary btn-block btn-round">Save</button>
+        </form>`
+        $(form).appendTo('#update-drug-modal .d-flex.flex-column.text-center');
+    }
+    function addField(model_name, form_id) {
+        var field_name = prompt('Enter Field name:');
+        $(appendToTargetModel(model_name, field_name, '', false)).insertBefore(`#${form_id} a.btn-danger`);
+    }
+    function cancelTargetModel(form_id) {
+        $(`#${form_id}`).remove();
+        $('#addTargetModel').show();
+    }
+    function removeWarning(model_name, url, form_id) {
+        if (confirm(`Are you sure you want to delete the target_model ${model_name} for the drug {{drug_name}} from the database?`)) {
+                $.ajax({
+                    url : url,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    data: {model_name: model_name},
+                    type: "DELETE",
+                    success:function(data, status, xhr) {
+                        $(`form[id='${form_id}']`).hide();
+                    },
+                });
+            } else {
+            // Do nothing!
+            }
+    }
 </script>
 <script src='{% static "main/js/pagination.js" %}?v={{ static_version }}' type="text/javascript"></script>
 {% endblock footer_scripts %}

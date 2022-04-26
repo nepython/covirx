@@ -1,6 +1,9 @@
 # TODO: Handle case when no network connectivity
 # in such cases, an error will be thrown, requests.exceptions.ConnectionError
 
+#TODO:
+# EC50, IC50 check karo to find relevance
+
 import requests
 from difflib import SequenceMatcher
 
@@ -39,7 +42,7 @@ def get_articles(keyword, target_model, drug_name):
         req = requests.get(url, allow_redirects=True)
         if 'application/pdf' in req.headers['Content-Type']:
             s = req.headers.get('Content-Disposition', f'"{link.get_text()}"')
-            title = s[s.find('"')+1:s.rfind('"')]
+            title = s[s.lower().find('filename=')+1:len(s)]
         else:
             element = BeautifulSoup(req.content, 'html.parser').select_one('title')
             title = element.text if element is not None else link.get_text()

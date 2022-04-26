@@ -98,7 +98,11 @@
                 </div>
                 <div class="modal-body">
                     <div class="d-flex flex-column text-center">
-                        <form action="{% url 'login' %}" method="POST">
+                        {% if next %}
+                        <form action="{% url 'login' %}?next={{next}}" method="post" >
+                        {%else%}
+                        <form action="{% url 'login' %}" method="post" >
+                        {% endif %}
                             {% csrf_token %}
                             <div class="form-group">
                                 <input name="username" type="email" class="form-control" id="email1" placeholder="Your email address..." autocomplete="username">

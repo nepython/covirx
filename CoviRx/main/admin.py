@@ -36,6 +36,7 @@ class DrugAdmin(admin.ModelAdmin):
     }
     form = JsonDocumentForm
     actions = [delete_all_drugs]
+    search_fields = ['name']
 
     class Media:
         js = ('main/js/jquery-3.6.0.min.js', 'admin/js/drug_customfield.js',)

@@ -13,9 +13,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.conf import settings
 from django.db.models import Count
 from django.forms.models import model_to_dict
-from django.http import JsonResponse
-from django.http import HttpResponseRedirect
-from django.http import HttpResponse
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse, QueryDict
 from django.shortcuts import render, redirect
 from django.template import Context
 from django.template.loader import get_template
@@ -23,7 +21,7 @@ from django.template.loader import get_template
 from accounts.models import User, Visitor
 from .csv_upload import get_invalid_headers, save_drugs_from_csv
 from .forms import DrugBulkUploadForm, DrugForm
-from .models import Drug, DrugBulkUpload, Contact, AddDrug
+from .models import Drug, DrugBulkUpload, Contact, AddDrug, Article
 from .utils import (invalid_drugs, search_fields, store_fields, verbose_names, special_drugs,
     clinical_trial_links, target_model_names, extra_references, sendmail, MAX_SUGGESTIONS)
 from .tanimoto import similar_drugs
@@ -267,12 +265,60 @@ def related_articles(request, drug_name):
         d = Drug.objects.get(name=drug_name)
         articles = d.related_articles()
         kwargs = {
-            'heading': ['Title', 'url', 'date mined', 'Target model', 'keywords', 'verified by', 'relevant'],
+            'heading': ['Title', 'url', 'date mined', 'Target model', 'keywords', 'verified by', 'relevant', 'comment', 'Update Drug'],
             'rows': [article.json() for article in articles],
             'msg': 'Kindly scroll the table horizontally if all columns are not visible.',
             'drug_name': drug_name,
         }
         return render(request, 'main/articles_found_individual_drug.html', kwargs)
+    kwargs = json.loads(request.body.decode('UTF-8'))
+    title = kwargs.get('title')
+    relevant = kwargs.get('relevant')
+    comment = kwargs.get('comment')
+    if not title or not relevant:
+        return JsonResponse({})
+    if relevant == "1":
+        relevant = True
+    elif relevant == "2":
+        relevant = False
+    else:
+        return JsonResponse({'success': False, 'msg': 'Could not save the changes in the database. Check if "relevant" field is filled.'})
+    drug = Drug.objects.get(name=drug_name)
+    article = Article.objects.get(title=title, drug=drug)
+    article.relevant = relevant
+    article.comment = comment
+    article.verified_by = request.user
+    article.save()
+    return JsonResponse({'success': True, 'verified_by': request.user.get_full_name()})
+
+
+@user_passes_test(lambda u: u.is_staff, login_url='/login')
+def  update_drug(request, drug_name):
+    if request.method == 'GET':
+        drug = Drug.objects.get(name=drug_name)
+        data = list()
+        for k, v in drug.custom_fields.items():
+            if k not in target_model_names:
+                continue
+            v['Model Name'] = k
+            data.append(v)
+        return JsonResponse(data, safe=False)
+    elif request.method == 'POST':
+        data = request.POST.get('data', dict())
+        drug = Drug.objects.get(name=drug_name)
+        for k, v in data.items():
+            drugs.custom_fields[k] = v
+        drug.save()
+        return JsonResponse({'success': True})
+    elif request.method == 'DELETE':
+        drug = Drug.objects.get(name=drug_name)
+        delete = QueryDict(request.body)
+        print(delete.get('model_name'))
+        model_name = delete.get('model_name')
+        if model_name in drug.custom_fields:
+            drug.custom_fields.pop(model_name)
+            drug.save()
+        return JsonResponse({'success': True})
 
 
 @user_passes_test(lambda u: u.is_staff, login_url='/login')

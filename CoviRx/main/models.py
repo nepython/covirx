@@ -7,6 +7,7 @@ from django.core.cache import cache
 from django.db import models
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
+from django.urls import reverse
 
 from accounts.models import User
 
@@ -196,7 +197,8 @@ class Article(models.Model):
     target_model = models.TextField(blank=True, null=True)
     keywords = models.TextField(blank=True, null=True)
     verified_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, default=None)
-    relevant = models.BooleanField(default=None, null=True, blank=True)
+    relevant = models.BooleanField(default=None, null=True)
+    comment = models.TextField(default=None, null=True, blank=True)
 
     def json(self):
         return {
@@ -205,8 +207,10 @@ class Article(models.Model):
             'date_mined': self.date_mined,
             'target_model': self.target_model,
             'keywords': self.keywords,
-            'verified_by': self.verified_by,
-            'relevant': self.relevant
+            'verified_by': None if not self.verified_by else self.verified_by.get_full_name(),
+            'relevant': self.relevant,
+            'comment': self.comment,
+            'update_drug': reverse(f"admin:{self._meta.app_label}_drug_change", args=(self.drug.id,))
         }
 
     class Meta:
