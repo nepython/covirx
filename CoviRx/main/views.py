@@ -151,7 +151,7 @@ def references(request):
     return render(request, 'main/references.html', {'references': refs})
 
 
-def contributed_drug(request):
+def save_contributed_drug(request):
     submitted = False
     if request.method == "POST":
         post_data = request.POST.copy()
@@ -164,46 +164,51 @@ def contributed_drug(request):
         r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
         result = r.json()
         if not result['success']:
-            return render(request, 'main/add_drug.html', {'msg': 'Invalid reCAPTCHA. Please try again.'})
+            return render(request, 'main/contributed_drug_save.html', {'msg': 'Invalid reCAPTCHA. Please try again.'})
         form = DrugForm(post_data)
         if form.is_valid():
-            form.save()
+            f = form.save(commit=False)
+            f.contributor = request.user
+            f.save()
             try:
                 added_drug = ContributedDrug.objects.get(personName=post_data.get('personName'), drugName=post_data.get('drugName'))
                 email = post_data.get('email')
-                html = get_template('mail_templates/add_drug.html').render({'added_drug': added_drug})
+                html = get_template('mail_templates/contributed_drug_save.html').render({'added_drug': added_drug})
                 recepients = list(User.objects.filter(email_notifications=True).values_list('email', flat=True))
                 bcc = [email] if post_data.get('response-copy') else list()
                 log = f'Copy of mail successfully sent for new drug received from {added_drug.personName}'
                 Thread(target = sendmail, args = (html, 'New drug submitted to CoviRx', recepients, bcc, log)).start() # async from the process so that the view gets returned post successful save
             except:
                 pass
-            return HttpResponseRedirect('/add_drug?submitted=True')
+            return HttpResponseRedirect('/contribute/add_drug?submitted=True')
     else:
-        form = DrugForm
+        form = DrugForm(initial={'personName': request.user.get_full_name(),'email': request.user.email})
         if 'submitted' in request.GET:
             submitted = True
-    return render(request , 'main/add_drug.html',
+    return render(request , 'main/contributed_drug_save.html',
         {'form':form,'submitted':submitted})
 
 
-def show_drug(request, drug_id):
-    """ Shows the drug contributed by a user """
-    drug = ContributedDrug.objects.get(pk=drug_id)
-    return render(request , 'main/show_drug.html', {'drug':drug})
+def list_contributed_drugs(request):
+    drugs_list = ContributedDrug.objects.filter(contributor=request.user)
+    return render(request , 'main/contributed_drug_list.html', {'drugs_list':drugs_list})
 
 
-def list_drugs(request):
-    drugs_list = ContributedDrug.objects.all()
-    return render(request , 'main/drug.html', {'drugs_list':drugs_list})
+def show_contributed_drug(request, drug_id):
+    """ Shows an individual drug contributed by a user """
+    try:
+        drug = ContributedDrug.objects.get(pk=drug_id, contributor=request.user)
+    except:
+        return HttpResponse(404)
+    return render(request , 'main/contributed_drug_individual.html', {'drug':drug})
 
 
-def drug_csv(request):
+def download_contributed_drugs_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=drugs.csv'
     # Create a csv writer
     writer = csv.writer(response)
-    drugs = ContributedDrug.objects.all()
+    drugs = ContributedDrug.objects.filter(contributor=request.user)
     # Add column headings to the csv file
     writer.writerow(['Name of Person','Email id','Organization','Drug name','Invitro','Invivo','Exvivo','Activity Results(IC50/EC50)','Inference'])
     # Loop Thu and output

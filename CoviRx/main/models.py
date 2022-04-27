@@ -24,6 +24,7 @@ class ContributedDrug(models.Model):
     exvivo = models.CharField('Exvivo',blank=True,max_length=50)
     results = models.CharField('Activity Results',blank=False,max_length=100)
     inference = models.CharField('Inference',blank=True,max_length=100)
+    contributor = models.ForeignKey(User, blank=False, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.drugName
