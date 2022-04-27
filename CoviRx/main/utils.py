@@ -32,21 +32,22 @@ store_fields = [f.name for f in Drug._meta.get_fields() if f.name not in ignore_
 # Dictionary contains the list of all invalidated drugs during drug upload
 invalid_drugs = OrderedDict()
 
-target_model_names = [
-    'Caco2 Ellinger',
-    'Vero-E6 Zaliani',
-    'Vero-E6 Touret',
-    'HRCE Heiser',
-    '3CLPro Kuzikov',
-    'Vero-E6 Riva',
-    'Bakowski',
-    'SARS-CoV Pseudotyped particle entry Vero E6 - NCATS and PubChem (AID:1479145)',
-    'SARS-CoV Pseudotyped particle entry Vero E6 (Tox counterscreen)- NCATS and PubChem (AID:1479150)',
-    'MERS Pseudotyped particle entry Huh7 - NCATS and PubChem (AID:1479149)',
-    'MERS Pseudotyped particle entry Huh7 (Tox counterscreen) - NCATS and PubChem (AID:1479147)',
-    'SARS-CoV-2 cytopathic effect (CPE)(Tox counterscreen) - NCATS, PubChem (AID:1508605) and Chen',
-    'SARS-CoV-2 cytopathic effect (CPE) - NCATS, PubChem (AID:1508606) and Chen',
-]
+target_models = {
+    'Caco2 Ellinger': ['% inhibition', 'IC50 (nM)', 'CC50 (nM)', 'Caco2 Selectivity index'],
+    'Vero-E6 Zaliani': ['% inhibition', 'IC50 (nM)', 'CC50 (nM)', 'Selectivity index'],
+    'Vero-E6 Touret': ['Inhibition index'],
+    'HRCE Heiser': ['Hit score'],
+    '3CLPro Kuzikov': ['% inihibition', 'IC50 (nM)'],
+    'Vero-E6 Riva': ['%Viral inhibition'],
+    'Bakowski': ['Calu3 EC50 GeoMean (µM)', 'HeLa-ACE2 EC50 GeoMean (µM)', 'HEK293T CC50 GeoMean (µM)', 'HepG2 CC50 GeoMean (µM)'],
+    'SARS-CoV Pseudotyped particle entry Vero E6 - NCATS and PubChem (AID:1479145)': ['AC50 (μM)', 'AUC', 'Potency (μM)', 'Efficacy (%)', 'Activity'],
+    'SARS-CoV Pseudotyped particle entry Vero E6 (Tox counterscreen)- NCATS and PubChem (AID:1479150)': ['AC50 (μM)', 'AUC', 'Potency (μM)', 'AC50', 'Efficacy (%)', 'Activity', 'Tox'],
+    'MERS Pseudotyped particle entry Huh7 - NCATS and PubChem (AID:1479149)': ['AC50 (μM)', 'AUC', 'Potency (μM)', 'AC50', 'Efficacy (%)', 'Activity'],
+    'MERS Pseudotyped particle entry Huh7 (Tox counterscreen) - NCATS and PubChem (AID:1479147)': ['AC50 (μM)', 'AUC', 'Potency (μM)', 'AC50', 'Efficacy (%)', 'Activity', 'Tox'],
+    'SARS-CoV-2 cytopathic effect (CPE)(Tox counterscreen) - NCATS, PubChem (AID:1508605) and Chen': ['AC50 (μM)', 'AUC', 'Potency (μM)', 'AC50', 'Efficacy (%)', 'Activity', 'CPE EC50 (μM)', 'CPE % Efficacy'],
+    'SARS-CoV-2 cytopathic effect (CPE) - NCATS, PubChem (AID:1508606) and Chen': ['AC50 (μM)', 'AUC', 'Potency (μM)', 'AC50', 'Efficacy (%)', 'Activity', 'Tox', 'Cytotox CC50 (uM)', '% Cytotox'],
+}
+target_model_names = list(target_models.keys())
 
 special_drugs = {
     'lopinavir': 'The NIH COVID-19 treatment guideline <b>recommends against</b> the use of lopinavir/ritonavir and other protease inhibitors for the treatment of COVID-19 in hospitalized and non-hospitalized patients. <a target="_blank" href="https://www.covid19treatmentguidelines.nih.gov/therapies/antiviral-therapy/lopinavir-ritonavir-and-other-hiv-protease-inhibitors">Link</a>',

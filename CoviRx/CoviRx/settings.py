@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
+    'reversion',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'

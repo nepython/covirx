@@ -3,7 +3,7 @@
 <link rel="stylesheet" href='{% static "main/css/references.css" %}?v={{ static_version }}'/>
 <link rel="stylesheet" href='{% static "main/css/pagination.css" %}?v={{ static_version }}'/>
 <style>
-select {
+.relevant select {
     width: 100px !important;
 }
 td.url a {
@@ -24,7 +24,10 @@ td.url a {
 <div class="container slide-up mb-5">
     <h1>CoviRx</h1>
     <h2>Covid19 Drug Repurposing Database</h2>
-    <h3 id="references-title">Articles found for {{drug_name}}</h3>
+    <h3 id="references-title">
+    <span>Articles found for {{drug_name}}</span>
+    <span class="float-end">To verify: {{rows|length}}</span>
+    </h3>
     <div class="table-responsive">
         <table id="references" class="table table-bordered table-hover table-condensed">
             <thead>
@@ -43,7 +46,7 @@ td.url a {
                     {% for k, v in row.items %}
                     <td class="{{ k }}" id="{{ k }}-{{ forloop.parentloop.counter }}">
                         {% if k == "relevant" %}
-                            <select class="form-select" aria-label="Default select example">
+                            <select class="form-select">
                                 <option value="1">True</option>
                                 <option value="2">False</option>
                                 <option value="3" selected></option>
@@ -77,7 +80,7 @@ td.url a {
         </div>
     </div>
 </div>
-<div class="modal fade show" id="update-drug-modal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
+<div class="modal fade show" id="update-drug-modal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -88,7 +91,7 @@ td.url a {
                 <div class="d-flex flex-column text-center">
                 </div>
                 <div class="text-center mt-3">
-                    <button id="addTargetModel" onclick="addTargetModel()" class="btn btn-success btn-block btn-round">Add Target Model</button>
+                    <button id="addTargetModel" onclick="selectTargetModel()" class="btn btn-success btn-block btn-round">Add Target Model</button>
                 </div>
             </div>
         </div>
@@ -102,6 +105,8 @@ td.url a {
         url = e.textContent;
         urls[index].innerHTML = `<a target="_blank" href="${url}">${url}</a>`
     });
+
+    var url = "{% url 'update_drug' drug_name=drug_name %}";
 
     function saveChanges(index) {
         const csrftoken = '{{ csrf_token }}';
@@ -125,6 +130,7 @@ td.url a {
             else
                 $('#msg').html(data['msg']);
         });
+        location.reload();
     }
 
     // update drug modal
@@ -140,7 +146,6 @@ td.url a {
                 target_model+=appendToTargetModel(model_name, key, value, false);
             });
             target_model+='</div>'
-            url = "{% url 'update_drug' drug_name=drug_name %}";
             form = `<form id='target-model-${i}-form' class='target-model-form' action="${url}" method="post" >
                 {% csrf_token %}
                 ${target_model}
@@ -154,28 +159,68 @@ td.url a {
         entry = `<div class="form-group row py-2">
             <label for="${model_name}-${key}" class="col-sm-2 col-form-label">${key}</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="${model_name}-${key}" value="${value}">
+                <input type="text" name="${key}" class="form-control" id="${model_name}-${key}" value="${value}">
             </div>
         </div>`;
         if (bold)
-            return `<b>${entry}</b>`
+            return `<b>${entry}</b>`.replace('input', 'input readonly');
         return entry;
     }
-    function addTargetModel() {
+    function selectTargetModel() {
         // hide new model button
         $('#addTargetModel').hide();
-        var model_name = 'new-target-model'+(++numberOfTargetModels);
-        var target_model = `<div class="drug-target-model" id=${model_name}>
-            ${appendToTargetModel(model_name, 'Model Name', '', true)}</div>`;
-        url = "{% url 'update_drug' drug_name=drug_name %}";
-        form = `<form id='target-model-${numberOfTargetModels}-form' class='target-model-form' action="${url}" method="post" >
+        var select_target_model = `<div id="select-target-model" class="mt-3">
+            <div class="d-flex flex-column text-center">
+            <select id="choose-target-model" class="form-select form-select mb-3">
+                <option value="-1"selected>Choose a target model</option>
+                {% for k, v in target_models.items %}
+                <option value="{{forloop.counter}}">{{k}}</option>
+                {% endfor %}
+            </select>
+            </div>
+            <div class="text-center">
+                <button onclick="$('#select-target-model').remove();$('#addTargetModel').show();" class="btn btn-danger btn-block btn-round">Cancel</button>
+                <button onclick="addTargetModel($('#choose-target-model').find(':selected').text());$('#select-target-model').remove();" class="btn btn-success btn-block btn-round">Select</button>
+            </div>
+        </div>`;
+        $(select_target_model).appendTo('#update-drug-modal .d-flex.flex-column.text-center');
+    }
+    function addTargetModel(model_name) {
+        {% for k, v in target_models.items %}
+            if ('{{ k }}' == model_name) {
+                var target_model_attrs = [];
+                {% for attr in v %}
+                    target_model_attrs.push('{{ attr }}');
+                {% endfor %}
+                {{ break }}
+            }
+        {% endfor %}
+        if (target_model_attrs == undefined)
+            return;
+        numberOfTargetModels++;
+        var target_model = `<div class="drug-target-model" id=${model_name}>`;
+        target_model+=appendToTargetModel(model_name, 'Model Name', model_name, true);
+        $.each(target_model_attrs, function(key, attr) {
+            target_model+=appendToTargetModel(model_name, attr, '', false);
+        });
+        target_model+='</div>'
+        form_id = `target-model-${numberOfTargetModels}-form`;
+        form = `<form id='${form_id}' class='target-model-form' action="${url}" method="post" >
             {% csrf_token %}
             ${target_model}
-            <a onClick="cancelTargetModel('target-model-${numberOfTargetModels}-form')" class="btn btn-danger btn-block btn-round">Cancel</a>
-            <a onClick="addField('${model_name}', 'target-model-${numberOfTargetModels}-form')" class="btn btn-success btn-block btn-round">Add Field</a>
-            <button onclick="$('#addTargetModel').show();" type="submit" class="btn btn-primary btn-block btn-round">Save</button>
+            <div class="edit_panel">
+                <a onClick="cancelTargetModel('${form_id}')" class="btn btn-danger btn-block btn-round">Cancel</a>
+                <a onClick="addField('${model_name}', '${form_id}')" class="btn btn-success btn-block btn-round">Add Field</a>
+                <button onclick="switch_edit_panel('${model_name}', '${form_id}')" type="submit" class="btn btn-primary btn-block btn-round">Save</button>
+            </div>
         </form>`
         $(form).appendTo('#update-drug-modal .d-flex.flex-column.text-center');
+    }
+    function switch_edit_panel(model_name, form_id) {
+        var new_edit_panel = `<a onClick="removeWarning('${model_name}', '${url}', '${form_id}')" class="btn btn-danger btn-block btn-round">Remove</a>
+            <button type="submit" class="btn btn-primary btn-block btn-round">Update</button>`;
+        $(`#${form_id} .edit_panel`).html(new_edit_panel);
+        $('#addTargetModel').show();
     }
     function addField(model_name, form_id) {
         var field_name = prompt('Enter Field name:');
@@ -183,6 +228,7 @@ td.url a {
     }
     function cancelTargetModel(form_id) {
         $(`#${form_id}`).remove();
+        numberOfTargetModels--;
         $('#addTargetModel').show();
     }
     function removeWarning(model_name, url, form_id) {

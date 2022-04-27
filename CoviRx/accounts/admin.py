@@ -51,7 +51,7 @@ class UpdateUserForm(forms.ModelForm):
         model = User
         fields = (
             'email', 'password', 'first_name', 'last_name', 'is_active',
-            'is_staff', 'email_notifications'
+            'is_staff', 'is_superuser', 'email_notifications'
         )
 
     def clean_password(self):
@@ -85,12 +85,12 @@ class UserAdmin(BaseUserAdmin):
         }
     }
     actions = [disable_email, enable_email]
-    list_display = ('email', 'first_name', 'last_name', 'is_staff', 'email_notifications')
-    list_filter = ('is_staff', )
+    list_display = ('email', 'first_name', 'last_name', 'is_staff', 'is_superuser', 'email_notifications')
+    list_filter = ('is_staff', 'is_superuser', )
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'description', 'pic')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'email_notifications')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'email_notifications')}),
     )
     add_fieldsets = (
         (
@@ -99,7 +99,7 @@ class UserAdmin(BaseUserAdmin):
                 'classes': ('wide',),
                 'fields': (
                     'email', 'first_name', 'last_name', 'password1',
-                    'password2', 'is_staff', 'email_notifications'
+                    'password2', 'is_staff', 'is_superuser', 'email_notifications'
                 )
             }
         ),

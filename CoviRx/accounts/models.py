@@ -129,6 +129,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         # Simplest possible answer: Yes, always
         return True
 
+    @property
     def should_change_password(self):
         return self.check_password(self.google_oauth_id[-20:])
 
@@ -138,7 +139,7 @@ class Invitee(models.Model):
     Used to store the list of individuals who have been invited to the project but are still to accept the invite,
     """
     email = models.EmailField(
-        verbose_name=_('email address'), max_length=255, unique=True, blank=False, null=False
+        verbose_name=_('email address'), max_length=255, blank=False, null=False
     )
     sent_on = models.DateField(_('Invite was sent out on'), null=False, auto_now=True)
     admin_access = models.SmallIntegerField('Permission level on CoviRx', default=0)

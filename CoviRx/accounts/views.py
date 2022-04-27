@@ -37,22 +37,21 @@ def auth(request):
     except: # User not present in db
         try: # Check if user has been sent an invite in past 7 days
             invites = Invitee.objects.filter(email=user_email, sent_on__gte=(now()-timedelta(INVITE_EXPIRY)).date())
-            if not invites:
-                raise Exception(f'No active invite was found for {user_email}.')
+            if (len(invites)==0):
+                raise ValueError(f'No active invite was found for {user_email}.')
             user = User(
                 email=user_email,
                 first_name=user_fname,
                 last_name=user_lname,
                 google_oauth_id=token,
-                is_superuser=False,
+                is_superuser=invites[0].admin_access==2,
                 is_staff=invites[0].admin_access>0,
-                is_admin=invites[0].admin_access==2,
                 is_active=True,
                 pic=user_picture)
             user.set_password(token[-20:])
             user.save()
             invites.delete()
-        except:
+        except ValueError:
             msg = (f'Sorry, your email id {user_email} does not have access to the admin panel.\n'
             'If you are associated with the project, please contact the website developers '
             'using the Contact form for the same.')
@@ -60,7 +59,7 @@ def auth(request):
         authenticate(request, email=user.email, password=user.password)
         login(request, user)
         if user.is_staff:
-            if user.should_change_password():
+            if user.should_change_password:
                 messages.info(request, 'Please change you password using the change password button.')
             return JsonResponse({'admin': reverse('admin:index')})
         else:
@@ -89,5 +88,5 @@ def invite_members(request):
         subject = 'You have been invited to contribute drugs to CoviRx'
     log = f'Mail successfully sent to {len(invitees)} users for membership invitation'
     # async from the process so that the view gets returned post successful save
-    # Thread(target = sendmail, args = (html, subject, list(), invitees, log)).start()
+    Thread(target = sendmail, args = (html, subject, list(), invitees, log)).start()
     return JsonResponse({})

@@ -72,7 +72,7 @@ def save_drugs_from_csv(obj, invalid_headers): #TODO: Make the code less redunda
             custom.update(save_positions(drug, position_red_flags, drugs[1], exclude=['Breast feeding'])) # Save the Red Flags data as custom fields
             try:
                 drug_details['custom_fields'] = custom
-                Drug.get_or_create(drug_details).custom_fields
+                Drug.get_or_create(drug_details)
                 obj.valid_drug()
             except Exception as e:
                 msg = f'Unable to add drug {drug_details["name"]} because of an error. {repr(e)}'

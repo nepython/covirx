@@ -21,9 +21,9 @@ from django.template.loader import get_template
 from accounts.models import User, Visitor
 from .csv_upload import get_invalid_headers, save_drugs_from_csv
 from .forms import DrugBulkUploadForm, DrugForm
-from .models import Drug, DrugBulkUpload, Contact, AddDrug, Article
+from .models import Drug, DrugBulkUpload, Contact, ContributedDrug, Article
 from .utils import (invalid_drugs, search_fields, store_fields, verbose_names, special_drugs,
-    clinical_trial_links, target_model_names, extra_references, sendmail, MAX_SUGGESTIONS)
+    clinical_trial_links, target_models as target_models_dict, target_model_names, extra_references, sendmail, MAX_SUGGESTIONS)
 from .tanimoto import similar_drugs
 import csv
 
@@ -151,7 +151,7 @@ def references(request):
     return render(request, 'main/references.html', {'references': refs})
 
 
-def add_drug(request):
+def contributed_drug(request):
     submitted = False
     if request.method == "POST":
         post_data = request.POST.copy()
@@ -169,7 +169,7 @@ def add_drug(request):
         if form.is_valid():
             form.save()
             try:
-                added_drug = AddDrug.objects.get(personName=post_data.get('personName'), drugName=post_data.get('drugName'))
+                added_drug = ContributedDrug.objects.get(personName=post_data.get('personName'), drugName=post_data.get('drugName'))
                 email = post_data.get('email')
                 html = get_template('mail_templates/add_drug.html').render({'added_drug': added_drug})
                 recepients = list(User.objects.filter(email_notifications=True).values_list('email', flat=True))
@@ -188,15 +188,14 @@ def add_drug(request):
 
 
 def show_drug(request, drug_id):
-    drug = AddDrug.objects.get(pk=drug_id)
-    return render(request , 'main/show_drug.html', 
-        {'drug':drug})
+    """ Shows the drug contributed by a user """
+    drug = ContributedDrug.objects.get(pk=drug_id)
+    return render(request , 'main/show_drug.html', {'drug':drug})
 
 
 def list_drugs(request):
-    drugs_list = AddDrug.objects.all()
-    return render(request , 'main/drug.html', 
-        {'drugs_list':drugs_list})
+    drugs_list = ContributedDrug.objects.all()
+    return render(request , 'main/drug.html', {'drugs_list':drugs_list})
 
 
 def drug_csv(request):
@@ -204,7 +203,7 @@ def drug_csv(request):
     response['Content-Disposition'] = 'attachment; filename=drugs.csv'
     # Create a csv writer
     writer = csv.writer(response)
-    drugs = AddDrug.objects.all()
+    drugs = ContributedDrug.objects.all()
     # Add column headings to the csv file
     writer.writerow(['Name of Person','Email id','Organization','Drug name','Invitro','Invivo','Exvivo','Activity Results(IC50/EC50)','Inference'])
     # Loop Thu and output
@@ -269,6 +268,7 @@ def related_articles(request, drug_name):
             'rows': [article.json() for article in articles],
             'msg': 'Kindly scroll the table horizontally if all columns are not visible.',
             'drug_name': drug_name,
+            'target_models': target_models_dict,
         }
         return render(request, 'main/articles_found_individual_drug.html', kwargs)
     kwargs = json.loads(request.body.decode('UTF-8'))
@@ -285,40 +285,30 @@ def related_articles(request, drug_name):
         return JsonResponse({'success': False, 'msg': 'Could not save the changes in the database. Check if "relevant" field is filled.'})
     drug = Drug.objects.get(name=drug_name)
     article = Article.objects.get(title=title, drug=drug)
-    article.relevant = relevant
-    article.comment = comment
-    article.verified_by = request.user
-    article.save()
+    article.mark_verified(relevant=relevant, comment=comment, verified_by=request.user)
     return JsonResponse({'success': True, 'verified_by': request.user.get_full_name()})
 
 
 @user_passes_test(lambda u: u.is_staff, login_url='/login')
-def  update_drug(request, drug_name):
+def update_drug(request, drug_name):
     if request.method == 'GET':
         drug = Drug.objects.get(name=drug_name)
-        data = list()
-        for k, v in drug.custom_fields.items():
-            if k not in target_model_names:
-                continue
-            v['Model Name'] = k
-            data.append(v)
+        data = [{**v, **{'Model Name': k}} for k, v in drug.custom_fields.items() if k in target_model_names]
         return JsonResponse(data, safe=False)
     elif request.method == 'POST':
-        data = request.POST.get('data', dict())
+        data = {k: v for k, v in request.POST.items() if k!='csrfmiddlewaretoken'}
+        model_name = data.pop('Model Name')
         drug = Drug.objects.get(name=drug_name)
-        for k, v in data.items():
-            drugs.custom_fields[k] = v
-        drug.save()
-        return JsonResponse({'success': True})
+        if data and model_name in target_model_names:
+            drug.update_target_model(model_name, data, request.user)
+        return HttpResponse(status=204)
     elif request.method == 'DELETE':
         drug = Drug.objects.get(name=drug_name)
         delete = QueryDict(request.body)
-        print(delete.get('model_name'))
         model_name = delete.get('model_name')
-        if model_name in drug.custom_fields:
-            drug.custom_fields.pop(model_name)
-            drug.save()
-        return JsonResponse({'success': True})
+        if model_name in target_model_names:
+            drug.update_target_model(model_name, None, request.user)
+        return HttpResponse(status=204)
 
 
 @user_passes_test(lambda u: u.is_staff, login_url='/login')

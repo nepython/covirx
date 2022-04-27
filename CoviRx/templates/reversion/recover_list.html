@@ -1,0 +1,47 @@
+{% extends "admin/base_site.html" %}
+{% load i18n l10n admin_urls %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}Recover {{opts.verbose_name_plural|escape}} to previous version | CoviRx: Covid19 Drug Repurposing Database{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a> &rsaquo;
+        <a href="{% url 'admin:app_list' opts.app_label %}">{{opts.app_config.verbose_name}}</a> &rsaquo;
+        <a href="{% url opts|admin_urlname:'changelist' %}">{{opts.verbose_name_plural|capfirst}}</a> &rsaquo;
+        {% blocktrans %}Recover {{opts.verbose_name_plural|escape}} to previous version{% endblocktrans %}
+    </div>
+{% endblock %}
+
+{% block content_title %}<h1>Recover {{opts.verbose_name_plural|escape}} to previous version</h1>{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        <p>{% blocktrans with opts.verbose_name|capfirst as name %}Choose a {{name}} from the list below whose previous version you wish to recover.{% endblocktrans %}</p>
+        <div class="module">
+            {% if deleted %}
+                <table id="change-history" class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th scope="col">{% trans 'Date/time' %}</th>
+                        <th scope="col">{{opts.verbose_name|capfirst}}</th>
+                        <th scope="col">{% trans 'Action by' %}</th>
+                        <th scope="col">{% trans 'Details' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for deletion in deleted %}
+                            <tr>
+                                <td>{{deletion.revision.date_created}}</td>
+                                <th scope="row"><a href="{% url opts|admin_urlname:'recover' deletion.pk|unlocalize %}">{{deletion.object_repr}}</a></th>
+                                <td>{{deletion.revision.user.get_full_name}}</td>
+                                <td>{{deletion.revision.comment}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>{% trans "There are no deleted objects to recover." %}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

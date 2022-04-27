@@ -7,7 +7,7 @@ $(document).ready(function(){
 
 $('#send-invites').click(function() {
     if (!$('#recipient-name').val())
-        alert("Please read the Note!\n\n 1. Enter valid email IDs and press enter.\n\n 2. To submit click on send invite.\n\n 3. The invite link will expire after 7 days.\n");
+        alert("Could not send the Invite. Please read the Note!\n\n 1. Enter valid email IDs and press enter.\n\n 2. To submit click on send invite.\n\n 3. The invite link will expire after 7 days.\n");
     else
         $.getJSON( "/api/invite-members", {
             members: $('#recipient-name')[0].value,

@@ -2,12 +2,12 @@ from django import forms
 from django.forms import ModelForm
 
 from .models import DrugBulkUpload
-from .models import AddDrug
+from .models import ContributedDrug
 
 
 class DrugForm(ModelForm):
   class Meta:
-    model = AddDrug
+    model = ContributedDrug
     fields = "__all__"
     
 

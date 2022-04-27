@@ -1,16 +1,26 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.db import models
 from django import forms
 from django.forms import Textarea
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.html import format_html
+from reversion.admin import VersionAdmin
 
-from .models import Contact, CustomFields, Drug, DrugBulkUpload, AddDrug
+from .models import Contact, CustomFields, Drug, DrugBulkUpload, ContributedDrug
 
 from flat_json_widget.widgets import FlatJsonWidget
 
 
-admin.site.register(AddDrug)
+admin.site.register(ContributedDrug)
+
+class PermissionVersionAdmin(VersionAdmin):
+	def _reversion_revisionform_view(self, request, version, *args, **kwargs):
+		if not request.user.is_superuser:
+			messages.error(request, "Recovery can be made only by super user.")
+			return redirect("{}:{}_{}_changelist".format(self.admin_site.name, self.opts.app_label, self.opts.model_name))
+		else:
+			return super()._reversion_revisionform_view(request, version, *args, **kwargs)
 
 
 class JsonDocumentForm(forms.ModelForm):
@@ -26,7 +36,7 @@ def delete_all_drugs(modeladmin, request, queryset):
 
 
 @admin.register(Drug)
-class DrugAdmin(admin.ModelAdmin):
+class DrugAdmin(PermissionVersionAdmin):
     formfield_overrides = {
         models.TextField: {
             'widget': Textarea(
@@ -37,6 +47,9 @@ class DrugAdmin(admin.ModelAdmin):
     form = JsonDocumentForm
     actions = [delete_all_drugs]
     search_fields = ['name']
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_superuser
 
     class Media:
         js = ('main/js/jquery-3.6.0.min.js', 'admin/js/drug_customfield.js',)

@@ -2,6 +2,8 @@ import os
 import uuid
 from datetime import datetime
 from copy import deepcopy
+
+import reversion
 from django.conf import settings
 from django.core.cache import cache
 from django.db import models
@@ -12,7 +14,7 @@ from django.urls import reverse
 from accounts.models import User
 
 
-class AddDrug(models.Model):
+class ContributedDrug(models.Model):
     personName = models.CharField('Name of Person',blank=False,unique=True,max_length=50)
     email = models.EmailField('Email',max_length=50,blank=False)
     organisation = models.CharField('Organization',max_length=100, blank=False)
@@ -46,6 +48,7 @@ class CustomFields(models.Model):
     class Meta:
         verbose_name_plural = "Custom fields"
 
+@reversion.register()
 class Drug(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.TextField(blank=False, null=False, unique=True)
@@ -114,7 +117,24 @@ class Drug(models.Model):
             self.pubchemcid = None
 
     def related_articles(self):
-        return self.article_set.all()
+        """returns unverified articles which might contain new assay data for the drug"""
+        return self.article_set.filter(verified_by=None)
+
+    def update_target_model(self, model_name, data, user):
+        custom_fields = self.custom_fields
+        if data is None and model_name in drug.custom_fields:
+            act = 'Deleted'
+            custom_fields.pop(model_name)
+        else:
+            custom_fields[model_name] = dict()
+            for k, v in data.items():
+                custom_fields[model_name][k] = v
+            act = 'Added' if len(custom_fields)>len(self.custom_fields) else 'Updated'
+        with reversion.create_revision():
+            self.custom_fields = custom_fields
+            self.save()
+            reversion.set_user(user)
+            reversion.set_comment(f'{act} target model {model_name} in {self.name}.')
 
     def __str__(self):
         return f"{self.name}"
@@ -212,6 +232,13 @@ class Article(models.Model):
             'comment': self.comment,
             'update_drug': reverse(f"admin:{self._meta.app_label}_drug_change", args=(self.drug.id,))
         }
+
+    def mark_verified(self, relevant, comment, verified_by):
+        self.relevant = relevant
+        self.comment = comment
+        self.verified_by = request.user
+        self.full_clean()
+        self.save()
 
     class Meta:
         ordering = ['date_mined']
