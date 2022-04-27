@@ -23,5 +23,6 @@ urlpatterns = [
     path('clinical-trials/<drug_name>', clinical_trials, name='clinical_trials'),
     path('articles-found', articles_found, name='articles_found'),
     path('related-articles/<drug_name>', related_articles, name='related_articles'),
+    path('monitor-article-verification', monitor_article_verification, name='monitor-article-verification'),
     path('api/update-drug/<drug_name>', update_drug, name='update_drug'),
 ]

@@ -257,17 +257,27 @@ def articles_found(request):
         kwargs = {
             'heading': ['Drug Name', 'number of articles'],
             'rows': [
-                {'name': drug.name, 'count': drug.related_articles().count()} for i, drug in enumerate(Drug.objects.all()) if drug.related_articles().count()
+                {'name': drug.name, 'count': drug.related_articles(request.user).count()} for i, drug in enumerate(Drug.objects.all()) if drug.related_articles(request.user).count()
             ],
         }
         return render(request, 'main/articles_found.html', kwargs)
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/login')
+def monitor_article_verification(request):
+    if request.method == 'GET':
+        kwargs = {
+            'heading': ['Staff member', 'number of articles verified', 'number of articles remaining to be verified'],
+            'staff': User.objects.filter(is_staff=True, is_superuser=False, is_active=True).order_by('email'),
+        }
+        return render(request, 'main/monitor_article_verification.html', kwargs)
 
 
 @user_passes_test(lambda u: u.is_staff, login_url='/login')
 def related_articles(request, drug_name):
     if request.method == 'GET':
         d = Drug.objects.get(name=drug_name)
-        articles = d.related_articles()
+        articles = d.related_articles(request.user)
         kwargs = {
             'heading': ['Title', 'url', 'date mined', 'Target model', 'keywords', 'verified by', 'relevant', 'comment', 'Update Drug'],
             'rows': [article.json() for article in articles],

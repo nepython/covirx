@@ -117,9 +117,11 @@ class Drug(models.Model):
         if not self.pubchemcid or self.pubchemcid in ['N/A', '|N/A']:
             self.pubchemcid = None
 
-    def related_articles(self):
+    def related_articles(self, user):
         """returns unverified articles which might contain new assay data for the drug"""
-        return self.article_set.filter(verified_by=None)
+        if user.is_superuser:
+            return self.article_set.filter(relevant=None)
+        return self.article_set.filter(relevant=None, assigned_to__in=[user, None])
 
     def update_target_model(self, model_name, data, user):
         custom_fields = self.custom_fields
@@ -209,6 +211,14 @@ class Contact(models.Model):
         return self.name
 
 
+def REASSIGN(collector, field, sub_objs, using):
+    collector.add_field_update(field, None, sub_objs)
+    try:
+        for count, article in enumerate(Article.objects.filter(assigned_to=None)):
+            article.save_and_assign_article(count)
+    except:
+        pass
+
 class Article(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     date_mined = models.DateTimeField(auto_now=True)
@@ -217,9 +227,13 @@ class Article(models.Model):
     drug = models.ForeignKey(Drug, on_delete=models.CASCADE)
     target_model = models.TextField(blank=True, null=True)
     keywords = models.TextField(blank=True, null=True)
-    verified_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, default=None)
-    relevant = models.BooleanField(default=None, null=True)
+    assigned_to = models.ForeignKey(User, on_delete=REASSIGN, null=True, default=None)
+    relevant = models.BooleanField(default=None, blank=False, null=True)
     comment = models.TextField(default=None, null=True, blank=True)
+
+    @property
+    def verified_by(self):
+        return self.assigned_to if self.relevant is not None else None
 
     def json(self):
         return {
@@ -237,8 +251,17 @@ class Article(models.Model):
     def mark_verified(self, relevant, comment, verified_by):
         self.relevant = relevant
         self.comment = comment
-        self.verified_by = request.user
+        self.assigned_to = verified_by
         self.full_clean()
+        self.save()
+
+    def save_and_assign_article(self, article_count):
+        staff = User.objects.filter(is_staff=True, is_superuser=False, is_active=True).order_by('email')
+        if(len(staff) == 0):
+            self.save()
+            raise Exception('No active staff members to assign article verification job.')
+        # sequentially assign article amongst all active non-superuser staff
+        self.assigned_to = staff[article_count%len(staff)]
         self.save()
 
     class Meta:

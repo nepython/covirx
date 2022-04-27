@@ -24,7 +24,7 @@
         border-radius: .25rem;
         transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
-    .btn-primary {
+    .btn-primary, .btn-light:hover {
         color: #fff;
         background-color: #0d6efd;
         border-color: #0d6efd;
@@ -33,7 +33,14 @@
         color: #fff;
         background-color: #6c757d;
         border-color: #6c757d;
+    }
+    .mb-1 {
         margin-bottom: 10px;
+    }
+    .btn-light, .btn-primary:hover {
+        background-color: #fff;
+        color: #0d6efd;
+        border-color: #0d6efd;
     }
 </style>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -48,7 +55,10 @@
 {% endblock %}
 
 {% block content %}
-<button onclick="location.href=`{% url 'articles_found' %}`;" class="btn btn-secondary mx-1 my-1" >New articles found</button>
+{% if user.is_superuser %}
+<button onclick="location.href=`{% url 'monitor-article-verification' %}`;" class="btn btn-light mb-1" >Monitor article verification</button>
+{% endif %}
+<button onclick="location.href=`{% url 'articles_found' %}`;" class="btn btn-secondary mb-1" >New articles found</button>
 {{ block.super }}
 {% endblock %}
 

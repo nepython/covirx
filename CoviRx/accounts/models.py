@@ -82,8 +82,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         _('active'),
         default=True,
         help_text=_(
-            'Designates whether this user should be treated as active. '
-            'Unselect this instead of deleting accounts.'
+            'User will not be able to login. If user is a non-superuser staff member. '
+            'Unchecking this would lead to reassignment of articles.'
         ),
     )
     is_staff = models.BooleanField(
@@ -132,6 +132,23 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def should_change_password(self):
         return self.check_password(self.google_oauth_id[-20:])
+
+    @property
+    def unverified_articles(self):
+        return self.article_set.filter(relevant=None)
+
+    @property
+    def verified_articles(self):
+        return self.article_set.filter().exclude(relevant=None)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        try: # If user becomes inactive then reassign the articles
+            if self.pk and self.is_active is False:
+                for count, article in enumerate(self.unverified_articles):
+                    article.save_and_assign_article(count)
+        except:
+            pass
 
 
 class Invitee(models.Model):
@@ -224,12 +241,3 @@ class Visitor(models.Model):
             .annotate(visits=models.Count('session_key', distinct=True))
         )
         return visits
-
-
-
-
-
-
-
-
-

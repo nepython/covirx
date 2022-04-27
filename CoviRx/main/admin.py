@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from reversion.admin import VersionAdmin
 
-from .models import Contact, CustomFields, Drug, DrugBulkUpload, ContributedDrug
+from .models import Article, Contact, CustomFields, Drug, DrugBulkUpload, ContributedDrug
 
 from flat_json_widget.widgets import FlatJsonWidget
 
@@ -86,6 +86,21 @@ class CustomFieldsAdmin(admin.ModelAdmin):
 
     def get_list_display(self, *args, **kwargs):
         return ('name', )
+
+
+@admin.register(Article)
+class ArticleAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.TextField: {
+            'widget': forms.Textarea(
+                attrs={'rows': 1, 'cols': 80, 'style': 'height: 1.5em;'}
+            )
+        }
+    }
+
+    def has_module_permission(self, request, object=None):
+        return request.user.is_superuser
+
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):

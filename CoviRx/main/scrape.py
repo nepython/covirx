@@ -2,7 +2,7 @@
 # in such cases, an error will be thrown, requests.exceptions.ConnectionError
 
 #TODO:
-# EC50, IC50 check karo to find relevance
+# also target_model attributes to find relevance while scraping
 
 import requests
 from difflib import SequenceMatcher
@@ -53,13 +53,15 @@ def get_articles(keyword, target_model, drug_name):
 
 f_out = open(f"{settings.BASE_DIR}/main/scrape_out.csv", 'a')
 queries = [{'k': k, 't': t, 'd': d} for k in keywords for t in target_model_names for d in drug_names.keys()]
+article_count = 0
 for i, q in enumerate(queries):
     print(i) # Query being scraped
     articles = get_articles(q['k'], q['t'], q['d'])
     for a in articles:
         try:
             a = Article(title=a["title"], url=a["url"], drug=drug_names[q["d"]], target_model=q["t"], keywords=f'{q["k"]}, SARS-CoV-2')
-            a.save()
+            a.save_and_assign_article(article_count)
+            article_count += 1
             f_out.write(f'\"{a["title"]}\", {a["url"]}, {q["d"]}, {q["t"]}, \"{q["k"]}, SARS-CoV-2\"\n')
-        except:
-            pass
+        except Exception as e:
+            print(e)

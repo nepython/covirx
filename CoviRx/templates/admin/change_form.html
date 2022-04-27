@@ -22,7 +22,7 @@
 <script>
     var parent = $('.form-row.field-first_name').parent();
     var children = parent.children().not('h2');
-    parent.append('<div class=form-row><div class="profile-col-info"></div><img class="profile-pic" src={{user.pic}}></div>')
+    parent.append(`<div class=form-row><div class="profile-col-info"></div><img class="profile-pic" src="${$('#id_pic').val()}"></div`)
     $('.profile-col-info').append(children);
 </script>
 {% endif %}

@@ -1,0 +1,54 @@
+{% extends 'main/index.html' %} {% block title %}CoviRx: Monitor Articles Verification{% endblock%}
+{% load static %} {% block extra_head %}
+<link rel="stylesheet" href='{% static "main/css/references.css" %}?v={{ static_version }}'/>
+<link rel="stylesheet" href='{% static "main/css/pagination.css" %}?v={{ static_version }}'/>
+{% endblock %} {% block content %}
+<div class="container slide-up mb-5">
+    <h1>CoviRx</h1>
+    <h2>Covid19 Drug Repurposing Database</h2>
+    <h3 id="references-title">Work done by Staff members is listed below</h3>
+    <div class="table-responsive">
+        <table id="references" class="table table-bordered table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th>Sr. No.</th>
+                    {% for h in heading %}
+                    <th>{{ h }}</th>
+                    {% endfor %}
+                    <th>Send reminder email</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in staff %}
+                <tr id="{{member.email}}">
+                    <td class="serial-no">{{forloop.counter}}</td>
+                    <td class="name">{{member.get_full_name}}</td>
+                    <td class="verified">{{member.verified_articles.count}}</td>
+                    <td class="unverified">{{member.unverified_articles.count}}</td>
+                    <td class="remind"><a class="btn btn-secondary" href="mailto:{{member.email}}?subject=Reminder%20to%20complete%20articles%20verification&body=Dear%20{{member.get_full_name}}%2C%0D%0AYou%20have%20{{member.unverified_articles.count}}%20articles%20left%20to%20verify.%20Kindly%20speed%20up%21%0D%0A%0D%0ARegards%2C%0D%0A{{user.get_full_name}}">Remind</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="center">
+        <div class="pagination">
+            <a class="active" id="link-prev" onclick="changePage('-1')" href="#">&laquo;</a>
+            <a class="active" id="link-next" onclick="changePage('-2')" href="#">&raquo;</a>
+        </div>
+    </div>
+</div>
+{% endblock content %} {% block footer_scripts %}
+<script>
+    $('#msg').html("{{ msg }}");
+    function reminderEmail(email_id) {
+        var link = "mailto:me@example.com"
+             + "?cc=myCCaddress@example.com"
+             + "&subject=" + encodeURIComponent("This is my subject")
+             + "&body=" + encodeURIComponent(document.getElementById('myText').value)
+    ;
+    window.location.href = link;
+    }
+</script>
+<script src='{% static "main/js/pagination.js" %}?v={{ static_version }}' type="text/javascript"></script>
+{% endblock footer_scripts %}
