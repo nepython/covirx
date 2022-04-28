@@ -124,7 +124,7 @@ class Drug(models.Model):
         return self.article_set.filter(relevant=None, assigned_to__in=[user, None])
 
     def update_target_model(self, model_name, data, user):
-        custom_fields = self.custom_fields
+        custom_fields = dict(self.custom_fields)
         if data is None and model_name in drug.custom_fields:
             act = 'Deleted'
             custom_fields.pop(model_name)
@@ -134,10 +134,12 @@ class Drug(models.Model):
                 custom_fields[model_name][k] = v
             act = 'Added' if len(custom_fields)>len(self.custom_fields) else 'Updated'
         with reversion.create_revision():
-            self.custom_fields = custom_fields
+            # Save previous version to be able to restore in future
             self.save()
             reversion.set_user(user)
             reversion.set_comment(f'{act} target model {model_name} in {self.name}.')
+        self.custom_fields = custom_fields
+        self.save()
 
     def __str__(self):
         return f"{self.name}"

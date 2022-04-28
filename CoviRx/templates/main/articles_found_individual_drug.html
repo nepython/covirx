@@ -97,7 +97,8 @@ td.url a {
         </div>
     </div>
 </div>
-{% endblock content %} {% block footer_scripts %}
+{% endblock content %}
+{% block footer_scripts %}
 <script>
     $('#msg').html("{{ msg }}");
     urls = $('td.url');
@@ -130,7 +131,9 @@ td.url a {
             else
                 $('#msg').html(data['msg']);
         });
-        location.reload();
+        setTimeout(() => {
+            location.reload();
+        }, 500);
     }
 
     // update drug modal

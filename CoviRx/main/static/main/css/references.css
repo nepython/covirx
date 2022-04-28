@@ -9,31 +9,36 @@ body::-webkit-scrollbar {
 }
 
 #references td,
-#references th {
+#references th,
+.references td,
+.references th {
     padding: 8px;
 }
-#references td.reference-content {
+#references td.reference-content,
+.references td.reference-content {
     word-break: break-word;
 }
 
-#references tr:nth-child(even) {
+#references tr:nth-child(even),
+.references tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
-#references tr:hover {
+#references tr:hover,
+.references tr:hover {
     background-color: #ddd;
 }
 
-#references th {
+#references th, .references th {
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
     background-color: #772e78;
     color: white;
 }
-#references-title {
+#references-title, .references-title {
     color: #772e78;
 }
-#references a {
+#references a, .references a {
     text-decoration: none;
 }

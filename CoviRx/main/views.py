@@ -17,6 +17,7 @@ from django.http import JsonResponse, HttpResponseRedirect, HttpResponse, QueryD
 from django.shortcuts import render, redirect
 from django.template import Context
 from django.template.loader import get_template
+from reversion.models import Revision
 
 from accounts.models import User, Visitor
 from .csv_upload import get_invalid_headers, save_drugs_from_csv
@@ -265,12 +266,19 @@ def articles_found(request):
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/login')
 def monitor_article_verification(request):
-    if request.method == 'GET':
-        kwargs = {
-            'heading': ['Staff member', 'number of articles verified', 'number of articles remaining to be verified'],
-            'staff': User.objects.filter(is_staff=True, is_superuser=False, is_active=True).order_by('email'),
-        }
-        return render(request, 'main/monitor_article_verification.html', kwargs)
+    if request.method == 'POST':
+        try:
+            revision_id = request.POST.get('revision_id')
+            revision = Revision.objects.get(pk=revision_id)
+            revision.revert()
+            revision.delete()
+        except:
+            pass
+    kwargs = {
+        'heading': ['Staff member', 'number of articles verified', 'number of articles remaining to be verified'],
+        'staff': User.objects.filter(is_staff=True, is_superuser=False, is_active=True).order_by('email'),
+    }
+    return render(request, 'main/monitor_article_verification.html', kwargs)
 
 
 @user_passes_test(lambda u: u.is_staff, login_url='/login')
