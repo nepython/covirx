@@ -1,5 +1,6 @@
 import logging
 import json
+import os
 import requests
 from io import StringIO
 from wsgiref.util import FileWrapper
@@ -8,8 +9,10 @@ from collections import defaultdict, OrderedDict
 
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
+from django.core.management import call_command
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 from django.db.models import Count
 from django.forms.models import model_to_dict
@@ -17,12 +20,15 @@ from django.http import JsonResponse, HttpResponseRedirect, HttpResponse, QueryD
 from django.shortcuts import render, redirect
 from django.template import Context
 from django.template.loader import get_template
+from admin_interface.models import Theme
 from reversion.models import Revision
 
 from accounts.models import User, Visitor
+from . import create_admin_theme
 from .csv_upload import get_invalid_headers, save_drugs_from_csv
 from .forms import DrugBulkUploadForm, DrugForm
 from .models import Drug, DrugBulkUpload, Contact, ContributedDrug, Article
+from .monthly_script import gdrive_download_file
 from .utils import (invalid_drugs, search_fields, store_fields, verbose_names, special_drugs,
     clinical_trial_links, target_models as target_models_dict, target_model_names, extra_references, sendmail, MAX_SUGGESTIONS)
 from .tanimoto import similar_drugs
@@ -473,3 +479,20 @@ def clinical_trials(request, drug_name):
         'msg': 'Kindly scroll the table horizontally to view all the columns.'
     }
     return render(request, 'main/clinical_trials.html', kwargs)
+
+def restore_db(request, backup_id):
+    try:
+        file = gdrive_download_file(backup_id)
+        backup_dump = f'{settings.BASE_DIR}/db_backup.json.gz'
+        with open(backup_dump, 'wb') as f:
+            f.write(file)
+        call_command('flush', '--noinput')
+        # deletion of ContentType needs to be handled separately
+        ContentType.objects.all().delete()
+        call_command('loaddata', backup_dump)
+        create_admin_theme(Theme)
+        os.remove(backup_dump)
+    except Exception as e:
+        raise e
+        return HttpResponse(f'<script>alert("CoviRx Database could not be restored to previous version! Error: {e}");</script>')
+    return HttpResponse('<script>alert("CoviRx Database restored to previous version!");</script>')

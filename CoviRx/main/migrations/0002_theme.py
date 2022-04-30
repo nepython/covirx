@@ -1,18 +1,12 @@
 # Sets background theme for admin page
 from django.db import migrations
-import subprocess
 
-from CoviRx.settings import BASE_DIR
+from .. import create_admin_theme
 
 
 def forwards_func(apps, schema_editor):
-    subprocess.run([f"{BASE_DIR}/manage.py", "loaddata", "admin_interface_theme_uswds.json"])
     Theme = apps.get_model("admin_interface", "Theme")
-    theme = Theme.objects.get(name="USWDS")
-    theme.active=True
-    theme.logo.name = "main/static/main/images/covirx_light.png"
-    theme.title = "CoviRx: Covid19 Drug Repurposing Database"
-    theme.save()
+    create_admin_theme(Theme)
 
 def reverse_func(apps, schema_editor):
     pass

@@ -25,4 +25,5 @@ urlpatterns = [
     path('related-articles/<drug_name>', related_articles, name='related_articles'),
     path('monitor-article-verification', monitor_article_verification, name='monitor-article-verification'),
     path('api/update-drug/<drug_name>', update_drug, name='update_drug'),
+    path('api/restore/<backup_id>', restore_db, name='restore_db'),
 ]

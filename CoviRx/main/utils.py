@@ -3,14 +3,13 @@ import logging
 import csv
 
 from django.conf import settings
-from django.core.mail import EmailMessage
-from premailer import transform
 
 from .models import Drug
+from .monthly_script import gmail_send_message_with_attachment
 
 # Used for auto-versioning of static files
 # Changing below version would force browsers to reload static files
-static_version = '0.0.9'
+static_version = '-0.0.9'
 
 # The suggestions that is to be returned for autocomplete
 # We are adding a backend check to prevent misuse of API
@@ -107,25 +106,9 @@ def sendmail(html, subject, recepients, bcc=list(), log=None):
         log ([string], optional): If anything needs to be logged on successful email,
                                   can be passed here.
     """
-    message = transform(
-        html,
-        allow_insecure_ssl=True,
-        disable_leftover_css=True,
-        strip_important=False,
-        disable_validation=True,
-    )
-    msg = EmailMessage(
-        subject,
-        message,
-        settings.EMAIL_HOST_USER,
-        recepients,
-    )
-    msg.content_subtype = "html"
     if recepients:
-        msg.send(fail_silently=False)
+        gmail_send_message_with_attachment(recepients, None, subject, html)
     if bcc: # Useful to send emails when we don't want recipient to know others in email list
-        msg.to = []
-        msg.bcc = bcc
-        msg.send(fail_silently=False)
+        gmail_send_message_with_attachment(None, bcc, subject, html)
     if log:
         logging.getLogger('info_logger').info(log)
