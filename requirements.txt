@@ -8,6 +8,8 @@ google-api-python-client==2.46.0
 google-auth-httplib2==0.1.0
 google-auth==2.3.0
 rdkit-pypi==2021.9.2.1
+celery==5.1.2
+redis==4.2.2
 #heroku requirements
 django-heroku
 gunicorn

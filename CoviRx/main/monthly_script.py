@@ -11,6 +11,7 @@ from io import BytesIO
 
 from django.conf import settings
 from django.core.management import call_command
+from celery import shared_task
 
 import google.auth
 from googleapiclient.discovery import build
@@ -181,6 +182,7 @@ def gdrive_download_file(real_file_id):
     return file.getvalue()
 
 
+@shared_task
 def create_backup_and_send_restore_email():
     to = settings.EMAIL_HOST_USER
     subject = f'Restore CoviRx database as on {datetime.now().date()}'
