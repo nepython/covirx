@@ -184,7 +184,7 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
-CELERY_IMPORTS = () # Non periodic tasks go here
+CELERY_IMPORTS = ('main.mine_articles', 'main.create_backup', ) # Non periodic tasks go here
 
 # PRODUCTION SETTINGS
 if not DEBUG:

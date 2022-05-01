@@ -41,18 +41,18 @@ def google_authenticate():
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    token_path = f'{settings.BASE_DIR}/main/data/token.json'
+    if os.path.exists(token_path):
+        creds = Credentials.from_authorized_user_file(token_path, SCOPES)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                '/home/hardik/project-courses/CS_f266/code/CoviRx/main/credentials.json', SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file(f'{settings.BASE_DIR}/main/data/credentials.json', SCOPES)
             creds = flow.run_local_server(port=5000)
         # Save the credentials for the next run
-        with open('token.json', 'w') as token:
+        with open(token_path, 'w') as token:
             token.write(creds.to_json())
     return creds
 

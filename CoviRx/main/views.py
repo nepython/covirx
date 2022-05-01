@@ -28,7 +28,7 @@ from . import create_admin_theme
 from .csv_upload import get_invalid_headers, save_drugs_from_csv
 from .forms import DrugBulkUploadForm, DrugForm
 from .models import Drug, DrugBulkUpload, Contact, ContributedDrug, Article
-from .monthly_script import gdrive_download_file
+from .create_backup import gdrive_download_file
 from .utils import (invalid_drugs, search_fields, store_fields, verbose_names, special_drugs,
     clinical_trial_links, target_models as target_models_dict, target_model_names, extra_references, sendmail, MAX_SUGGESTIONS)
 from .tanimoto import similar_drugs

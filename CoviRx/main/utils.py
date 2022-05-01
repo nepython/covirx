@@ -5,7 +5,7 @@ import csv
 from django.conf import settings
 
 from .models import Drug
-from .monthly_script import gmail_send_message_with_attachment
+from .create_backup import gmail_send_message_with_attachment
 
 # Used for auto-versioning of static files
 # Changing below version would force browsers to reload static files
@@ -47,6 +47,12 @@ target_models = {
     'SARS-CoV-2 cytopathic effect (CPE) - NCATS, PubChem (AID:1508606) and Chen': ['AC50 (μM)', 'AUC', 'Potency (μM)', 'AC50', 'Efficacy (%)', 'Activity', 'Tox', 'Cytotox CC50 (uM)', '% Cytotox'],
 }
 target_model_names = list(target_models.keys())
+
+# When DETAIL_SCRAPING is True, the attributes of target models shall also be used
+# while mining articles. This can reduce the number of irrelevant articles, however
+# few articles which are not published in open access journal or contain data in
+# non-text format would not get mined.
+DETAIL_SCRAPING = False
 
 special_drugs = {
     'lopinavir': 'The NIH COVID-19 treatment guideline <b>recommends against</b> the use of lopinavir/ritonavir and other protease inhibitors for the treatment of COVID-19 in hospitalized and non-hospitalized patients. <a target="_blank" href="https://www.covid19treatmentguidelines.nih.gov/therapies/antiviral-therapy/lopinavir-ritonavir-and-other-hiv-protease-inhibitors">Link</a>',

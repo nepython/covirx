@@ -5,11 +5,11 @@ venv
 lock
 __pycache__
 logs
-scrape_out.csv
+CoviRx/main/data/*
 logs
 covirx_images
 drugs
 contacts
 .DS_Store
 staticfiles
-
+celerybeat-schedule
