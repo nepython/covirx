@@ -166,11 +166,6 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-if not EMAIL_HOST_USER:
-    logging.getLogger('error_logger').error('\033[22;33mYou have not specified the variable "EMAIL_HOST_USER" in your .env file. Email functionality will not work.\033[0;0m')
-if not EMAIL_HOST_PASSWORD:
-    logging.getLogger('error_logger').error('\033[22;33mYou have not specified the variable "EMAIL_HOST_PASSWORD" in your .env file. Email functionality will not work.\033[0;0m')
-
 
 # For OAuth2
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')

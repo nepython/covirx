@@ -1,0 +1,18 @@
+#!/bin/bash
+
+NAME="CoviRx Project - celery_worker_start"
+
+PROJECT_DIR=/home/`whoami`/covirx/CoviRx/
+ENV_DIR=/home/`whoami`/covirx/venv/
+
+echo "Starting $NAME as `whoami`"
+
+# Activate the virtual environment
+cd "${PROJECT_DIR}"
+
+if [ -d "${ENV_DIR}" ]
+then
+    . "${ENV_DIR}bin/activate"
+fi
+
+celery -A CoviRx worker --loglevel=info --concurrency=1 -E -B

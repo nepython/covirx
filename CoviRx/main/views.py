@@ -2,6 +2,7 @@ import logging
 import json
 import os
 import requests
+import csv
 from io import StringIO
 from wsgiref.util import FileWrapper
 from threading import Thread
@@ -20,6 +21,7 @@ from django.http import JsonResponse, HttpResponseRedirect, HttpResponse, QueryD
 from django.shortcuts import render, redirect
 from django.template import Context
 from django.template.loader import get_template
+from django.utils.timezone import now
 from admin_interface.models import Theme
 from reversion.models import Revision
 
@@ -32,7 +34,7 @@ from .create_backup import gdrive_download_file
 from .utils import (invalid_drugs, search_fields, store_fields, verbose_names, special_drugs,
     clinical_trial_links, target_models as target_models_dict, target_model_names, extra_references, sendmail, MAX_SUGGESTIONS)
 from .tanimoto import similar_drugs
-import csv
+from .context_processors import last_update
 
 
 def home(request):
@@ -244,6 +246,7 @@ def csv_upload(request):
         upload = DrugBulkUpload(csv_file=csv_file, uploaded_by=user)
         upload.full_clean()
         upload.save()
+        last_update = now()
         invalid_headers = get_invalid_headers(upload)
         res = {'csv-id': str(upload.pk)}
         if cache.get('total_count', 0): # Previous upload in progress, kill it
@@ -278,6 +281,7 @@ def monitor_article_verification(request):
             revision = Revision.objects.get(pk=revision_id)
             revision.revert()
             revision.delete()
+            last_update = now()
         except:
             pass
     kwargs = {
@@ -320,6 +324,7 @@ def related_articles(request, drug_name):
 
 @user_passes_test(lambda u: u.is_staff, login_url='/login')
 def update_drug(request, drug_name):
+    last_update = now()
     if request.method == 'GET':
         drug = Drug.objects.get(name=drug_name)
         data = [{**v, **{'Model Name': k}} for k, v in drug.custom_fields.items() if k in target_model_names]
