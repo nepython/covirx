@@ -9,7 +9,7 @@ from .create_backup import gmail_send_message_with_attachment
 
 # Used for auto-versioning of static files
 # Changing below version would force browsers to reload static files
-static_version = '-0.0.9'
+static_version = '0.1.0'
 
 # The suggestions that is to be returned for autocomplete
 # We are adding a backend check to prevent misuse of API

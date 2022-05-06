@@ -1,8 +1,19 @@
-# CoviRx Web App
-:warning: Python3.7 or above is required!
+# __**CoviRx Web App**__
+## **`Table of Contents`**
+* [**`Setting up locally`**](#setting-up-locally)
+    * [**Basic Setup**](#basic-setup)
+    * [**Google OAuth and cloud services setup**](#google-oauth-and-cloud-services-setup)
+    * [**Celery setup**](#celery-setup)
+* [**`Setting up for production`**](#setting-up-for-production)
+    * [**Apache setup**](#apache-setup)
+    * [**Supervisor setup**](#supervisor-setup)
+    * [**website certificate setup**](#website-certificate-setup)
+* [**`Creating a new page`**](#creating-a-new-page)
+* [**`Detailed documentation`**](#detailed-documentation)
 
-## `Setting up locally:`
-### Basic Setup
+## **`Setting up locally`**
+### **Basic Setup**
+:warning: Python3.7 or above is required!
 1) Clone this repository
 ```
 git clone https://github.com/nepython/covirx.git
@@ -26,6 +37,8 @@ pip install -r requirements.txt
 ```
 cd CoviRx
 ```
+`NOTE:` For all steps below this, we will maintain the current directory to be `CoviRx`.
+
 6) Run Migrations (this creates the database with the required tables)
 ```python
 python manage.py migrate
@@ -41,7 +54,7 @@ python manage.py runserver
 
 Now you can access the web app locally at http://127.0.0.1:8000/
 
-### Google OAuth and cloud services setup
+### **Google OAuth and cloud services setup**
 * CoviRx uses a lot of google APIs for sending emails, logging in users, storing database backup in drive, etc.
 * These APIs need credentials to make use of them:
     - log in to console.cloud.google.com
@@ -50,9 +63,13 @@ Now you can access the web app locally at http://127.0.0.1:8000/
     - create a new project `CoviRx` with redirect uri and javascript redirect uri as http://localhost:5000/ and http://localhost:5000 respectively.
     - now search for `Google Drive API` and enable it.
     - search for `Gmail API` and enable it.
-* Download the `credentials.json` file and store it in `covirx/CoviRx/main/data/` directory. (Create the directory is it doesn't exist.)
-* Now head over to http://www.google.com/recaptcha/admin, click on create (`+` icon), `reCAPTCHA v2`, add domain name and note down the secret_key.
-* Create a .env file in CoviRx, specify the values for below environment varibles as specified (Do not put any quotes around the values).
+* Download the `credentials.json` file and store it in `covirx/CoviRx/main/data/` directory. (Create the directory if it doesn't exist.)
+* Now head over to http://www.google.com/recaptcha/admin, click on create (`+` icon), select `reCAPTCHA v2`, add domain name and note down the secret_key.
+* Create a `.env` file in CoviRx
+```shell
+nano .env
+```
+Specify the values for below environment varibles as specified (Do not put any quotes around the values).
 ```code
 EMAIL_HOST_USER=Your email address
 GOOGLE_INVISIBLE_RECAPTCHA_SECRET_KEY=The secret key noted earlier
@@ -60,10 +77,10 @@ GOOGLE_CLIENT_ID=value of "client_id" in credentials.json
 SECRET_KEY=any random long string which can be used by django for security
 ```
 
-### Celery setup
+### **Celery setup**
 * CoviRx makes use of the `celery` library to schedule and execute periodic tasks.
-* Every month, a backup is created and stored in google drive. An email with a one-click button to restore to previous version of database is also sent.
-* Articles on new assay data are also mined for drugs present in CoviRx.
+* TASK1: Every month, a backup is created and stored in google drive. An email with a one-click button to restore to previous version of database is also sent.
+* TASK2: Articles on new assay data are mined for drugs present in CoviRx.
 1) Installing broker (redis)
 ```
 sudo apt update
@@ -74,10 +91,10 @@ sudo apt install redis-server
 celery -A CoviRx worker --loglevel=debug --concurrency=1 -E -B
 ```
 
-## `Setting up for production:`
-* Repeat the same steps as in `Setting up locally:`
+## **`Setting up for production`**
+* Repeat the same steps as in [Setting up locally:](#setting-up-locally)
 
-### Apache setup
+### **Apache setup**
 1) Installing Apache
 ```
 sudo apt update
@@ -110,9 +127,9 @@ sudo systemctl restart apache2
 ```
 `NOTE:`
 1. Apache errors can be located in `/var/log/apache2/error.log`.
-2. If in the error log, you get an error `ModuleNotFoundError: No module named 'django'`, follow [this link](https://stackoverflow.com/a/71057035) to resolve it.
+2. If in the error log, you get an error `ModuleNotFoundError: No module named 'django'`, follow steps in [this link](https://stackoverflow.com/a/71057035) to resolve it.
 
-### Supervisor setup
+### **Supervisor setup**
 When implementing celery on a production instance it may be preferable to delegate supervisord to manage celery workers and celery beats.
 1. Install supervisor and configure files
 ```
@@ -122,7 +139,7 @@ mkdir /home/$USER/covirx/server_files/logs/
 echo $USER
 sudo nano /etc/supervisor/conf.d/covirx_supervisor.conf
 ```
-In the editor that opens, insert below lines. However do not forget to replace `<$USER>` with the output of `echo $USER`.
+In the editor that opens, insert below lines. However do not forget to **replace `<$USER>` with the output of `echo $USER`**.
 ```
 [program:covirx-celery-worker]
 command = /home/<$USER>/covirx/server_files/celery_worker_start
@@ -143,6 +160,7 @@ sudo supervisorctl reread
 sudo supervisorctl update
 ```
 3. Some basic commands which can be used with supervisor
+
 `NOTE:` You do not need to run below commands unless need be
 ```
 sudo supervisorctl status
@@ -150,18 +168,21 @@ sudo supervisorctl stop covirx-celery-worker
 sudo supervisorctl start
 sudo supervisorctl restart covirx-celery-worker
 ```
-### website certificate setup
+### **website certificate setup**
 We use Let's Encrypt SSL certificates with certbot for auto-renewal ([More Info](https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-18-04))
 ```
 sudo apt install certbot python3-certbot-apache
 sudo certbot --apache
-# Follow the More Info link to answer the questions
+```
+Follow the More Info link to answer the questions
+```
 sudo systemctl status certbot.timer
 ```
 
-## `Creating a new page:`
+## **`Creating a new page`**
 We have adopted a modular approach so that components need to not be coded again and again.
 
 A template has been created which can be found at [template.html](CoviRx/templates/main/template.html).
 
+## **`Detailed documentation`**
 Read the detailed [documentation](https://docs.google.com/document/d/1YSk7G0xJwP1g9P9pa-1Xs1nfogqQutzJA6QbUUDnSsA/edit).

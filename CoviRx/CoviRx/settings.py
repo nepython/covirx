@@ -183,9 +183,5 @@ CELERY_IMPORTS = ('main.mine_articles', 'main.create_backup', ) # Non periodic t
 
 # PRODUCTION SETTINGS
 if not DEBUG:
-    # import django_heroku
-    # django_heroku.settings(locals())
-    # MIDDLEWARE += ('whitenoise.middleware.WhiteNoiseMiddleware',) # django-heroku changes type from list to tuple
-    # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     ALLOWED_HOSTS += ['*']
     SECRET_KEY = os.getenv('SECRET_KEY')
