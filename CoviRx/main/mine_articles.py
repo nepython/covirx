@@ -24,6 +24,7 @@ user_agents = [
 ]
 proxies = ['qc', 'phx', 'ny', 'lv', 'fr', 'pl', 'uk', 'lux', 'au', 'sg', 'de']
 keywords = ['antiviral efficacy', 'antiviral activity', 'in vivo', 'ex vivo']
+PROXY_ENABLED = not settings.DEBUG # don't make proxy request for local development
 
 
 def _make_proxy_request(URL):
@@ -48,7 +49,7 @@ def _make_proxy_request(URL):
         'accept-language': 'en-US,en-GB;q=0.9,en;q=0.8',
         'cache-control': 'max-age: 0',
     }
-    if settings.DEBUG: # don't make proxy request for local development
+    if PROXY_ENABLED:
         return requests.get(URL, headers=headers, allow_redirects=True)
     proxy_server = "https://www.4everproxy.com/query"
     if not proxies:
@@ -74,6 +75,23 @@ def _make_proxy_request(URL):
     return r
 
 
+def _clean_url(url):
+    """
+    If proxy is enabled then the url would be hyperlinked to proxy server.
+    Find and return original url
+    """
+    if not PROXY_ENABLED:
+        return url
+    r = requests.get(url)
+    soup = BeautifulSoup(r.content, 'lxml')
+    try:
+        original_url = soup.find('input', {'id': 'foreverproxy-u'}).get('value')
+        return original_url
+    except Exception as e:
+        print(e)
+        return url
+
+
 def check_similar(articles, url, title):
     """ Avoid duplicate links """
     for index, article in enumerate(articles):
@@ -95,7 +113,7 @@ def get_articles(keyword, target_model, target_model_attributes, drug_name, from
     articles = list()
     soup = BeautifulSoup(r.content, 'lxml')
     for entry in soup.find_all("h3", attrs={"class": "gs_rt"}):
-        article = {"title": entry.a.text, "url": entry.a['href']}
+        article = {"title": entry.a.text, "url": _clean_url(entry.a['href'])}
         duplicate = check_similar(articles, article['url'], article['title'])
         if duplicate is None:
             articles.append(article)
