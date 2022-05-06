@@ -1,7 +1,9 @@
 import requests
+import random
 import pytz
 from difflib import SequenceMatcher
 from datetime import datetime
+from time import sleep
 
 from celery import shared_task
 from django.conf import settings
@@ -11,9 +13,59 @@ from .models import Drug, Article
 
 from bs4 import BeautifulSoup
 
+# use different user agents to avoid automated request rejection
+user_agents = [
+    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:77.0) Gecko/20100101 Firefox/77.0',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
+]
+proxies = ['qc', 'phx', 'ny', 'lv', 'fr', 'pl', 'uk', 'lux', 'au', 'sg', 'de']
 keywords = ['antiviral efficacy', 'antiviral activity', 'in vivo', 'ex vivo']
 
-# construct a dictionary which contains drug name as its key and values as a list target models for which no data
+
+def _make_proxy_request(URL):
+    """
+    Google Scholar doesn't allow multiple automated requests
+    from the same IP address. To work around it we:
+    * use different user-agents
+    * use a proxy
+    * delay between requests
+
+    Args:
+        URL (string): Google Scholar url query
+
+    Returns:
+        Response: response object
+    """
+    sleep(random.randint(1,10)) # sleeps 1-10s before making another request
+    headers = {
+        'accept': '*/*',
+        'User-Agent': random.choice(user_agents),
+        'accept-encoding': 'gzip, deflate, br',
+        'accept-language': 'en-US,en-GB;q=0.9,en;q=0.8',
+        'cache-control': 'max-age: 0',
+    }
+    if settings.DEBUG: # don't make proxy request for local development
+        return requests.get(URL, headers=headers, allow_redirects=True)
+    proxy_server = "https://www.4everproxy.com/query"
+    data = {
+        "allowCookies": "on",
+        "customip": "",
+        "selip": "random",
+        "server_name": random.choice(proxies),
+        "u": URL,
+        "u_default": "https://www.google.com"
+    }
+    try:
+        r = requests.post(proxy_server, headers=headers, data=data)
+    except requests.exceptions.SSLError as e:
+        print(f'\nScraping failed! Internet Service Provider has disabled the proxy server: `{proxy_server}`.\n')
+        raise e
+    return r
+
 
 def check_similar(articles, url, title):
     """ Avoid duplicate links """
@@ -32,9 +84,9 @@ def get_articles(keyword, target_model, target_model_attributes, drug_name, from
             attributes += f"'{attr}'+OR+".replace(' (µM)', '').replace(' (nM)', '')
         attributes = attributes[:-4]
         URL = f'https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&as_ylo={from_y}&as_yhi={to_y}&q="SARS-CoV-2"+{keyword}+{target_model}+{drug_name}+{attributes}'
-    r = requests.get(URL, allow_redirects=True)
-    soup = BeautifulSoup(r.content, 'lxml')
+    r = _make_proxy_request(URL)
     articles = list()
+    soup = BeautifulSoup(r.content, 'lxml')
     for entry in soup.find_all("h3", attrs={"class": "gs_rt"}):
         article = {"title": entry.a.text, "url": entry.a['href']}
         duplicate = check_similar(articles, article['url'], article['title'])
