@@ -224,7 +224,7 @@ def REASSIGN(collector, field, sub_objs, using):
 class Article(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     date_mined = models.DateTimeField(auto_now=True)
-    title = models.TextField(blank=True, null=True, unique=True)
+    title = models.TextField(blank=True, null=True)
     url = models.TextField(blank=True, null=True)
     drug = models.ForeignKey(Drug, on_delete=models.CASCADE)
     target_model = models.TextField(blank=True, null=True)
@@ -268,6 +268,9 @@ class Article(models.Model):
 
     class Meta:
         ordering = ['date_mined']
+        constraints = [
+            models.UniqueConstraint(fields=['title', 'drug', 'target_model'], name='Article Uniqueness')
+        ]
 
 
 @receiver(models.signals.post_delete, sender=DrugBulkUpload)

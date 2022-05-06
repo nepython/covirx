@@ -51,11 +51,14 @@ def _make_proxy_request(URL):
     if settings.DEBUG: # don't make proxy request for local development
         return requests.get(URL, headers=headers, allow_redirects=True)
     proxy_server = "https://www.4everproxy.com/query"
+    if not proxies:
+        raise ValueError('No working proxy available!')
+    selected_proxy = random.choice(proxies)
     data = {
         "allowCookies": "on",
         "customip": "",
         "selip": "random",
-        "server_name": random.choice(proxies),
+        "server_name": selected_proxy,
         "u": URL,
         "u_default": "https://www.google.com"
     }
@@ -64,6 +67,10 @@ def _make_proxy_request(URL):
     except requests.exceptions.SSLError as e:
         print(f'\nScraping failed! Internet Service Provider has disabled the proxy server: `{proxy_server}`.\n')
         raise e
+    if 'Our systems have detected unusual traffic' in str(r.content):
+        # The proxy has been temporarily blocked so don't use it
+        proxies.remove(selected_proxy)
+        return _make_proxy_request(URL)
     return r
 
 
@@ -100,7 +107,6 @@ def scrape_google_scholar():
     to_y = datetime.now(pytz.timezone(settings.TIME_ZONE)).year
     from_y = to_y-1
     drug_names = {d.name: d for d in Drug.objects.all().order_by('name')}
-    drug_names = {d.name: d for d in Drug.objects.filter(name__startswith='Nelfinavir').order_by('name')}
     f_out = open(f"{settings.BASE_DIR}/main/data/scrape_out.csv", 'a')
     queries = [{'k': k, 't': t, 'ta': ta, 'd': d} for k in keywords for t, ta in target_models.items() for d in drug_names.keys()]
     article_count = 0

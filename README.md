@@ -118,7 +118,7 @@ sudo apache2ctl configtest
 ```
 ./manage.py collectstatic
 chmod 664 db.sqlite3
-sudo chown -R www-data ../../covirx
+sudo chown -R $USER:www-data ../../covirx
 sudo ufw allow 'Apache Full'
 ```
 6) Restart apache

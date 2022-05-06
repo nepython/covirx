@@ -13,3 +13,4 @@ contacts
 .DS_Store
 staticfiles
 celerybeat-schedule
+celerybeat-schedule.db
