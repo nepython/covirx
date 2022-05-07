@@ -1,3 +1,4 @@
+import reversion
 from django.contrib import admin, messages
 from django.db import models
 from django import forms
@@ -45,11 +46,24 @@ class DrugAdmin(PermissionVersionAdmin):
         }
     }
     form = JsonDocumentForm
-    actions = [delete_all_drugs]
+    # Needs to be decided if this action should be removed
+    # actions = [delete_all_drugs]
+    actions = None
     search_fields = ['name']
 
     def has_change_permission(self, request, obj=None):
         return request.user.is_superuser
+
+    def _create_revision(self, drug, user):
+        with reversion.create_revision():
+            # Save previous version to be able to restore in future
+            reversion.add_to_revision(drug)
+            reversion.set_user(user)
+            reversion.set_comment('Drug was deleted.')
+
+    def delete_model(self, request, obj):
+        self._create_revision(obj, request.user)
+        super().delete_model(request, obj)
 
     class Media:
         js = ('main/js/jquery-3.6.0.min.js', 'admin/js/drug_customfield.js',)

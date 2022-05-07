@@ -104,6 +104,8 @@ class Drug(models.Model):
         return drug
 
     def clean(self):
+        if not self.inchi or self.inchi in ['N/A', '|N/A']:
+            self.inchi = None
         if not self.smiles or self.smiles in ['N/A', '|N/A']:
             self.smiles = None
         if not self.cas_number or self.cas_number in ['N/A', '|N/A']:
@@ -135,7 +137,7 @@ class Drug(models.Model):
             act = 'Added' if len(custom_fields)>len(self.custom_fields) else 'Updated'
         with reversion.create_revision():
             # Save previous version to be able to restore in future
-            self.save()
+            reversion.add_to_revision(self)
             reversion.set_user(user)
             reversion.set_comment(f'{act} target model {model_name} in {self.name}.')
         self.custom_fields = custom_fields

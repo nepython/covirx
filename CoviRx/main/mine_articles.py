@@ -40,6 +40,7 @@ def _make_proxy_request(URL):
 
     Returns:
         Response: response object
+        Session object: same session is required to obtain a clean url from proxy links
     """
     sleep(random.randint(1,10)) # sleeps 1-10s before making another request
     headers = {
@@ -49,8 +50,8 @@ def _make_proxy_request(URL):
         'accept-language': 'en-US,en-GB;q=0.9,en;q=0.8',
         'cache-control': 'max-age: 0',
     }
-    if PROXY_ENABLED:
-        return requests.get(URL, headers=headers, allow_redirects=True)
+    if not PROXY_ENABLED:
+        return requests.get(URL, headers=headers, allow_redirects=True), None
     proxy_server = "https://www.4everproxy.com/query"
     if not proxies:
         raise ValueError('No working proxy available!')
@@ -64,7 +65,9 @@ def _make_proxy_request(URL):
         "u_default": "https://www.google.com"
     }
     try:
-        r = requests.post(proxy_server, headers=headers, data=data)
+        session = requests.Session()
+        session.headers.update(headers)
+        r = session.post(proxy_server, data=data)
     except requests.exceptions.SSLError as e:
         print(f'\nScraping failed! Internet Service Provider has disabled the proxy server: `{proxy_server}`.\n')
         raise e
@@ -72,17 +75,17 @@ def _make_proxy_request(URL):
         # The proxy has been temporarily blocked so don't use it
         proxies.remove(selected_proxy)
         return _make_proxy_request(URL)
-    return r
+    return r, session
 
 
-def _clean_url(url):
+def _clean_url(url, session):
     """
     If proxy is enabled then the url would be hyperlinked to proxy server.
     Find and return original url
     """
     if not PROXY_ENABLED:
         return url
-    r = requests.get(url)
+    r = session.get(url)
     soup = BeautifulSoup(r.content, 'lxml')
     try:
         original_url = soup.find('input', {'id': 'foreverproxy-u'}).get('value')
@@ -109,11 +112,11 @@ def get_articles(keyword, target_model, target_model_attributes, drug_name, from
             attributes += f"'{attr}'+OR+".replace(' (µM)', '').replace(' (nM)', '')
         attributes = attributes[:-4]
         URL = f'https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&as_ylo={from_y}&as_yhi={to_y}&q="SARS-CoV-2"+{keyword}+{target_model}+{drug_name}+{attributes}'
-    r = _make_proxy_request(URL)
+    r, session = _make_proxy_request(URL)
     articles = list()
     soup = BeautifulSoup(r.content, 'lxml')
     for entry in soup.find_all("h3", attrs={"class": "gs_rt"}):
-        article = {"title": entry.a.text, "url": _clean_url(entry.a['href'])}
+        article = {"title": entry.a.text, "url": _clean_url(entry.a['href'], session)}
         duplicate = check_similar(articles, article['url'], article['title'])
         if duplicate is None:
             articles.append(article)
@@ -130,6 +133,7 @@ def scrape_google_scholar():
     article_count = 0
     for i, q in enumerate(queries):
         articles = get_articles(q['k'], q['t'], q['ta'], q['d'], from_y, to_y)
+        print(i, articles)
         for a in articles:
             try:
                 article = Article(title=a["title"], url=a["url"], drug=drug_names[q["d"]], target_model=q["t"], keywords=f'{q["k"]}, SARS-CoV-2')
