@@ -32,7 +32,8 @@ from .forms import DrugBulkUploadForm, DrugForm
 from .models import Drug, DrugBulkUpload, Contact, ContributedDrug, Article
 from .create_backup import gdrive_download_file
 from .utils import (invalid_drugs, search_fields, store_fields, verbose_names, special_drugs,
-    clinical_trial_links, target_models as target_models_dict, target_model_names, extra_references, sendmail, MAX_SUGGESTIONS)
+    clinical_trial_links, target_models as target_models_dict, target_model_names,
+    extra_references, sendmail, MAX_SUGGESTIONS, downselected_drugs)
 from .tanimoto import similar_drugs
 from .context_processors import last_update
 
@@ -267,7 +268,27 @@ def articles_found(request):
         kwargs = {
             'heading': ['Drug Name', 'number of articles'],
             'rows': [
-                {'name': drug.name, 'count': drug.related_articles(request.user).count()} for i, drug in enumerate(Drug.objects.all()) if drug.related_articles(request.user).count()
+                {
+                    'name': drug.name,
+                    'count': drug.related_articles(request.user).count()
+                } for i, drug in enumerate(Drug.objects.all()) if drug.related_articles(request.user).count()
+            ],
+        }
+        return render(request, 'main/articles_found.html', kwargs)
+
+
+@user_passes_test(lambda u: u.is_staff, login_url='/login')
+def downselected_drugs_articles_found(request):
+    if request.method == 'GET':
+        kwargs = {
+            'heading': ['Drug Name', 'number of articles'],
+            'rows': [
+                {
+                    'name': drug.name,
+                    'count': drug.related_articles(request.user).count()
+                }
+                    for i, drug in enumerate(Drug.objects.all())
+                    if drug.related_articles(request.user).count() and drug.name in downselected_drugs
             ],
         }
         return render(request, 'main/articles_found.html', kwargs)

@@ -4,7 +4,7 @@ for(var i = 1; i <= cnt;i++) {
     els.slice(ind, ind += grp).addClass(`page ${i}`);
     $(`<a id="link-${i}" onclick="changePage('${i}')" href="#">${i}</a>`).insertBefore('.pagination #link-next');
 }
-changePage(1);
+
 function changePage(pageNumber) {
     if (pageNumber=='-1') pageNumber = Math.max(currentPage-1, 1);
     else if (pageNumber=='-2') pageNumber = Math.min(currentPage+1, cnt);
@@ -14,3 +14,5 @@ function changePage(pageNumber) {
     $(`.pagination a#link-${pageNumber}`).addClass('active');
     currentPage = pageNumber;
 }
+
+changePage(1);

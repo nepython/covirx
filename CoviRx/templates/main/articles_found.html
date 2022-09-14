@@ -7,6 +7,12 @@
     <h1>CoviRx</h1>
     <h2>Covid19 Drug Repurposing Database</h2>
     <h3 id="references-title">New articles found for below drugs!</h3>
+    <div class="input-group mb-2" id="main-search">
+        <input type="text" class="form-control" id="keyword" placeholder="Search for drug name">
+        <button class="input-group-text" id="search">
+            <i class="bi bi-search" aria-hidden="true"></i>
+        </button>
+    </div>
     <div class="table-responsive">
         <table id="references" class="table table-bordered table-hover table-condensed">
             <thead>
@@ -18,7 +24,7 @@
             </thead>
             <tbody>
                 {% for row in rows %}
-                <tr>
+                <tr id="drug-{{ row.name }}">
                     {% for k, v in row.items %}
                     <td class="{{ k }}" id="{{ k }}-{{ forloop.parentloop.counter }}">{{ v }}</td>
                     {% endfor %}
@@ -51,4 +57,20 @@
     });
 </script>
 <script src='{% static "main/js/pagination.js" %}?v={{ static_version }}' type="text/javascript"></script>
+<script>
+    // display drugs which startwith
+    $('#keyword').on('input', function(e) {
+        var keyword = $('#keyword').val();
+        $('tr[id^="drug-"]').hide();
+        $('tr[id^="drug-"]').removeClass();
+        $(`tr[id^="drug-${keyword}"]`).show();
+        els = $("#references tr:visible").not(":first"), grp = 5, cnt = Math.ceil(els.length/grp), ind = 0;
+        $(`.pagination a`).not('#link-prev').not('#link-next').remove();
+        for(var i = 1; i <= cnt;i++) {
+            els.slice(ind, ind += grp).addClass(`page ${i}`);
+            $(`<a id="link-${i}" onclick="changePage('${i}')" href="#">${i}</a>`).insertBefore('.pagination #link-next');
+        }
+        changePage(1);
+    });
+</script>
 {% endblock footer_scripts %}

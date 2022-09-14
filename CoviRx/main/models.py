@@ -137,7 +137,7 @@ class Drug(models.Model):
             act = 'Added' if len(custom_fields)>len(self.custom_fields) else 'Updated'
         with reversion.create_revision():
             # Save previous version to be able to restore in future
-            reversion.add_to_revision(self)
+            self.save()
             reversion.set_user(user)
             reversion.set_comment(f'{act} target model {model_name} in {self.name}.')
         self.custom_fields = custom_fields

@@ -59,6 +59,7 @@
 <button onclick="location.href=`{% url 'monitor-article-verification' %}`;" class="btn btn-light mb-1" >Monitor article verification</button>
 {% endif %}
 <button onclick="location.href=`{% url 'articles_found' %}`;" class="btn btn-secondary mb-1" >New articles found</button>
+<button onclick="location.href=`{% url 'downselected_drugs_articles_found' %}`;" class="btn btn-secondary mb-1" >New articles found for downselected drugs</button>
 {{ block.super }}
 {% endblock %}
 

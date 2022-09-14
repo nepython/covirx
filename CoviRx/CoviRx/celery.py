@@ -17,4 +17,7 @@ app.conf.beat_schedule = {
         'schedule': crontab(0, 0, day_of_month='1'), # Execute on the first day of every month.
     },
 }
+if settings.DEBUG:
+    # Don't send recovery email's when running locally
+    app.conf.beat_schedule.pop('create_monthly_backup')
 app.config_from_object('django.conf:settings')
