@@ -271,7 +271,9 @@ def articles_found(request):
                 {
                     'name': drug.name,
                     'count': drug.related_articles(request.user).count()
-                } for i, drug in enumerate(Drug.objects.all()) if drug.related_articles(request.user).count()
+                }
+                    for i, drug in enumerate(Drug.objects.all().order_by('name'))
+                    if drug.related_articles(request.user).count()
             ],
         }
         return render(request, 'main/articles_found.html', kwargs)
@@ -287,7 +289,7 @@ def downselected_drugs_articles_found(request):
                     'name': drug.name,
                     'count': drug.related_articles(request.user).count()
                 }
-                    for i, drug in enumerate(Drug.objects.all())
+                    for i, drug in enumerate(Drug.objects.all().order_by('name'))
                     if drug.related_articles(request.user).count() and drug.name in downselected_drugs
             ],
         }

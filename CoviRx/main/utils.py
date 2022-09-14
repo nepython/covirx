@@ -9,7 +9,7 @@ from .create_backup import gmail_send_message_with_attachment
 
 # Used for auto-versioning of static files
 # Changing below version would force browsers to reload static files
-static_version = '0.1.1'
+static_version = '0.1.2'
 
 # The suggestions that is to be returned for autocomplete
 # We are adding a backend check to prevent misuse of API
@@ -83,7 +83,7 @@ extra_references = [
 ]
 
 def _get_downselected_drugs():
-    with open('CoviRx/downselected_drugs.csv', 'r', encoding='UTF-8') as fp:
+    with open(f'{settings.BASE_DIR}/downselected_drugs.csv', 'r', encoding='UTF-8') as fp:
         rows = list(csv.reader(fp, delimiter=','))
         return [row[0] for row in rows[2:]]
 
