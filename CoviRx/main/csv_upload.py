@@ -61,7 +61,7 @@ def save_drugs_from_csv(obj, invalid_headers): #TODO: Make the code less redunda
                 elif field in custom_fields:
                     custom[field] = drug[i]
             drug_details['label'] = drug_label(drug, drugs[1])
-            drug_details['filters_passed'] = filters_passed(drug, drugs[0], drugs[1])
+            drug_details['filters_passed'], drug_details['filters_failed'] = filters_passed(drug, drugs[0], drugs[1])
             custom.update(save_positions(drug, position_target, drugs[1], rename_fields={
                 'Potency (μM) Concentration at which compound exhibits half-maximal efficacy, AC50. Extrapolated AC50s also include the highest efficacy observed and the concentration of compound at which it was observed.': 'Potency (μM)',
                 'Efficacy (%) Maximal efficacy of compound, reported as a percentage of control. These values are estimated based on fits of the Hill equation to the dose-response curves.': 'Efficacy (%)'
@@ -122,9 +122,14 @@ def filters_passed(drug, header0, header1):
     """
     removal_reasons = drug[header1.index('Notes- Reason for removal')].lower()
     first_failure = 11
+    all_failures = list()
     for reason in removal_reasons.replace(';', ',').split(','):
-        first_failure = min(first_failure, _filters_passed(reason, drug, header0, header1))
-    return first_failure
+        filter_failed_at = _filters_passed(reason, drug, header0, header1)
+        if filter_failed_at<11:
+            all_failures.append(filter_failed_at+1)
+        first_failure = min(first_failure, filter_failed_at)
+    all_failures = _filters_failed(all_failures, drug, header1)
+    return first_failure, all_failures
 
 def _filters_passed(removal_reason, drug, header0, header1):
     # Assay Data not present
@@ -136,21 +141,52 @@ def _filters_passed(removal_reason, drug, header0, header1):
         return 2
     if 'cc50' in removal_reason or 'si<10' in removal_reason:
         return 3
-    if 'ic50' in removal_reason:
+    if 'same class of drug' in removal_reason:
         return 4
-    if 'administration' in removal_reason:
+    if 'ic50' in removal_reason:
         return 5
     if 'cad' in removal_reason or 'pains' in removal_reason:
         return 6
-    if 'same class of drug' in removal_reason:
+    if 'administration' in removal_reason:
         return 7
-    if 'indication' in removal_reason:
-        return 8
     if 'pregnancy' in removal_reason:
-        return 9
+        return 8
     if 'side effects' in removal_reason:
+        return 9
+    if 'indication' in removal_reason:
         return 10
     return 11
+
+def _filters_failed(all_failures, drug, header1):
+    last_failure = max(all_failures, default=12)
+    if last_failure<2 and drug[header1.index('FDA/TGA')] not in ['FDA', 'TGA']:
+        all_failures.append(2)
+    if last_failure<3 and 'Yes' in drug[header1.index('Covid trials')]:
+        all_failures.append(3)
+    if last_failure<4 and 'Yes' in drug[header1.index('CC50<10 or SI<10')]:
+        all_failures.append(4)
+    if last_failure<6 and 'Yes' in drug[header1.index('IC50>10x original indication')]:
+        all_failures.append(6)
+    if last_failure<7 and not drug[header1.index('PAINS')]:
+        all_failures.append(7)
+    administration = drug[header1.index('Administration route')]
+    if last_failure<8 and administration and 'oral' not in administration.lower():
+        all_failures.append(8)
+    if last_failure<9 and 'Category' in drug[header1.index('Pregnancy concerns')]:
+        all_failures.append(9)
+    if last_failure<10 and drug[header1.index('Side effects')] not in ['', 'NA']:
+        all_failures.append(10)
+    if last_failure<11:
+        drug_indication = drug[header1.index('Indication (1)')].lower()
+        for indication in ['diagnostic agents', 'pharmaceutical aids', 'supplements']:
+            if indication in drug_indication:
+                all_failures.append(11)
+                break
+    filters_failed = dict()
+    for filter in range(1,12):
+        if filter in all_failures:
+            filters_failed[filter] = True
+    return filters_failed
 
 
 def mail_invalid_drugs(recepients, invalid_drugs, username, timestamp):

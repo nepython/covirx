@@ -45,6 +45,18 @@ $(document).ready(function(){
         $("#showIdentifier").html(identifier);
     });
 
+    var filters = '';
+    $("input.filter:checked").each(function() {
+        filters += `${$(this).val()},`;
+    });
+    // change filter post update
+    $('#filters').change(function(){
+        filters = '';
+        $("input.filter:checked").each(function() {
+            filters += `${$(this).val()},`;
+        });
+    });
+
     // search for every key press on main search
     $('#keyword').on('input', function(e) {
         var key = $('#keyword').val();
@@ -59,7 +71,7 @@ $(document).ready(function(){
     // advanced search
     $("#advanced-search input").on('input', function() {
         var keyword = {};
-        $("#advanced-search input").each(function() {
+        $("#advanced-search input[type='text']").each(function() {
             keyword[this.placeholder] = this.value;
         });
         slideContainer(!hasValue($("#advanced-search input")));
@@ -82,7 +94,8 @@ $(document).ready(function(){
             $('.suggestion').remove();  // clear previous suggestions
             $.getJSON( "api/drugs-metadata", {
                 suggestions: suggestions,
-                keyword: JSON.stringify(keyword)
+                keyword: JSON.stringify(keyword),
+                filters: filters
             }).done(function( data ) {
                 if (!isEmptyObject(keyword) && isEmptyObject(data)) {
                     addNoMatch(keyword);

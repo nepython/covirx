@@ -40,7 +40,21 @@ from .context_processors import last_update
 
 def home(request):
     Visitor.record(request)
-    return render(request, 'main/index.html', {'fields': search_fields})
+    return render(request, 'main/index.html', {
+        'fields': search_fields,
+        'filters': [
+            {'number': 1, 'name': 'Assay data'},
+            {'number': 2, 'name': 'Approval status'},
+            {'number': 3, 'name': 'Clinical trials'},
+            {'number': 4, 'name': 'CC50>10µM and SI>10'},
+            {'number': 6, 'name': 'COVID IC50>10 times original indication'},
+            {'number': 7, 'name': 'CAD/PAINS'},
+            {'number': 8, 'name': 'Route of administration'},
+            {'number': 9, 'name': 'Pregnancy category'},
+            {'number': 10, 'name': 'Black box warning'},
+            {'number': 11, 'name': 'Indication'},
+        ]
+    })
 
 
 def autocomplete(request):
@@ -48,16 +62,25 @@ def autocomplete(request):
         return JsonResponse({})
     keyword = json.loads(request.GET.get('keyword', '{}'))
     suggestions = min(int(request.GET.get('suggestions', 5)), MAX_SUGGESTIONS)
+    filters = request.GET.get('filters', '').split(',')[:-1]
     if (not keyword):
         return JsonResponse({})
-    return JsonResponse(search_drug(keyword, suggestions))
+    return JsonResponse(search_drug(keyword, suggestions, filters))
 
 
-def search_drug(keyword, suggestions): # suggestions is the count of the number of suggestions to pass
+def search_drug(keyword, suggestions, filters): # suggestions is the count of the number of suggestions to pass
     drugs = dict()
     query = {f'{k}__startswith': v for k, v in keyword.items() if v}
-    if not query: return drugs
-    drugmodels = Drug.objects.filter(**query)[:suggestions]
+    if not query:
+        return drugs
+    if not filters:
+        drugmodels = Drug.objects.filter(**query).order_by('-rank_score')[:suggestions]
+    else:
+        drugmodels = list()
+        for drug in Drug.objects.filter(**query).order_by('-rank_score'):
+            if not set(drug.filters_failed.keys()).intersection(set(filters)):
+                drugmodels.append(drug)
+        drugmodels = drugmodels[:suggestions]
     for i, drug in enumerate(drugmodels):
         try:
             drugmetadata = model_to_dict(drug, fields=['label']+search_fields+list(verbose_names.values()))

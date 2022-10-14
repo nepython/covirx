@@ -85,7 +85,10 @@ class Drug(models.Model):
     rotbonds = models.TextField(blank=True, null=True)
     administration_route = models.TextField(blank=True, null=True)
     rank_score = models.TextField(blank=True, null=True)
+    # If the 11 filters are run sequentially, the number of filters passed
     filters_passed = models.IntegerField(default=0)
+    # the filters the drug will fail at when the filters are ran parallely
+    filters_failed = models.JSONField(default=dict, blank=True)
     custom_fields = models.JSONField(default=dict, blank=True)
 
     @classmethod
@@ -127,7 +130,7 @@ class Drug(models.Model):
 
     def update_target_model(self, model_name, data, user):
         custom_fields = dict(self.custom_fields)
-        if data is None and model_name in drug.custom_fields:
+        if data is None and model_name in self.custom_fields:
             act = 'Deleted'
             custom_fields.pop(model_name)
         else:

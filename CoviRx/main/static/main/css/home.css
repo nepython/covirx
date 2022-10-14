@@ -378,3 +378,9 @@ form#identifiers {
 #drug-labels-chart .labels-description {
     display: none;
 }
+#advanced-search #filters .col-form-label {
+	padding-left: 3%;
+	font-weight: 800;
+	color: #772e78;
+    width: auto;
+}

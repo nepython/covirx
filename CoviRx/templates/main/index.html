@@ -134,6 +134,19 @@
             </button>
         </div>
         <div id="advanced-search" class="row">
+            <div class="row" id="filters">
+                <label class="col-sm-2 col-form-label">Select Filters: </label>
+                <div class="col-sm-9">
+                    {% for filter in filters %}
+                    <div class="form-check form-check-inline">
+                        <input class="filter form-check-input" type="checkbox" value="{{ filter.number }}" id="{{ filter.name }}">
+                        <label class="form-check-label" for="{{ filter.name }}">
+                            {{ filter.name }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
             <div class="col-4">
                 {% for field in fields|slice:"0:4" %}
                 <div class="form-group row adv-search-field-col adv-search-field-col-{{ field }}">
@@ -169,7 +182,7 @@
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
             <label for="identifiers" class="form-label">Select the identifier to search for in the database</label>
             <form id="identifiers">
-            {% for field in fields%}
+            {% for field in fields %}
             <label class="identifier-container"> {{ field }}
                 <input type="radio" class="identifier" name="identifier" value={{ field }} {% if field == "name" %}checked="checked"{% endif %} >
                 <span class="checkmark"></span>
