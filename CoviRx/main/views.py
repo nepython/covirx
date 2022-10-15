@@ -71,7 +71,7 @@ def autocomplete(request):
 def search_drug(keyword, suggestions, filters): # suggestions is the count of the number of suggestions to pass
     drugs = dict()
     query = {f'{k}__startswith': v for k, v in keyword.items() if v}
-    if not query:
+    if not query and not filters:
         return drugs
     if not filters:
         drugmodels = Drug.objects.filter(**query).order_by('-rank_score')[:suggestions]
