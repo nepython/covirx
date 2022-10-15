@@ -1,0 +1,46 @@
+{% extends 'main/index.html' %}
+{% block title %}CoviRx: Cite Us{% endblock %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href='{% static "main/css/references.css" %}?v={{ static_version }}'/>
+{% endblock %}
+
+{% block content %}
+<div class="container slide-up mb-5">
+    <h1>CoviRx</h1>
+    <h2>Covid19 Drug Repurposing Database</h2>
+    <h4>If you are using CoviRx then we ask you to cite the below two papers.</h4>
+    <div class="table-responsive">
+        <table id="references">
+            <tr>
+                <td>1</td>
+                <td class="reference-content">
+                    MacRaild, C.A.; Mohammed, M.-U.-R.; Faheem; Murugesan, S.; Styles, I.K.; Peterson,
+                    A.L.; Kirkpatrick, C.M.J.; Cooper, M.A.; Palombo, E.A.; Simpson, M.M.; Jain, H.A.;
+                    Agarwal, V.; McAuley, A.J.; Kumar, A.; Creek, D.J.; Trevaskis, N.L.; Vasan, S.S.
+                    Systematic Down-Selection of Repurposed Drug Candidates for COVID-19.
+                    Int. J. Mol. Sci. 2022, 23, 11851. <a href="https://doi.org/10.3390/ijms231911851">https://doi.org/10.3390/ijms231911851</a>
+                </td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td class="reference-content">
+                    Jain, H.A.; Agarwal, V.; Bansal, C.; Kumar, A.; Faheem, F.; Mohammed, M.; Murugesan, S.;
+                    Simpson, M.M.; Karpe, A.V.; Chandra, R.; MacRaild, C.A.; Styles, I.K.; Peterson, A.L.;
+                    Cooper, M.A.; Kirkpatrick, C.M.; Shah, R.M.; Palombo, E.A.; Trevaskis, N.L.; Creek, D.J.;
+                    Vasan, S.S. CoviRx: A User-Friendly Interface for Systematic Down-Selection of Repurposed
+                    Drug Candidates for COVID-19. Preprints 2022, 2022090323 (doi: <a href="https://www.preprints.org/manuscript/202209.0323/v1">10.20944/preprints202209.0323.v1</a>).
+                    <br><br><b>NOTE: </b>This manuscript is currently under peer review, we will update the preprint link later.
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endblock content %}
+
+{% block footer_scripts %}
+<script>
+    $('.nav-link')[5].classList.add('active'); // highlights the References nav item
+</script>
+{% endblock footer_scripts %}

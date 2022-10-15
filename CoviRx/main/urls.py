@@ -14,6 +14,7 @@ urlpatterns = [
     path('contact', contact, name='contact'),
     path('cookie-policy', cookie_policy, name='cookie-policy'),
     path('references', references, name='references'),
+    path('cite', cite, name='cite'),
     path('api/charts-json', charts_json, name='charts-json'),
     path('contribute/add_drug', save_contributed_drug, name='add-drug'),
     path('contribute/list_drugs', list_contributed_drugs, name='list-drugs'),

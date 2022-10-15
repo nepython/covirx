@@ -3,6 +3,7 @@ import json
 import os
 import requests
 import csv
+import re
 from io import StringIO
 from wsgiref.util import FileWrapper
 from threading import Thread
@@ -180,8 +181,16 @@ def organisations(request):
 
 def references(request):
     Visitor.record(request)
-    refs = [r[0] for r in Drug.objects.values_list('references').distinct() if r[0]!=None and r[0]!='']+extra_references
+    refs = []
+    for ref in (extra_references+[re.sub('[\[][1-9][\]]', '^', r[0])
+        for r in Drug.objects.values_list('references').distinct()
+            if r[0]!=None and r[0]!='']):
+        refs += [r.strip() for r in ref.split('^') if r.strip()]
     return render(request, 'main/references.html', {'references': refs})
+
+
+def cite(request):
+    return render(request, 'main/cite.html')
 
 
 def save_contributed_drug(request):
