@@ -129,6 +129,7 @@ sudo systemctl restart apache2
 `NOTE:`
 1. Apache errors can be located in `/var/log/apache2/error.log`.
 2. If in the error log, you get an error `ModuleNotFoundError: No module named 'django'`, follow steps in [this link](https://stackoverflow.com/a/71057035) to resolve it.
+3. If in the error log, you get an error `ModuleNotFoundError: No module named 'encodings'`, follow steps in [this link](https://stackoverflow.com/a/73584456) to resolve it.
 
 ### **Supervisor setup**
 When implementing celery on a production instance it may be preferable to delegate supervisord to manage celery workers and celery beats.
